@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es5",
+        "jsx": "react",
+        "noImplicitAny": true
+    },
+    "files": [
+        "typings/index.d.ts",
+        "Dev/demo.tsx",
+        "Dev/index.tsx",
+        "src/Object_assign.d.ts",
+        "src/NumberInput.tsx",
+        "src/index.tsx"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
+

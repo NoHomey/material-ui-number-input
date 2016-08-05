@@ -1,0 +1,56 @@
+{
+  "name": "material-ui-number-input",
+  "version": "0.0.1",
+  "description": "The <TextField type=\"number\" /> that user really expects.",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typings": "typings install",
+    "start": "webpack && mv ./demo/index.html ./ && node server.js",
+    "prepublish": "npm run prepublish:rm && npm run prepublish:tsc && npm run prepublish:sed && npm run prepublish:dts",
+    "prepublish:rm": "rm -Rf ./d*",
+    "prepublish:tsc": "tsc -d -m commonjs  --moduleResolution node -t es5 --jsx react --noImplicitAny --outDir ./dist ./src/index.tsx",
+    "prepublish:sed": "npm run prepublish:sed:typings && npm run prepublish:sed:assign",
+    "prepublish:sed:typings": "sed -i '/\\/\\/\\/ <reference path=\".\\/..\\/typings\\/index.d.ts\" \\/>/d' ./dist/index.js",
+    "prepublish:sed:assign": "sed -i '/\\/\\/\\/ <reference path=\".\\/Object_assign.d.ts\" \\/>/d' ./dist/index.js",
+    "prepublish:dts": "echo  \"export * from './NumberInput';\" > ./dist/index.d.ts"
+  },
+  "keywords": [
+    "react",
+    "material-ui",
+    "input",
+    "number",
+    "ux",
+    "material-design",
+    "input-number",
+    "user-expects"
+  ],
+  "author": "Ivo Stratev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoHomey/material-ui-number-input.git"
+  },
+  "peerDependencies": {
+    "material-ui": "^0.15.3",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
+    "react-tap-event-plugin": "^1.0.0"
+  },
+  "devDependencies": {
+    "material-ui": "^0.15.3",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
+    "react-tap-event-plugin": "^1.0.0",
+    "express": "^4.14.0",
+    "html-webpack-plugin": "^2.22.0",
+    "react-hot-loader": "^1.3.0",
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10",
+    "typings": "^1.3.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.12.2"
+  }
+}
