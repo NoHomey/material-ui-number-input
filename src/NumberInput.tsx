@@ -1,7 +1,9 @@
 import * as React from 'react';
 import TextField from 'material-ui/TextField';
 
-export type NumberInputChangeHandler = (event: React.FormEvent, value: number) => void;
+export type NumberInputError = 'none' | 'singleZero' | 'invalidSymbol' | 'minValue' | 'maxValue';
+
+export type NumberInputChangeHandler = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError) => void;
 
 export interface NumberInputprops {
     className?: string;
@@ -12,6 +14,8 @@ export interface NumberInputprops {
     fullWidth?: boolean;
     underlineShow?: boolean;
     showDefaultValue?: number;
+    minValue?: number;
+    maxValue?: number;
 }
 
 export interface NumberInputPropsDeepEqual {
@@ -32,6 +36,8 @@ export interface NumberInputPropsDeepEqual {
     underlineStyle?: React.CSSProperties;
     singleZeroErrorText?: React.ReactNode;
     invalidSymbolErrorText?: React.ReactNode;
+    minValueErrorText?: React.ReactNode;
+    maxValueErrorText?: React.ReactNode;
 }
 
 export interface EventValue {
@@ -46,7 +52,7 @@ export interface NumberInputProps extends NumberInputprops, NumberInputPropsDeep
 
 export interface NumberInputState {
     value?: string;
-    errorText?: 'none' | 'singleZero' | 'invalidSymbol';
+    error?: NumberInputError;
 }
 
 interface NumberInputCompareByValue extends NumberInputprops, NumberInputState { }
@@ -61,8 +67,10 @@ function getNumberInputCompareByValue(props: NumberInputProps, state: NumberInpu
         fullWidth: props.fullWidth,
         underlineShow: props.underlineShow,
         showDefaultValue: props.showDefaultValue,
+        minValue: props.minValue,
+        maxValue: props.maxValue,
         value: state.value,
-        errorText: state.errorText
+        error: state.error
     };
 }
 
@@ -70,28 +78,35 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     private _onKeyDown: React.KeyboardEventHandler;
     private _onBlur: React.FocusEventHandler;
 
+    private _emitError(event: React.KeyboardEvent, error: NumberInputError): void {
+        this.setState({ error: error });
+        this.props.onChange(event, this.props.value, false, error);
+    }
+
     private _handleKeyDown(event: React.KeyboardEvent): void {
         event.preventDefault();
         const { key } = event;
+        const { value } = this.state;
         const { singleZeroErrorText, invalidSymbolErrorText } = this.props;
+        let maskedEvent = Object.assign({}, event, { defaultPrevented: false });
+        let eventValue: EventValue = Object.assign({}, maskedEvent, {
+            altKey: undefined,
+            charCode: undefined,
+            ctrlKey: undefined,
+            getModifierState: undefined,
+            key: undefined,
+            keyCode: undefined,
+            locale: undefined,
+            location: undefined,
+            metaKey: undefined,
+            repeat: undefined,
+            shiftKey: undefined,
+            which: undefined,
+            type: 'change'
+        });
+        eventValue.target.value = value;
+        const emitError: (error: NumberInputError) => void = this._emitError.bind(this, eventValue);
         if((key.length  > 1) || (key.match(/^(\d||\.||\-)$/))) {
-            const { value } = this.state;
-            let maskedEvent = Object.assign({}, event, { defaultPrevented: false });
-            let eventValue: EventValue = Object.assign({}, maskedEvent, {
-                altKey: undefined,
-                charCode: undefined,
-                ctrlKey: undefined,
-                getModifierState: undefined,
-                key: undefined,
-                keyCode: undefined,
-                locale: undefined,
-                location: undefined,
-                metaKey: undefined,
-                repeat: undefined,
-                shiftKey: undefined,
-                which: undefined,
-                type: 'change'
-            });
             eventValue.target.value = value;
             let valueChange: number;
             let newValue: string;
@@ -105,32 +120,45 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                     eventValue.target.value = newValue;
                     this.setState({
                         value: newValue,
-                        errorText: 'none'
+                        error: 'none'
                     });
                     if(newValue.match(/^-?((0(\.\d{0,})?)|([1-9]+(\d{0,}\.\d{0,})?))$/)) {
                         valueChange = Number(newValue);
                     }
                 } else if(singleZeroErrorText !== undefined){
-                    this.setState({ errorText: 'singleZero' });
+                    emitError('singleZero');
                 }
             } else if(key === 'Backspace') {
                 this.setState({ value: '' });
             }
-            const { onKeyDown, onChange } = this.props;
-            const valueDiff: boolean = (valueChange !== undefined) && (valueChange !== this.props.value);
-            if((onKeyDown !== undefined) && ((key.length > 1)) || valueDiff)  {
+            const { onKeyDown, onChange, maxValue, minValue } = this.props;
+            const canCallOnKeyDown: boolean = onKeyDown !== undefined;
+            if((valueChange !== undefined) && (valueChange !== this.props.value)) {
+                if((maxValue !== undefined) && (valueChange > maxValue)) {
+                    emitError('singleZero');
+                    return;
+                }
+                if((minValue !== undefined) && (valueChange < minValue)) {
+                    emitError('minValue');
+                    return;
+                }
+                if(canCallOnKeyDown)  {
+                    onKeyDown(maskedEvent);
+                }
+                if(onChange !== undefined) {
+                    onChange(eventValue as React.FormEvent, valueChange, true, 'none');
+                }
+            } else if((key.length > 1) && canCallOnKeyDown) {
                 onKeyDown(maskedEvent);
             }
-            if((onChange !== undefined) && valueDiff) {
-                onChange(eventValue as React.FormEvent, valueChange);
-            }
         } else if(invalidSymbolErrorText !== undefined) {
-            this.setState({ errorText: 'invalidSymbol' });
+            emitError('invalidSymbol');
         }
     }
 
     private _handleBlur(event: React.FocusEvent): void {
         const { showDefaultValue, onBlur } = this.props;
+        const { error } = this.state;
         let currentValue: string = this.state.value;
         let newState: NumberInputState = {};
         if(currentValue === '-') {
@@ -144,8 +172,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if((currentValue === '') && (showDefaultValue !== undefined)) {
             newState.value = String(showDefaultValue);
         }
-        if(this.state.errorText !== 'none') {
-            newState.errorText = 'none'; 
+        if((error === 'singleZero') || (error === 'invalidSymbol')) {
+            newState.error = 'none'; 
         }
         this.setState(newState);
         if(onBlur !== undefined) {
@@ -170,8 +198,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     public render(): JSX.Element {
         let clonedProps: NumberInputProps = Object.assign({}, this.props);
         let errorTextProp: React.ReactNode;
-        const { singleZeroErrorText, invalidSymbolErrorText } = this.props;
-        const { value, errorText } = this.state;
+        const { singleZeroErrorText, invalidSymbolErrorText, minValueErrorText, maxValueErrorText } = this.props;
+        const { value, error } = this.state;
         if(clonedProps.showDefaultValue !== undefined) {
             delete clonedProps.showDefaultValue;
         }
@@ -181,11 +209,29 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.invalidSymbolErrorText !== undefined) {
             delete clonedProps.invalidSymbolErrorText;
         }
-        if((errorText === 'singleZero') && (singleZeroErrorText !== undefined)) {
+        if(clonedProps.minValue !== undefined) {
+            delete clonedProps.minValue;
+        }
+        if(clonedProps.maxValue !== undefined) {
+            delete clonedProps.maxValue;
+        }
+        if(clonedProps.minValueErrorText !== undefined) {
+            delete clonedProps.minValueErrorText;
+        }
+        if(clonedProps.maxValueErrorText !== undefined) {
+            delete clonedProps.maxValueErrorText;
+        }
+        if((error === 'singleZero') && (singleZeroErrorText !== undefined)) {
             errorTextProp = singleZeroErrorText;
         }
-        if((errorText === 'invalidSymbol') && (invalidSymbolErrorText !== undefined)) {
+        if((error === 'invalidSymbol') && (invalidSymbolErrorText !== undefined)) {
             errorTextProp = invalidSymbolErrorText;
+        }
+        if((error === 'minValue') && (minValueErrorText !== undefined)) {
+            errorTextProp = minValueErrorText;
+        }
+        if((error === 'maxValue') && (maxValueErrorText !== undefined)) {
+            errorTextProp = maxValueErrorText;
         }
         return React.cloneElement(<TextField />, Object.assign(clonedProps, {
             type: 'text',
