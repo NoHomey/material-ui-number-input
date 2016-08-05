@@ -3,26 +3,25 @@ import TextField from 'material-ui/TextField';
 
 export type NumberInputChangeHandler = (event: React.FormEvent, value: number) => void;
 
-export interface EventValue {
-    target: {
-        value?: string
-    }
-}
-
-export interface NumberInputProps {
+export interface NumberInputprops {
     className?: string;
     disabled?: boolean;
-    errorStyle?: React.CSSProperties;
     floatingLabelFixed?: boolean;
+    id?: string;
+    name?: string;
+    fullWidth?: boolean;
+    underlineShow?: boolean;
+    showDefaultValue?: number;
+}
+
+export interface NumberInputPropsDeepEqual {
+    errorStyle?: React.CSSProperties;
     floatingLabelFocusStyle?: React.CSSProperties;
     floatingLabelStyle?: React.CSSProperties;
     floatingLabelText?: React.ReactNode;
-    fullWidth?: boolean;
     hintStyle?: React.CSSProperties;
     hintText?: React.ReactNode;
-    id?: string;
     inputStyle?: React.CSSProperties;
-    name?: string;
     onBlur?: React.FocusEventHandler;
     onChange?: NumberInputChangeHandler;
     onFocus?: React.FocusEventHandler;
@@ -30,17 +29,41 @@ export interface NumberInputProps {
     style?: React.CSSProperties;
     underlineDisabledStyle?: React.CSSProperties;
     underlineFocusStyle?: React.CSSProperties;
-    underlineShow?: boolean;
     underlineStyle?: React.CSSProperties;
-    value: number;
-    showDefaultValue?: number;
     singleZeroErrorText?: React.ReactNode;
     invalidSymbolErrorText?: React.ReactNode;
 }
 
+export interface EventValue {
+    target: {
+        value?: string
+    }
+}
+
+export interface NumberInputProps extends NumberInputprops, NumberInputPropsDeepEqual {
+    value: number;
+}
+
 export interface NumberInputState {
     value?: string;
-    errorText?: React.ReactNode;
+    errorText?: 'none' | 'singleZero' | 'invalidSymbol';
+}
+
+interface NumberInputCompareByValue extends NumberInputprops, NumberInputState { }
+
+function getNumberInputCompareByValue(props: NumberInputProps, state: NumberInputState): NumberInputCompareByValue {
+    return {
+        className: props.className,
+        disabled: props.disabled,
+        floatingLabelFixed: props.floatingLabelFixed,
+        id: props.id,
+        name: props.name,
+        fullWidth: props.fullWidth,
+        underlineShow: props.underlineShow,
+        showDefaultValue: props.showDefaultValue,
+        value: state.value,
+        errorText: state.errorText
+    };
 }
 
 export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
@@ -82,13 +105,13 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                     eventValue.target.value = newValue;
                     this.setState({
                         value: newValue,
-                        errorText: undefined
+                        errorText: 'none'
                     });
                     if(newValue.match(/^-?((0(\.\d{0,})?)|([1-9]+(\d{0,}\.\d{0,})?))$/)) {
                         valueChange = Number(newValue);
                     }
                 } else if(singleZeroErrorText !== undefined){
-                    this.setState({ errorText: singleZeroErrorText });
+                    this.setState({ errorText: 'singleZero' });
                 }
             } else if(key === 'Backspace') {
                 this.setState({ value: '' });
@@ -102,7 +125,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                 onChange(eventValue as React.FormEvent, valueChange);
             }
         } else if(invalidSymbolErrorText !== undefined) {
-            this.setState({ errorText: invalidSymbolErrorText });
+            this.setState({ errorText: 'invalidSymbol' });
         }
     }
 
@@ -121,8 +144,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if((currentValue === '') && (showDefaultValue !== undefined)) {
             newState.value = String(showDefaultValue);
         }
-        if(this.state.errorText !== undefined) {
-            newState.errorText = undefined; 
+        if(this.state.errorText !== 'none') {
+            newState.errorText = 'none'; 
         }
         this.setState(newState);
         if(onBlur !== undefined) {
@@ -138,8 +161,16 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         this._onBlur = this._handleBlur.bind(this);
     }
 
+    public shouldComponentUpdate(props: NumberInputProps, state: NumberInputState): boolean {
+        const currentByValue: string = JSON.stringify(getNumberInputCompareByValue(props, state));
+        const changeByValue: string = JSON.stringify(getNumberInputCompareByValue(this.props, this.state));
+        return currentByValue !== changeByValue;
+    }
+
     public render(): JSX.Element {
         let clonedProps: NumberInputProps = Object.assign({}, this.props);
+        let errorTextProp: React.ReactNode;
+        const { singleZeroErrorText, invalidSymbolErrorText } = this.props;
         const { value, errorText } = this.state;
         if(clonedProps.showDefaultValue !== undefined) {
             delete clonedProps.showDefaultValue;
@@ -150,10 +181,16 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.invalidSymbolErrorText !== undefined) {
             delete clonedProps.invalidSymbolErrorText;
         }
+        if((errorText === 'singleZero') && (singleZeroErrorText !== undefined)) {
+            errorTextProp = singleZeroErrorText;
+        }
+        if((errorText === 'invalidSymbol') && (invalidSymbolErrorText !== undefined)) {
+            errorTextProp = invalidSymbolErrorText;
+        }
         return React.cloneElement(<TextField />, Object.assign(clonedProps, {
             type: 'text',
             value: value,
-            errorText: errorText,
+            errorText: errorTextProp,
             onKeyDown: this._onKeyDown,
             onBlur: this._onBlur
         }));
