@@ -34,6 +34,7 @@ export interface NumberInputPropsDeepEqual {
     underlineDisabledStyle?: React.CSSProperties;
     underlineFocusStyle?: React.CSSProperties;
     underlineStyle?: React.CSSProperties;
+    fallbackErrorText?: React.ReactNode;
     invalidSymbolErrorText?: React.ReactNode;
     singleZeroErrorText?: React.ReactNode;
     floatingPointErrorText?: React.ReactNode;
@@ -100,6 +101,21 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     private _emitError(event: React.KeyboardEvent, error: NumberInputError): void {
         this.setState({ error: error });
         this.props.onChange(event, this.props.value, false, error);
+    }
+
+    private _tryToGetErrorText(errorText: React.ReactNode): React.ReactNode {
+        return errorText !== undefined ? errorText : this.props.fallbackErrorText;
+    }
+
+    private _getErrorText(): React.ReactNode {
+        switch(this.state.error) {
+            case 'invalidSymbol': return this._tryToGetErrorText(this.props.invalidSymbolErrorText);
+            case 'singleZero': return this._tryToGetErrorText(this.props.singleZeroErrorText);
+            case 'floatingPoint': return this._tryToGetErrorText(this.props.floatingPointErrorText);
+            case 'minValue': return this._tryToGetErrorText(this.props.minValueErrorText);
+            case 'maxValue': return this._tryToGetErrorText(this.props.maxValueErrorText);
+            default: return undefined;
+        }
     }
 
     private _handleKeyDown(event: React.KeyboardEvent): void {
@@ -211,11 +227,13 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     public render(): JSX.Element {
         let clonedProps: NumberInputProps = Object.assign({}, this.props);
-        let errorTextProp: React.ReactNode;
         const { invalidSymbolErrorText, singleZeroErrorText, floatingPointErrorText, minValueErrorText, maxValueErrorText } = this.props;
-        const { value, error } = this.state;
+        const { value } = this.state;
         if(clonedProps.showDefaultValue !== undefined) {
             delete clonedProps.showDefaultValue;
+        }
+        if(clonedProps.fallbackErrorText !== undefined) {
+            delete clonedProps.fallbackErrorText;
         }
         if(clonedProps.invalidSymbolErrorText !== undefined) {
             delete clonedProps.invalidSymbolErrorText;
@@ -238,25 +256,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.maxValueErrorText !== undefined) {
             delete clonedProps.maxValueErrorText;
         }
-        if((error === 'invalidSymbol') && (invalidSymbolErrorText !== undefined)) {
-            errorTextProp = invalidSymbolErrorText;
-        }
-        if((error === 'singleZero') && (singleZeroErrorText !== undefined)) {
-            errorTextProp = singleZeroErrorText;
-        }
-        if((error === 'floatingPoint') && (floatingPointErrorText !== undefined)) {
-            errorTextProp = floatingPointErrorText;
-        }
-        if((error === 'minValue') && (minValueErrorText !== undefined)) {
-            errorTextProp = minValueErrorText;
-        }
-        if((error === 'maxValue') && (maxValueErrorText !== undefined)) {
-            errorTextProp = maxValueErrorText;
-        }
         return React.cloneElement(<TextField />, Object.assign(clonedProps, {
             type: 'text',
             value: value,
-            errorText: errorTextProp,
+            errorText: this._getErrorText(),
             onKeyDown: this._onKeyDown,
             onBlur: this._onBlur
         }));

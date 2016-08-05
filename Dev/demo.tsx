@@ -36,9 +36,9 @@ export default class Demo extends React.Component<void, DemoState> {
                         showDefaultValue={0.1}
                         minValue={0}
                         maxValue={2}
+                        fallbackErrorText="Not a valid number"
                         singleZeroErrorText="Only floating point can follow single zero"
                         invalidSymbolErrorText="You are tring to enter none number symbol"
-                        floatingPointErrorText="floating oint error"
                         minValueErrorText="You are tring to enter number less than 0"
                         maxValueErrorText="You are tring to enter number larger than 2"
                         onChange={this.onChange}
