@@ -1,7 +1,7 @@
 import * as React from 'react';
 import TextField from 'material-ui/TextField';
 
-export type NumberInputError = 'none' | 'singleZero' | 'invalidSymbol' | 'minValue' | 'maxValue';
+export type NumberInputError = 'none' | 'invalidSymbol' | 'singleZero' | 'floatingPoint' | 'minValue' | 'maxValue';
 
 export type NumberInputChangeHandler = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError) => void;
 
@@ -34,8 +34,9 @@ export interface NumberInputPropsDeepEqual {
     underlineDisabledStyle?: React.CSSProperties;
     underlineFocusStyle?: React.CSSProperties;
     underlineStyle?: React.CSSProperties;
-    singleZeroErrorText?: React.ReactNode;
     invalidSymbolErrorText?: React.ReactNode;
+    singleZeroErrorText?: React.ReactNode;
+    floatingPointErrorText?: React.ReactNode;
     minValueErrorText?: React.ReactNode;
     maxValueErrorText?: React.ReactNode;
 }
@@ -74,6 +75,24 @@ function getNumberInputCompareByValue(props: NumberInputProps, state: NumberInpu
     };
 }
 
+function getChangeEvent<T extends React.SyntheticEvent>(event: T): React.SyntheticEvent {
+    return Object.assign({}, event, {
+        altKey: undefined,
+        charCode: undefined,
+        ctrlKey: undefined,
+        getModifierState: undefined,
+        key: undefined,
+        keyCode: undefined,
+        locale: undefined,
+        location: undefined,
+        metaKey: undefined,
+        repeat: undefined,
+        shiftKey: undefined,
+        which: undefined,
+        type: 'change'
+    });
+}
+
 export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
     private _onKeyDown: React.KeyboardEventHandler;
     private _onBlur: React.FocusEventHandler;
@@ -89,21 +108,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { value } = this.state;
         const { singleZeroErrorText, invalidSymbolErrorText } = this.props;
         let maskedEvent = Object.assign({}, event, { defaultPrevented: false });
-        let eventValue: EventValue = Object.assign({}, maskedEvent, {
-            altKey: undefined,
-            charCode: undefined,
-            ctrlKey: undefined,
-            getModifierState: undefined,
-            key: undefined,
-            keyCode: undefined,
-            locale: undefined,
-            location: undefined,
-            metaKey: undefined,
-            repeat: undefined,
-            shiftKey: undefined,
-            which: undefined,
-            type: 'change'
-        });
+        let eventValue: EventValue = getChangeEvent(maskedEvent);
         eventValue.target.value = value;
         const emitError: (error: NumberInputError) => void = this._emitError.bind(this, eventValue);
         if((key.length  > 1) || (key.match(/^(\d||\.||\-)$/))) {
@@ -122,8 +127,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                         value: newValue,
                         error: 'none'
                     });
-                    if(newValue.match(/^-?((0(\.\d{0,})?)|([1-9]+(\d{0,}\.\d{0,})?))$/)) {
+                    if(newValue.match(/^-?((0(\.\d+)?)|([1-9]+(\d{0,}\.\d+)?))$/)) {
                         valueChange = Number(newValue);
+                    } else {
+                        emitError('floatingPoint');
                     }
                 } else if(singleZeroErrorText !== undefined){
                     emitError('singleZero');
@@ -135,7 +142,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             const canCallOnKeyDown: boolean = onKeyDown !== undefined;
             if((valueChange !== undefined) && (valueChange !== this.props.value)) {
                 if((maxValue !== undefined) && (valueChange > maxValue)) {
-                    emitError('singleZero');
+                    emitError('maxValue');
                     return;
                 }
                 if((minValue !== undefined) && (valueChange < minValue)) {
@@ -148,7 +155,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                 if(onChange !== undefined) {
                     onChange(eventValue as React.FormEvent, valueChange, true, 'none');
                 }
-            } else if((key.length > 1) && canCallOnKeyDown) {
+            } else if((key.length > 1) && (key !== 'Backspace') && canCallOnKeyDown) {
                 onKeyDown(maskedEvent);
             }
         } else if(invalidSymbolErrorText !== undefined) {
@@ -157,7 +164,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
 
     private _handleBlur(event: React.FocusEvent): void {
-        const { showDefaultValue, onBlur } = this.props;
+        const { showDefaultValue, onBlur, onChange } = this.props;
         const { error } = this.state;
         let currentValue: string = this.state.value;
         let newState: NumberInputState = {};
@@ -172,12 +179,19 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if((currentValue === '') && (showDefaultValue !== undefined)) {
             newState.value = String(showDefaultValue);
         }
-        if((error === 'singleZero') || (error === 'invalidSymbol')) {
+        if((error === 'singleZero') || (error === 'invalidSymbol') || (error === 'floatingPoint')) {
             newState.error = 'none'; 
         }
         this.setState(newState);
         if(onBlur !== undefined) {
             onBlur(event);
+        }
+        const { value } = newState;
+        const numberValue: number = Number(value);
+        if((value !== undefined) && (onChange !== undefined) && (numberValue !== this.props.value)) {
+            let eventValue: EventValue = getChangeEvent(event);
+            eventValue.target.value = value;
+            onChange(eventValue as React.FormEvent, numberValue, newState.error !== 'none', newState.error);
         }
     }
 
@@ -198,16 +212,19 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     public render(): JSX.Element {
         let clonedProps: NumberInputProps = Object.assign({}, this.props);
         let errorTextProp: React.ReactNode;
-        const { singleZeroErrorText, invalidSymbolErrorText, minValueErrorText, maxValueErrorText } = this.props;
+        const { invalidSymbolErrorText, singleZeroErrorText, floatingPointErrorText, minValueErrorText, maxValueErrorText } = this.props;
         const { value, error } = this.state;
         if(clonedProps.showDefaultValue !== undefined) {
             delete clonedProps.showDefaultValue;
         }
+        if(clonedProps.invalidSymbolErrorText !== undefined) {
+            delete clonedProps.invalidSymbolErrorText;
+        }
         if(clonedProps.singleZeroErrorText !== undefined) {
             delete clonedProps.singleZeroErrorText;
         }
-        if(clonedProps.invalidSymbolErrorText !== undefined) {
-            delete clonedProps.invalidSymbolErrorText;
+        if(clonedProps.floatingPointErrorText !== undefined) {
+            delete clonedProps.floatingPointErrorText;
         }
         if(clonedProps.minValue !== undefined) {
             delete clonedProps.minValue;
@@ -221,11 +238,14 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.maxValueErrorText !== undefined) {
             delete clonedProps.maxValueErrorText;
         }
+        if((error === 'invalidSymbol') && (invalidSymbolErrorText !== undefined)) {
+            errorTextProp = invalidSymbolErrorText;
+        }
         if((error === 'singleZero') && (singleZeroErrorText !== undefined)) {
             errorTextProp = singleZeroErrorText;
         }
-        if((error === 'invalidSymbol') && (invalidSymbolErrorText !== undefined)) {
-            errorTextProp = invalidSymbolErrorText;
+        if((error === 'floatingPoint') && (floatingPointErrorText !== undefined)) {
+            errorTextProp = floatingPointErrorText;
         }
         if((error === 'minValue') && (minValueErrorText !== undefined)) {
             errorTextProp = minValueErrorText;
