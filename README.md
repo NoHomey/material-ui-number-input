@@ -1,6 +1,6 @@
 # material-ui-number-input
 
-The \<TextField type=\"number\" /\> that user really expects.
+The ```<TextField type=\"number\" \>``` that user really expects.
 
 
 # Install
