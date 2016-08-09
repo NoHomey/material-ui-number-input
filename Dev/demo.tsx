@@ -6,6 +6,7 @@ const { div, link, input } = React.DOM;
 
 interface DemoState {
     value: number;
+    error: string;
 }
 
 export default class Demo extends React.Component<void, DemoState> {
@@ -14,33 +15,51 @@ export default class Demo extends React.Component<void, DemoState> {
 
     public constructor(props: void) {
         super(props);
-        this.state = { value: 0 };
+        this.state = {
+            value: 0,
+            error: undefined
+        };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
             console.log(`onKeyDown ${event.key}`);
         }
         this.onChange = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError): void => {
             const e: EventValue = event;
-            console.log(`onChange ${e.target.value} ${value}, ${valid}, ${error}`);
-            this.setState({value: value});
+            console.log(`onChange ${e.target.value}, ${value}, ${valid}, ${error}`);
+            let errorText: string;
+            switch(error) {
+                case 'invalidSymbol':
+                    errorText = 'You are tring to enter none number symbol';
+                    break;
+                case 'singleZero':
+                    errorText = 'Only floating point can follow single zero';
+                    break;
+                case 'minValue':
+                    errorText = 'ou are tring to enter number less than 0';
+                    break;
+                case 'maxValue':
+                    errorText = 'You are tring to enter number greater than 2';
+                    break;
+            }
+            this.setState({
+                value: value,
+                error: errorText
+            });
         };
     }
 
     public render(): JSX.Element {
+        const { value, error } = this.state;
         return (
             <MuiThemeProvider>
                 <div>
                     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css"/>
                     <NumberInput
                         id="num"
-                        value={this.state.value}
+                        value={value}
                         showDefaultValue={0.1}
                         minValue={0}
                         maxValue={2}
-                        fallbackErrorText="Not a valid number"
-                        singleZeroErrorText="Only floating point can follow single zero"
-                        invalidSymbolErrorText="You are tring to enter none number symbol"
-                        minValueErrorText="You are tring to enter number less than 0"
-                        maxValueErrorText="You are tring to enter number larger than 2"
+                        errorText={error}
                         onChange={this.onChange}
                         onKeyDown={this.onKeyDown} />
                 </div>
