@@ -1,6 +1,6 @@
 import * as React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue } from './../src/index';
+import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler } from './../src/index';
 
 const { div, link, input } = React.DOM;
 
@@ -12,6 +12,7 @@ interface DemoState {
 export default class Demo extends React.Component<void, DemoState> {
     private onKeyDown: React.KeyboardEventHandler;
     private onChange: NumberInputChangeHandler;
+    private onErrorChange: NumberInputErrorHandler;
 
     public constructor(props: void) {
         super(props);
@@ -45,6 +46,9 @@ export default class Demo extends React.Component<void, DemoState> {
                 error: errorText
             });
         };
+        this.onErrorChange = (error: NumberInputError): void => {
+            console.log(`error ${error}`);
+        }
     }
 
     public render(): JSX.Element {
@@ -61,6 +65,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         maxValue={2}
                         errorText={error}
                         onChange={this.onChange}
+                        onErrorChange={this.onErrorChange}
                         onKeyDown={this.onKeyDown} />
                 </div>
             </MuiThemeProvider>

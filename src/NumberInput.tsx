@@ -117,7 +117,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(onChange !== undefined) {
             onChange(event, value, valid, error);
         }
-        if(onErrorChange) {
+        if(onErrorChange !== undefined) {
             onErrorChange(error);
         }
     }
