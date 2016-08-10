@@ -1,12 +1,12 @@
 # material-ui-number-input
 
-The TextField type="number" that user really expects.
+The ```TextField type="number"``` that user really expects.
 
-Fixing all the bugs inherited by TextField type="number" from the Browser's input type="number".
+Fixing all the bugs inherited by ```TextField type="number"``` from the Browser's ```input type="number"```.
 
 Such as:
 
-- allows only valid number symbols and special keys to be entered while fixing all Backspace bugs of input type="number" (fixing the posibility that a user might enter ```0.---..12313.``` in the input and you as a developer still get a false validity)
+- allows only valid number symbols and special keys to be entered while fixing all Backspace bugs of ``input type="number"``` (fixing the posibility that a user might enter ```0.---..12313.``` in the input filed and you as a developer still geting a false validity)
 ```js
 if((event.key.length  > 1) || (event.key.match(/^(\d||\.||\-)$/))) {
   /* ... */
@@ -51,11 +51,11 @@ if((valueChange !== undefined) && (valueChange !== this.props.value)) {
   onKeyDown(maskedEvent);
 }
 ```
-- follows material-ui v0.16 unified onChange event handler callback signature before v0.16 is even released (event, value, ...) in the form of ```(event, value, valid, error)```
--  fully compatible with TextField and input elements when it comes to event passed to event handlers while still keeping maximum performance
+- follows material-ui v0.16 unified ```onChange``` event handler callback signature ```released (event, value, ...)``` in the form of ```(event, value, valid, error)``` before v0.16 is even released
+-  fully compatible with ```TextField``` and ```input``` elements when it comes to event passed to event handlers while still keeping high performance
 -  uses state double while still following all React principels such as single source of truth and skiping an extra render cycle from state double usage
--  You as a developer can always be sure you get a valid number value when third arguement of onChange is true
--  You can be sure that mateial-ui-number-input will always try to provide you a valid number when user leaves the input field while still provide validation
+-  You as a developer can always be sure you get a valid number value when third arguement of ```onChange``` is ```true```
+-  You can be sure that mateial-ui-number-input will always try to provide you a valid number when user leaves the input field while still providing validation
 ```js
 private _handleBlur(event) {
   const { showDefaultValue, onBlur, errorText } = this.props;
