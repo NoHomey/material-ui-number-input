@@ -139,7 +139,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
         const { key } = event;
-        if(key.match(/(ArrowLeft)|(ArrowRight)/) === null) {
+        if(key.match(/^(Backspace|.)$/)) {
+            console.log('match');
             event.preventDefault();
         } else {
             return;
