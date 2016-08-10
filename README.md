@@ -44,7 +44,7 @@ if((valueChange !== undefined) && (valueChange !== this.props.value)) {
       emitError('minValue');
       break;
     default:
-      this._emitChange(eventValue as React.FormEvent, valueChange, true, 'none');
+      this._emitChange(eventValue, valueChange, true, 'none');
       break; 
   }
 } else if((key.length > 1) && (key !== 'Backspace') && canCallOnKeyDown) {
@@ -91,7 +91,7 @@ private _handleBlur(event) {
   const valid = error === 'none';
   if((newState.value !== undefined) || (valid && (errorText !== undefined)) || (!valid && (errorText === undefined))) {
     eventValue.target.value = value;
-    this._emitChange(eventValue as React.FormEvent, numberValue, valid, error);
+    this._emitChange(eventValue, numberValue, valid, error);
   }
 }
 ```
