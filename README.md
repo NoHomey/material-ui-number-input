@@ -6,7 +6,7 @@ Fixing all the bugs inherited by ```TextField type="number"``` from the Browser'
 
 Such as:
 
-- allows only valid number symbols and special keys to be entered while fixing all Backspace bugs of ``input type="number"``` (fixing the posibility that a user might enter ```0.---..12313.``` in the input filed and you as a developer still geting a false validity)
+- allows only valid number symbols and special keys to be entered while fixing all Backspace bugs of ```input type="number"``` (fixing the posibility that a user might enter ```0.---..12313.``` in the input filed and you as a developer still geting a false validity)
 ```js
 if((event.key.length  > 1) || (event.key.match(/^(\d||\.||\-)$/))) {
   /* ... */
