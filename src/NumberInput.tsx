@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from 'material-ui/TextField';
 import * as DeepEqual from 'deep-equal';
 
-export type NumberInputError = 'none' | 'invalidSymbol' | 'singleZero' | 'floatingPoint' | 'minValue' | 'maxValue';
+export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'floatingPoint' | 'minValue' | 'maxValue';
 
 export type NumberInputChangeHandler = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError) => void;
 
@@ -43,7 +43,7 @@ export interface EventValue {
 }
 
 export interface NumberInputProps extends NumberInputprops, NumberInputPropsDeepEqual {
-    value: number;
+    value?: number;
     onBlur?: React.FocusEventHandler;
     onChange?: NumberInputChangeHandler;
     onErrorChange?: NumberInputErrorHandler;
@@ -138,8 +138,12 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
-        event.preventDefault();
         const { key } = event;
+        if(key.match(/(ArrowLeft)|(ArrowRight)/) === null) {
+            event.preventDefault();
+        } else {
+            return;
+        }
         const { value } = this.state;
         let maskedEvent = Object.assign({}, event, { defaultPrevented: false });
         let eventValue: EventValue = getChangeEvent(maskedEvent);
@@ -161,10 +165,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                     if(newValue.match(/^-?((0(\.\d+)?)|([1-9]+(\d{0,}\.\d+)?))$/)) {
                         valueChange = Number(newValue);
                     } else {
-                        emitError('floatingPoint');
+                        emitError('incompleteNumber');
                     }
                 } else {
-                    emitError('singleZero');
+                    emitError('floatingPoint');
                 }
             } else if(key === 'Backspace') {
                 this.setState({ value: '' });

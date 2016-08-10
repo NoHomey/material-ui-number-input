@@ -17,7 +17,7 @@ export default class Demo extends React.Component<void, DemoState> {
     public constructor(props: void) {
         super(props);
         this.state = {
-            value: 0,
+            value: undefined,
             error: undefined
         };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
@@ -31,11 +31,14 @@ export default class Demo extends React.Component<void, DemoState> {
                 case 'invalidSymbol':
                     errorText = 'You are tring to enter none number symbol';
                     break;
-                case 'singleZero':
-                    errorText = 'Only floating point can follow single zero';
+                case 'incompleteNumber':
+                    errorText = 'Number must follow a floating point';
+                    break;
+                case 'floatingPoint':
+                    errorText = 'Single floating point is expected';
                     break;
                 case 'minValue':
-                    errorText = 'ou are tring to enter number less than 0';
+                    errorText = 'You are tring to enter number less than 0';
                     break;
                 case 'maxValue':
                     errorText = 'You are tring to enter number greater than 2';
@@ -60,7 +63,6 @@ export default class Demo extends React.Component<void, DemoState> {
                     <NumberInput
                         id="num"
                         value={value}
-                        showDefaultValue={0.1}
                         minValue={0}
                         maxValue={2}
                         errorText={error}
