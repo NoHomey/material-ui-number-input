@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from 'material-ui/TextField';
 import * as DeepEqual from 'deep-equal';
 
-export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'floatingPoint' | 'minValue' | 'maxValue';
+export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'floatingPoint' | 'minValue' | 'maxValue' | 'required';
 
 export type NumberInputChangeHandler = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError) => void;
 
@@ -19,6 +19,7 @@ export interface NumberInputprops {
     showDefaultValue?: number;
     minValue?: number;
     maxValue?: number;
+    required?: boolean;
 }
 
 export interface NumberInputPropsDeepEqual {
@@ -69,6 +70,7 @@ function getNumberInputCompareByValue(props: NumberInputProps, state: NumberInpu
         showDefaultValue: props.showDefaultValue,
         minValue: props.minValue,
         maxValue: props.maxValue,
+        required: props.required,
         value: state.value,
     };
 }
@@ -199,7 +201,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
 
     private _handleBlur(event: React.FocusEvent): void {
-        const { showDefaultValue, onBlur, errorText } = this.props;
+        const { showDefaultValue, onBlur, errorText, required } = this.props;
         const oldValue: string = this.state.value;
         let value: string = oldValue;
         let newState: NumberInputState = {};
@@ -210,6 +212,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             if(value[last] === '.') {
                 newState.value = value.substring(0, last);
             }
+        }
+        if(this.props.value === undefined) {
+            value = '';
         }
         if((value === '') && (showDefaultValue !== undefined)) {
             newState.value = String(showDefaultValue);
@@ -228,6 +233,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             case -1:
                 error = 'minValue';
                 break; 
+        }
+        if((value === '') && required) {
+            error = 'required';
         }
         const valid: boolean = error === 'none';
         if((newState.value !== undefined) || (valid && (errorText !== undefined)) || (!valid && (errorText === undefined))) {

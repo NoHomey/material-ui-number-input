@@ -5,8 +5,8 @@ import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, Nu
 const { div, link, input } = React.DOM;
 
 interface DemoState {
-    value: number;
-    error: string;
+    value?: number;
+    error?: string;
 }
 
 export default class Demo extends React.Component<void, DemoState> {
@@ -16,18 +16,23 @@ export default class Demo extends React.Component<void, DemoState> {
 
     public constructor(props: void) {
         super(props);
-        this.state = {
-            value: undefined,
-            error: undefined
-        };
+        this.state = {};
         this.onKeyDown = (event: React.KeyboardEvent): void => {
             console.log(`onKeyDown ${event.key}`);
         }
         this.onChange = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError): void => {
             const e: EventValue = event;
             console.log(`onChange ${e.target.value}, ${value}, ${valid}, ${error}`);
+            if(valid) {
+                this.setState({ value: value });
+            }
+        };
+        this.onErrorChange = (error: NumberInputError): void => {
             let errorText: string;
             switch(error) {
+                case 'required':
+                    errorText = 'This field is required';
+                    break;
                 case 'invalidSymbol':
                     errorText = 'You are tring to enter none number symbol';
                     break;
@@ -44,14 +49,12 @@ export default class Demo extends React.Component<void, DemoState> {
                     errorText = 'You are tring to enter number greater than 2';
                     break;
             }
-            this.setState({
-                value: value,
-                error: errorText
-            });
-        };
-        this.onErrorChange = (error: NumberInputError): void => {
-            console.log(`error ${error}`);
+            this.setState({ error: errorText });
         }
+    }
+
+    public componentDidMount(): void {
+        this.onErrorChange('required');
     }
 
     public render(): JSX.Element {
@@ -62,6 +65,7 @@ export default class Demo extends React.Component<void, DemoState> {
                     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css"/>
                     <NumberInput
                         id="num"
+                        required
                         value={value}
                         minValue={0}
                         maxValue={2}
