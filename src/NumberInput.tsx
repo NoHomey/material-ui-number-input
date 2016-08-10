@@ -166,7 +166,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                     this.setState({ value: newValue });
                     if(newValue.match(/^-?((0(\.\d+)?)|([1-9]+(\d{0,}\.\d+)?))$/)) {
                         valueChange = Number(newValue);
-                    } else {
+                    } else if(newValue !== '') {
                         emitError('incompleteNumber');
                     }
                 } else {
@@ -212,9 +212,6 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             if(value[last] === '.') {
                 newState.value = value.substring(0, last);
             }
-        }
-        if(this.props.value === undefined) {
-            value = '';
         }
         if((value === '') && (showDefaultValue !== undefined)) {
             newState.value = String(showDefaultValue);
