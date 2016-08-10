@@ -203,7 +203,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const oldValue: string = this.state.value;
         let value: string = oldValue;
         let newState: NumberInputState = {};
-        if(value[0] === '-') {
+        if(value === '-') {
             value = '';
         } else {
             const last: number = value.length - 1;
