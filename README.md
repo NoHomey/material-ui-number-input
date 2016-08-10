@@ -51,10 +51,10 @@ if((valueChange !== undefined) && (valueChange !== this.props.value)) {
   onKeyDown(maskedEvent);
 }
 ```
-- follows material-ui v0.16 unified onChange event handler callback signature before v0.16 is even released (event, value, valid, error)
+- follows material-ui v0.16 unified onChange event handler callback signature before v0.16 is even released (event, value, ...) in the form of ```(event, value, valid, error)```
 -  fully compatible with TextField and input elements when it comes to event passed to event handlers while still keeping maximum performance
--  uses state double while keeping all React principels such as single source of truth and dosen't add extra render cycle commign from state double usage
--  You as a developer can always be sure you get a valid number value when valid arguement of onChange is true
+-  uses state double while still following all React principels such as single source of truth and skiping an extra render cycle from state double usage
+-  You as a developer can always be sure you get a valid number value when third arguement of onChange is true
 -  You can be sure that mateial-ui-number-input will always try to provide you a valid number when user leaves the input field while still provide validation
 ```js
 private _handleBlur(event) {
@@ -62,7 +62,7 @@ private _handleBlur(event) {
   const oldValue = this.state.value;
   let value = oldValue;
   let newState: NumberInputState = {};
-  if(value[0] === '-') {
+  if(value === '-') {
     value = '';
   } else {
     const last = value.length - 1;
