@@ -42,11 +42,11 @@ export default class Demo extends React.Component<void, DemoState> {
                 case 'floatingPoint':
                     errorText = 'Single floating point is expected';
                     break;
-                case 'minValue':
+                case 'min':
                     errorText = 'You are tring to enter number less than 0';
                     break;
-                case 'maxValue':
-                    errorText = 'You are tring to enter number greater than 2';
+                case 'max':
+                    errorText = 'You are tring to enter number greater than 12';
                     break;
             }
             this.setState({ error: errorText });
@@ -67,8 +67,8 @@ export default class Demo extends React.Component<void, DemoState> {
                         id="num"
                         required
                         value={value}
-                        minValue={0}
-                        maxValue={2}
+                        min={0}
+                        max={12}
                         errorText={error}
                         onChange={this.onChange}
                         onErrorChange={this.onErrorChange}
