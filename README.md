@@ -32,16 +32,16 @@ if(newValue !== undefined) {
 ```
 - includes validation out of the box for required & min/max value limits
 ```js
-if((valueChange !== undefined) && (valueChange !== this.props.value)) {
+if(valueChange !== undefined) {
   if(canCallOnKeyDown)  {
     onKeyDown(maskedEvent);
   }
   switch(this._validateValue(valueChange)) {
     case 1:
-      emitError('maxValue');
+      emitError('max');
       break;
     case -1:
-      emitError('minValue');
+      emitError('min');
       break;
     default:
       this._emitChange(eventValue, valueChange, true, 'none');
@@ -82,10 +82,10 @@ private _handleBlur(event) {
   let error = 'none';
   switch(this._validateValue(numberValue)) {
     case 1:
-      error = 'maxValue';
+      error = 'max';
       break;
     case -1:
-      error = 'minValue';
+      error = 'min';
       break; 
   }
   if((value === '') && required) {
@@ -104,4 +104,34 @@ private _handleBlur(event) {
 
 ```npm install material-ui-number-input```
 
+# Properties
 
+| Name                    | Type       | Default | TextField | Description                                             |
+| ----------------------- | ---------- | ------- | --------- | ------------------------------------------------------- |
+| children                | *node*     |         | *true*    |                                                         |
+| className               | *string*   |         | *true*    | The css class name of the root element. |
+| disabled                | *bool*     | *false* | *true*    | Disables the input field if set to true.|
+| floatingLabelFixed      | *bool*     | *false* | *true*    | If true, the floating label will float even when there is no value. |
+| id                      | *string*   |         | *true*    | The id prop for the input field. |
+| name                    | *string*   |         | *true*    | Name applied to the input. |
+| fullWidth               | *bool*     | *false* | *true*    | If true, the field receives the property width 100%. |
+| underlineShow           | *bool*     | *true*  | *true*    | If true, shows the underline for the input field. |
+| showDefaultValue        | *number*   |         | *false*   | The number showed as default value (if input is left empty and if there is onChange handler than it will be invoked with showDefaultValue). |
+| min                     | *number*   |         | *false*   | The number used as minimum value limit if provided and the input number is less than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'min'. |
+| max                     | *number*   |         | *false*   | The number used as maximum value limit if provided and the input number is greater than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'max'. |
+| reqired                 | *bool*     | *false* | *false*   | If true, and if input is left empty and if there is onChange handler than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'required'. |
+| value                   | *number*   |         | *false*   | The value of the input field. |
+| onChange                | *function* |         | *false*   | Callback function that is fired when input state changes (on valid number value change or on error). |
+| onErrorChange           | *function* |         | *false*   | Callback function that is fired when input error status changes. |
+| errorText               | *node*     |         | *true*    | The error content to display. |
+| errorStyle              | *object*   |         | *true*    | The style object to use to override error styles. |
+| floatingLabelFocusStyle | *object*   |         | *true*    | The style object to use to override floating label styles when focused. |
+| floatingLabelStyle      | *object*   |         | *true*    | The style object to use to override floating label styles. |
+| floatingLabelText       | *node*     |         | *true*    | The content to use for the floating label element. |
+| hintStyle               | *object*   |         | *true*    | Override the inline-styles of the TextField's hint text element. |
+| hintText                | *node*     |         | *true*    | The hint content to display. |
+| inputStyle              | *object*   |         | *true*    | Override the inline-styles of the TextField's input element. When multiLine is false: define the style of the input element. When multiLine is true: define the style of the container of the textarea. |
+| style                   | *object*   |         | *true*    | Override the inline-styles of the root element. |
+| underlineDisabledStyle  | *object*   |         | *true*    | Override the inline-styles of the TextField's underline element when disabled. |
+| underlineFocusStyle     | *object*   |         | *true*    | Override the inline-styles of the TextField's underline element when focussed. |
+| underlineStyle          | *object*   |         | *true*    | Override the inline-styles of the TextField's underline element. |
