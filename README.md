@@ -120,8 +120,8 @@ private _handleBlur(event) {
 | min                     | *number*   |         | *false*   | The number used as minimum value limit if provided and the input number is less than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'min'. |
 | max                     | *number*   |         | *false*   | The number used as maximum value limit if provided and the input number is greater than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'max'. |
 | reqired                 | *bool*     | *false* | *false*   | If true, and if input is left empty and if there is onChange handler than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'required'. |
-| value                   | *number*   |         | *false*   | The value of the input field. |
-| onChange                | *function* |         | *false*   | Callback function that is fired when input state changes (on valid number value change or on error). |
+| value                   | *number*   |         | *true*   | The value of the input field. |
+| onChange                | *function* |         | *true*   | Callback function that is fired when input state changes (on valid number value change or on error). |
 | onErrorChange           | *function* |         | *false*   | Callback function that is fired when input error status changes. |
 | errorText               | *node*     |         | *true*    | The error content to display. |
 | errorStyle              | *object*   |         | *true*    | The style object to use to override error styles. |
