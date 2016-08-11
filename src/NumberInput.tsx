@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from 'material-ui/TextField';
 import * as DeepEqual from 'deep-equal';
 
-export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'floatingPoint' | 'min' | 'max' | 'required';
+export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleNoneNumber' | 'min' | 'max' | 'required';
 
 export type NumberInputChangeHandler = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError) => void;
 
@@ -142,20 +142,23 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
         const { key } = event;
+        const { onKeyDown } = this.props;
+        const { value } = this.state;
+        const canCallOnKeyDown: boolean = onKeyDown !== undefined;
+        let maskedEvent = Object.assign({}, event);
+        let eventValue: EventValue = getChangeEvent(Object.assign({}, event));
         if(key.match(/^(Backspace|.)$/)) {
             event.preventDefault();
         } else {
+            if(canCallOnKeyDown) {
+                onKeyDown(maskedEvent);
+            }
             return;
         }
-        const { value } = this.state;
-        let maskedEvent = Object.assign({}, event, { defaultPrevented: false });
-        let eventValue: EventValue = getChangeEvent(maskedEvent);
-        eventValue.target.value = value;
         const emitError: (error: NumberInputError) => void = this._emitError.bind(this, eventValue);
-        if((key.length  > 1) || (key.match(/^(\d||\.||\-)$/))) {
+        if(key.match(/^(\d|\.|\-|..+)$/)) {
             let valueChange: number;
             let newValue: string;
-            eventValue.target.value = value;
             if(key === 'Backspace') {
                 newValue = value.substring(0, value.length - 1);
             } else if(key.length === 1) {
@@ -171,13 +174,11 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                         emitError('incompleteNumber');
                     }
                 } else {
-                    emitError('floatingPoint');
+                    emitError('singleNoneNumber');
                 }
             } else if(key === 'Backspace') {
                 this.setState({ value: '' });
             }
-            const { onKeyDown } = this.props;
-            const canCallOnKeyDown: boolean = onKeyDown !== undefined;
             if(valueChange !== undefined) {
                 if(canCallOnKeyDown)  {
                     onKeyDown(maskedEvent);
@@ -193,8 +194,6 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                         this._emitChange(eventValue as React.FormEvent, valueChange, true, 'none');
                         break; 
                 }
-            } else if((key.length > 1) && (key !== 'Backspace') && canCallOnKeyDown) {
-                onKeyDown(maskedEvent);
             }
         } else {
             emitError('invalidSymbol');

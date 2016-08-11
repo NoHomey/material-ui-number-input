@@ -37,13 +37,13 @@ export default class Demo extends React.Component<void, DemoState> {
                     errorText = 'You are tring to enter none number symbol';
                     break;
                 case 'incompleteNumber':
-                    errorText = 'Number must follow a floating point';
+                    errorText = 'Number is incomplete';
                     break;
-                case 'floatingPoint':
-                    errorText = 'Single floating point is expected';
+                case 'singleNoneNumber':
+                    errorText = 'Single floating point or minus is expected';
                     break;
                 case 'min':
-                    errorText = 'You are tring to enter number less than 0';
+                    errorText = 'You are tring to enter number less than -10';
                     break;
                 case 'max':
                     errorText = 'You are tring to enter number greater than 12';
@@ -67,7 +67,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         id="num"
                         required
                         value={value}
-                        min={0}
+                        min={-10}
                         max={12}
                         errorText={error}
                         onChange={this.onChange}
