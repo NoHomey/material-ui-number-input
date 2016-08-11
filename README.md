@@ -118,7 +118,7 @@ private _handleBlur(event) {
 | underlineShow           | *bool*     | *true*  | *true*    | If true, shows the underline for the input field. |
 | showDefaultValue        | *number*   |         | *false*   | The number showed as default value (if input is left empty and if there is onChange handler than it will be invoked with showDefaultValue). |
 | min                     | *number*   |         | *false*   | The number used as minimum value limit if provided and the input number is less than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'min'. |
-| max                     | *number*   |         | *false*   | The number used as maximum value limit if provided and the input number is greater than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'max'. |
+| max                     | *number*   |         | *false*   | The number used as maximum value limit if provided and the input number is greater than it will be invoked with last two arguments with values: false, 'max'. |
 | reqired                 | *bool*     | *false* | *false*   | If true, and if input is left empty and if there is onChange handler than it and if there is onChange handler than it will be invoked with last two arguments with values: false, 'required'. |
 | value                   | *number*   |         | *true*   | The value of the input field. |
 | onChange                | *function* |         | *true*   | Callback function that is fired when input state changes (on valid number value change or on error). |
