@@ -20,7 +20,7 @@ if(newValue !== undefined) {
     this.setState({ value: newValue });
     if(newValue.match(/^-?((0(\.\d+)?)|([1-9]+(\d{0,}\.\d+)?))$/)) {
       valueChange = Number(newValue);
-    } else {
+    } else if(newValue !== '') {
       emitError('incompleteNumber');
     }
   } else {
@@ -30,7 +30,7 @@ if(newValue !== undefined) {
   this.setState({ value: '' });
 }
 ```
-- includes validation out of the box for min/max value limits
+- includes validation out of the box for required & min/max value limits
 ```js
 if((valueChange !== undefined) && (valueChange !== this.props.value)) {
   if(canCallOnKeyDown)  {
@@ -87,6 +87,9 @@ private _handleBlur(event) {
     case -1:
       error = 'minValue';
       break; 
+  }
+  if((value === '') && required) {
+    error = 'required';
   }
   const valid = error === 'none';
   if((newState.value !== undefined) || (valid && (errorText !== undefined)) || (!valid && (errorText === undefined))) {
