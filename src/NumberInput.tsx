@@ -54,6 +54,7 @@ export interface NumberInputProps extends NumberInputprops, NumberInputPropsDeep
 
 export interface NumberInputState {
     value?: string;
+    error?: NumberInputError;
 }
 
 interface NumberInputCompareByValue extends NumberInputprops, NumberInputState { }
@@ -127,10 +128,14 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
 
     private _emitError(error: NumberInputError): void {
-        const { onError } = this.props;
-        if(onError !== undefined) {
-            onError(error);
-        }
+        const { props, state } = this;
+        const { onError } = props;
+        const { error: errorState } = state;
+        this.setState({ error: error }, () => {
+            if((onError !== undefined) && (error !== errorState)) {
+                onError(error);
+            }
+        });
     }
 
     private _emitChange(event: React.FormEvent, value: number): void {
@@ -143,8 +148,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
         const { key } = event;
-        const { onKeyDown } = this.props;
-        const { value } = this.state;
+        const { props, state } = this;
+        const { onKeyDown } = props;
+        const { value } = state;
         const canCallOnKeyDown: boolean = onKeyDown !== undefined;
         let maskedEvent = Object.assign({}, event);
         let eventValue: EventValue = getChangeEvent(Object.assign({}, event));
@@ -214,8 +220,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
 
     private _handleBlur(event: React.FocusEvent): void {
-        const { showDefaultValue, onBlur, errorText, required } = this.props;
-        const { value: oldValue } = this.state;
+        const { props, state } = this;
+        const { showDefaultValue, onBlur, errorText, required } = props;
+        const { value: oldValue } = state;
         let value: string = oldValue;
         let newValue: string;
         if(value === '-') {
@@ -254,17 +261,24 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         }
         if(error !== undefined) {
             this._emitError(error);
-        } else if(newValueDefined) {
-            let eventValue: EventValue = getChangeEvent(event);
-            eventValue.target.value = newValue;
-            this._emitChange(eventValue as React.FormEvent, numberValue);
+        } else {
+            if(newValueDefined) {
+                let eventValue: EventValue = getChangeEvent(event);
+                eventValue.target.value = newValue;
+                this._emitChange(eventValue as React.FormEvent, numberValue);
+            } else {
+                this._emitError('none');
+            }
         }
     }
 
     public constructor(props: NumberInputProps) {
         super(props);
         const { showDefaultValue, value } = this.props;
-        this.state = { value: showDefaultValue !== undefined ? String(showDefaultValue) : (value !== undefined ? String(value) : '') };
+        this.state = {
+            value: showDefaultValue !== undefined ? String(showDefaultValue) : (value !== undefined ? String(value) : ''),
+            error: 'none'
+        };
         this._onKeyDown = this._handleKeyDown.bind(this);
         this._onBlur = this._handleBlur.bind(this);
     }
@@ -278,8 +292,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
 
     public render(): JSX.Element {
-        let clonedProps: NumberInputProps = Object.assign({}, this.props);
-        const { value } = this.state;
+        const { props, state, _onKeyDown, _onBlur } = this;
+        let clonedProps: NumberInputProps = Object.assign({}, props);
+        const { value } = state;
         if(clonedProps.showDefaultValue !== undefined) {
             delete clonedProps.showDefaultValue;
         }
@@ -289,8 +304,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         return React.cloneElement(<TextField />, Object.assign(clonedProps, {
             type: 'text',
             value: value,
-            onKeyDown: this._onKeyDown,
-            onBlur: this._onBlur
+            onKeyDown: _onKeyDown,
+            onBlur: _onBlur
         }));
     }
 }

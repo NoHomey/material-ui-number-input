@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { render as ReactDomRender } from 'react-dom';
+import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler } from './../src/index';
+import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler } from 'material-ui-number-input';
 
 const { div, link, input } = React.DOM;
 
@@ -10,7 +12,7 @@ interface DemoState {
     errorText?: string;
 }
 
-export default class Demo extends React.Component<void, DemoState> {
+class Demo extends React.Component<void, DemoState> {
     private onKeyDown: React.KeyboardEventHandler;
     private onChange: NumberInputChangeHandler;
     private onError: NumberInputErrorHandler;
@@ -85,3 +87,8 @@ export default class Demo extends React.Component<void, DemoState> {
         );
     }
 }
+
+injectTapEventPlugin();
+let bootstrapNode = document.createElement('div');
+ReactDomRender(<Demo />, bootstrapNode);
+document.body.appendChild(bootstrapNode);
