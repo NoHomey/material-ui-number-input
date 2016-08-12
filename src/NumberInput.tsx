@@ -229,10 +229,6 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if((value === '') && (showDefaultValue !== undefined)) {
             newState.value = String(showDefaultValue);
         }
-        this.setState(newState);
-        if(onBlur !== undefined) {
-            onBlur(event);
-        }
         const { value: newValue } = newState;
         const numberValue: number = Number(newValue !== undefined ? newValue : oldValue);
         let eventValue: EventValue = getChangeEvent(event);
@@ -249,6 +245,12 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                     error = 'required';
                 }
                 break;
+        }
+        this.setState(newState);
+        if(onBlur !== undefined) {
+            let blurEvent: EventValue = event;
+            blurEvent.target.value = newValue !== undefined ? newValue : value;
+            onBlur(blurEvent as React.FocusEvent);
         }
         if(error !== undefined) {
             this._emitError(error);
