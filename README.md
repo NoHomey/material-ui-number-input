@@ -70,19 +70,18 @@ _handleBlur(event) {
   const { showDefaultValue, onBlur, errorText, required } = this.props;
   const { value: oldValue } = this.state;
   let value = oldValue;
-  let newState = {};
+  let newValue;
   if(value === '-') {
     value = '';
   } else {
     const last = value.length - 1;
     if(value[last] === '.') {
-      newState.value = value.substring(0, last);
+      newVvalue = value.substring(0, last);
     }
   }
   if((value === '') && (showDefaultValue !== undefined)) {
-    newState.value = String(showDefaultValue);
+    newValue = String(showDefaultValue);
   }
-  const { value: newValue } = newState;
   const numberValue = Number(newValue !== undefined ? newValue : oldValue);
   let eventValue = getChangeEvent(event);
   let error;
@@ -99,7 +98,7 @@ _handleBlur(event) {
       }
       break;
   }
-  this.setState(newState);
+  this.setState({ value: newValue });
   if(onBlur !== undefined) {
     event.target.value = newValue !== undefined ? newValue : value;
     onBlur(event);
