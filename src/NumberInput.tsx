@@ -229,8 +229,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if((value === '') && (showDefaultValue !== undefined)) {
             newValue = String(showDefaultValue);
         }
-        const numberValue: number = Number(newValue !== undefined ? newValue : oldValue);
-        let eventValue: EventValue = getChangeEvent(event);
+        const newValueDefined: boolean = newValue !== undefined;
+        const numberValue: number = Number(newValueDefined ? newValue : oldValue);
+        const targetValue: string = newValueDefined ? newValue : value;
         let error: NumberInputError;
         switch(this._validateValue(numberValue)) {
             case 1:
@@ -245,15 +246,16 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                 }
                 break;
         }
-        this.setState({ value: newValue });
+        this.setState({ value: targetValue });
         if(onBlur !== undefined) {
             let blurEvent: EventValue = event;
-            blurEvent.target.value = newValue !== undefined ? newValue : value;
+            blurEvent.target.value = targetValue;
             onBlur(blurEvent as React.FocusEvent);
         }
         if(error !== undefined) {
             this._emitError(error);
-        } else if(newValue !== undefined) {
+        } else if(newValueDefined) {
+            let eventValue: EventValue = getChangeEvent(event);
             eventValue.target.value = newValue;
             this._emitChange(eventValue as React.FormEvent, numberValue);
         }
