@@ -1,6 +1,6 @@
 # material-ui-number-input
 
-The TextField type="number" that user really expects.
+The better TextField for number inputs.
 
 Fixing all the bugs inherited by `<TextField type="number" />` from the Browser's `<input type="number" />`.
 
@@ -8,7 +8,7 @@ Such as:
 
 - allows only valid number symbols and special keys to be entered while fixing all Backspace bugs of `<input type="number" />` (fixing the posibility that a user might enter ```0.---..12313.``` in the input filed and you as a developer still geting a false validity)
 ```js
-if((event.key.length  > 1) || (event.key.match(/^(\d||\.||\-)$/))) {
+if(key.match(/^(\d|\.|\-|..+)$/)) {
   /* ... */
 }
 ```
@@ -18,16 +18,27 @@ if(newValue !== undefined) {
   if(newValue.match(/^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/)) {
     eventValue.target.value = newValue;
     this.setState({ value: newValue });
-    if(newValue.match(/^-?((0(\.\d+)?)|([1-9]+(\d{0,}\.\d+)?))$/)) {
+    if(newValue.match(/^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/)) {
       valueChange = Number(newValue);
     } else if(newValue !== '') {
-      emitError('incompleteNumber');
+      this._emitError('incompleteNumber');
     }
   } else {
-    emitError('floatingPoint');
+    const last = newValue[newValue.length - 1];
+    let error;
+    switch(last) {
+      case '-':
+        error = 'singleMinus';
+        break;
+      case '.':
+        error = 'singleFloatingPoint';
+        break;
+      default:
+        error = 'singleZero';
+        break;
+    }
+    this._emitError(error);
   }
-} else if(key === 'Backspace') {
-  this.setState({ value: '' });
 }
 ```
 - includes validation out of the box for required & min/max value limits
@@ -38,67 +49,68 @@ if(valueChange !== undefined) {
   }
   switch(this._validateValue(valueChange)) {
     case 1:
-      emitError('max');
+      this._emitError('max');
       break;
     case -1:
-      emitError('min');
+      this._emitError('min');
       break;
     default:
-      this._emitChange(eventValue, valueChange, true, 'none');
+      this._emitChange(eventValue, valueChange);
       break; 
   }
-} else if((key.length > 1) && (key !== 'Backspace') && canCallOnKeyDown) {
-  onKeyDown(maskedEvent);
 }
 ```
-- follows material-ui v0.16 unified ```onChange``` event handler callback signature ```released (event, value, ...)``` in the form of ```(event, value, valid, error)``` before v0.16 is even released
--  fully compatible with ```TextField``` and ```input``` elements when it comes to event passed to event handlers while still keeping high performance
+- follows material-ui v0.16 unified `onChange` event handler callback signature `(event, value, ...)` in the form of `(event, value)` before v0.16 is even released
+-  fully compatible with `TextField` and `input` elements when it comes to event passed to event handlers while still keeping high performance
 -  uses state double while still following all React principels such as single source of truth and skiping an extra render cycle from state double usage
--  You as a developer can always be sure you get a valid number value when third arguement of ```onChange``` is ```true```
+-  You as a developer can always be sure you get a valid number value when `onChange` is called
 -  You can be sure that mateial-ui-number-input will always try to provide you a valid number when user leaves the input field while still providing validation
 ```js
-private _handleBlur(event) {
-  const { showDefaultValue, onBlur, errorText } = this.props;
-  const oldValue = this.state.value;
-  let value = oldValue;
-  let newState: NumberInputState = {};
-  if(value === '-') {
-    value = '';
-  } else {
-    const last = value.length - 1;
-    if(value[last] === '.') {
-      newState.value = value.substring(0, last);
+_handleBlur(event) {
+        const { showDefaultValue, onBlur, errorText, required } = this.props;
+        const { value: oldValue } = this.state;
+        let value = oldValue;
+        let newState = {};
+        if(value === '-') {
+            value = '';
+        } else {
+            const last = value.length - 1;
+            if(value[last] === '.') {
+                newState.value = value.substring(0, last);
+            }
+        }
+        if((value === '') && (showDefaultValue !== undefined)) {
+            newState.value = String(showDefaultValue);
+        }
+        this.setState(newState);
+        if(onBlur !== undefined) {
+            onBlur(event);
+        }
+        const { value: newValue } = newState;
+        const numberValue = Number(newValue !== undefined ? newValue : oldValue);
+        let eventValue = getChangeEvent(event);
+        let error;
+        switch(this._validateValue(numberValue)) {
+            case 1:
+                error = 'max';
+                break;
+            case -1:
+                error = 'min';
+                break;
+            default:
+                if((value === '') && required) {
+                    error = 'required';
+                }
+                break;
+        }
+        if(error !== undefined) {
+            this._emitError(error);
+        } else if(newValue !== undefined) {
+            eventValue.target.value = newValue;
+            this._emitChange(eventValue, numberValue);
+        }
     }
-  }
-  if((value === '') && (showDefaultValue !== undefined)) {
-    newState.value = String(showDefaultValue);
-  }
-  this.setState(newState);
-  if(onBlur !== undefined) {
-    onBlur(event);
-  }
-  const numberValue = Number(newState.value !== undefined ? newState.value : oldValue);
-  let eventValue = getChangeEvent(event);
-  let error = 'none';
-  switch(this._validateValue(numberValue)) {
-    case 1:
-      error = 'max';
-      break;
-    case -1:
-      error = 'min';
-      break; 
-  }
-  if((value === '') && required) {
-    error = 'required';
-  }
-  const valid = error === 'none';
-  if((newState.value !== undefined) || (valid && (errorText !== undefined)) || (!valid && (errorText === undefined))) {
-    eventValue.target.value = value;
-    this._emitChange(eventValue, numberValue, valid, error);
-  }
-}
 ```
-
 
 # Install
 
@@ -121,8 +133,8 @@ private _handleBlur(event) {
 | max                     | *number*   |         | *false*   | The number used as maximum value limit. |
 | reqired                 | *bool*     | *false* | *false*   | If true and if input is left empty than 'required' error will be emited throughout onChange and onErrorChange handlers. |
 | value                   | *number*   |         | *true*   | The value of the input field. |
-| onChange                | *function* |         | *true*   | Callback function that is fired when input state changes (on valid number value change or on error). |
-| onErrorChange           | *function* |         | *false*   | Callback function that is fired when input error status changes. |
+| onChange                | *function* |         | *true*   | Callback function that is fired when a valid number is entered in the input filed. |
+| onError           | *function* |         | *false*   | Callback function that is fired when input error status changes. |
 | errorText               | *node*     |         | *true*    | The error content to display. |
 | errorStyle              | *object*   |         | *true*    | The style object to use to override error styles. |
 | floatingLabelFocusStyle | *object*   |         | *true*    | The style object to use to override floating label styles when focused. |
