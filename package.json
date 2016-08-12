@@ -1,6 +1,6 @@
 {
   "name": "material-ui-number-input",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "The <TextField type=\"number\" /> that user really expects.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
