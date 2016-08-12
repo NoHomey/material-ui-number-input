@@ -82,7 +82,9 @@ _handleBlur(event) {
   if((value === '') && (showDefaultValue !== undefined)) {
     newValue = String(showDefaultValue);
   }
-  const numberValue = Number(newValue !== undefined ? newValue : oldValue);
+  const newValueDefined = newValue !== undefined;
+  const numberValue = Number(newValueDefined ? newValue : oldValue);
+  const targetValue = newValueDefined ? newValue : value;
   let eventValue = getChangeEvent(event);
   let error;
   switch(this._validateValue(numberValue)) {
@@ -98,7 +100,7 @@ _handleBlur(event) {
       }
       break;
   }
-  this.setState({ value: newValue });
+  this.setState({ value: targetValue });
   if(onBlur !== undefined) {
     event.target.value = newValue !== undefined ? newValue : value;
     onBlur(event);
@@ -106,6 +108,7 @@ _handleBlur(event) {
   if(error !== undefined) {
     this._emitError(error);
   } else if(newValue !== undefined) {
+    let eventValue = getChangeEvent(event);
     eventValue.target.value = newValue;
     this._emitChange(eventValue, numberValue);
   }
@@ -152,11 +155,11 @@ _handleBlur(event) {
 
 ## 'required'
 
-Fired when `required` prop is `true` and user leaves empty the input or it gets cleard from onBlur listener.
+Fired when `required` prop is `true` and user leaves empty the input or it gets cleard after onBlur listener.
 
 ## 'invalidSymbol'
 
-Fired when user enters none special key which is different than `-,.,[0-9]`.
+Fired when user enters none special key which is different than `-`,`.`,`[0-9]``.
 
 ## 'incompleteNumber'
 
@@ -172,7 +175,7 @@ Fired when user enters `.` and there is already one entered.
 
 ## 'singleZero'
 
-Fired when user has entered `0` as first char and presses a digit key.
+Fired when user has entered `0` as first char and enters a digit key.
 
 ## 'min'
 
