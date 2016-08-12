@@ -67,49 +67,50 @@ if(valueChange !== undefined) {
 -  You can be sure that mateial-ui-number-input will always try to provide you a valid number when user leaves the input field while still providing validation
 ```js
 _handleBlur(event) {
-        const { showDefaultValue, onBlur, errorText, required } = this.props;
-        const { value: oldValue } = this.state;
-        let value = oldValue;
-        let newState = {};
-        if(value === '-') {
-            value = '';
-        } else {
-            const last = value.length - 1;
-            if(value[last] === '.') {
-                newState.value = value.substring(0, last);
-            }
-        }
-        if((value === '') && (showDefaultValue !== undefined)) {
-            newState.value = String(showDefaultValue);
-        }
-        this.setState(newState);
-        if(onBlur !== undefined) {
-            onBlur(event);
-        }
-        const { value: newValue } = newState;
-        const numberValue = Number(newValue !== undefined ? newValue : oldValue);
-        let eventValue = getChangeEvent(event);
-        let error;
-        switch(this._validateValue(numberValue)) {
-            case 1:
-                error = 'max';
-                break;
-            case -1:
-                error = 'min';
-                break;
-            default:
-                if((value === '') && required) {
-                    error = 'required';
-                }
-                break;
-        }
-        if(error !== undefined) {
-            this._emitError(error);
-        } else if(newValue !== undefined) {
-            eventValue.target.value = newValue;
-            this._emitChange(eventValue, numberValue);
-        }
+  const { showDefaultValue, onBlur, errorText, required } = this.props;
+  const { value: oldValue } = this.state;
+  let value = oldValue;
+  let newState = {};
+  if(value === '-') {
+    value = '';
+  } else {
+    const last = value.length - 1;
+    if(value[last] === '.') {
+      newState.value = value.substring(0, last);
     }
+  }
+  if((value === '') && (showDefaultValue !== undefined)) {
+    newState.value = String(showDefaultValue);
+  }
+  const { value: newValue } = newState;
+  const numberValue = Number(newValue !== undefined ? newValue : oldValue);
+  let eventValue = getChangeEvent(event);
+  let error;
+  switch(this._validateValue(numberValue)) {
+    case 1:
+      error = 'max';
+      break;
+    case -1:
+      error = 'min';
+      break;
+    default:
+      if((value === '') && required) {
+        error = 'required';
+      }
+      break;
+  }
+  this.setState(newState);
+  if(onBlur !== undefined) {
+    event.target.value = newValue !== undefined ? newValue : value;
+    onBlur(event);
+  }
+  if(error !== undefined) {
+    this._emitError(error);
+  } else if(newValue !== undefined) {
+    eventValue.target.value = newValue;
+    this._emitChange(eventValue, numberValue);
+  }
+}
 ```
 
 # Install
