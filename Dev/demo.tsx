@@ -6,7 +6,6 @@ const { div, link, input } = React.DOM;
 
 interface DemoState {
     value?: number;
-    error?: NumberInputError;
     errorText?: string;
 }
 
