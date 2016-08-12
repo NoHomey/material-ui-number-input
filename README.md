@@ -157,6 +157,10 @@ _handleBlur(event) {
 
 # Errors
 
+## 'none'
+
+Fired when input's value is valid (there is no error).
+
 ## 'required'
 
 Fired when `required` prop is `true` and user leaves empty the input or it gets cleard after onBlur listener.
