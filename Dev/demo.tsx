@@ -12,7 +12,7 @@ interface DemoState {
 export default class Demo extends React.Component<void, DemoState> {
     private onKeyDown: React.KeyboardEventHandler;
     private onChange: NumberInputChangeHandler;
-    private onErrorChange: NumberInputErrorHandler;
+    private onError: NumberInputErrorHandler;
 
     public constructor(props: void) {
         super(props);
@@ -20,14 +20,12 @@ export default class Demo extends React.Component<void, DemoState> {
         this.onKeyDown = (event: React.KeyboardEvent): void => {
             console.log(`onKeyDown ${event.key}`);
         }
-        this.onChange = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError): void => {
+        this.onChange = (event: React.FormEvent, value: number): void => {
             const e: EventValue = event;
-            console.log(`onChange ${e.target.value}, ${value}, ${valid}, ${error}`);
-            if(valid) {
-                this.setState({ value: value });
-            }
+            console.log(`onChange ${e.target.value}, ${value}`);
+            this.setState({ value: value });
         };
-        this.onErrorChange = (error: NumberInputError): void => {
+        this.onError = (error: NumberInputError): void => {
             let errorText: string;
             switch(error) {
                 case 'required':
@@ -39,8 +37,14 @@ export default class Demo extends React.Component<void, DemoState> {
                 case 'incompleteNumber':
                     errorText = 'Number is incomplete';
                     break;
-                case 'singleNoneNumber':
-                    errorText = 'Single floating point or minus is expected';
+                case 'singleMinus':
+                    errorText = 'Minus can be use only for negativity';
+                    break;
+                case 'singleFloatingPoint':
+                    errorText = 'There is already a floating point';
+                    break;
+                case 'singleZero':
+                    errorText = 'Floating point is expected';
                     break;
                 case 'min':
                     errorText = 'You are tring to enter number less than -10';
@@ -49,12 +53,13 @@ export default class Demo extends React.Component<void, DemoState> {
                     errorText = 'You are tring to enter number greater than 12';
                     break;
             }
+            console.log(error);
             this.setState({ error: errorText });
         }
     }
 
     public componentDidMount(): void {
-        this.onErrorChange('required');
+        this.onError('required');
     }
 
     public render(): JSX.Element {
@@ -71,7 +76,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         max={12}
                         errorText={error}
                         onChange={this.onChange}
-                        onErrorChange={this.onErrorChange}
+                        onError={this.onError}
                         onKeyDown={this.onKeyDown} />
                 </div>
             </MuiThemeProvider>

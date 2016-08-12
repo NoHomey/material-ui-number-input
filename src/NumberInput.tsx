@@ -2,9 +2,9 @@ import * as React from 'react';
 import TextField from 'material-ui/TextField';
 import * as DeepEqual from 'deep-equal';
 
-export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleNoneNumber' | 'min' | 'max' | 'required';
+export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required';
 
-export type NumberInputChangeHandler = (event: React.FormEvent, value: number, valid: boolean, error: NumberInputError) => void;
+export type NumberInputChangeHandler = (event: React.FormEvent, value: number) => void;
 
 export type NumberInputErrorHandler = (error: NumberInputError) => void;
 
@@ -47,7 +47,7 @@ export interface NumberInputProps extends NumberInputprops, NumberInputPropsDeep
     value?: number;
     onBlur?: React.FocusEventHandler;
     onChange?: NumberInputChangeHandler;
-    onErrorChange?: NumberInputErrorHandler;
+    onError?: NumberInputErrorHandler;
     onFocus?: React.FocusEventHandler;
     onKeyDown?: React.KeyboardEventHandler;
 }
@@ -115,16 +115,6 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     private _onKeyDown: React.KeyboardEventHandler;
     private _onBlur: React.FocusEventHandler;
 
-    private _emitChange(event: React.FormEvent, value: number, valid: boolean, error: NumberInputError): void {
-        const { onChange, onErrorChange } = this.props;
-        if(onChange !== undefined) {
-            onChange(event, value, valid, error);
-        }
-        if(onErrorChange !== undefined) {
-            onErrorChange(error);
-        }
-    }
-
     private _validateValue(value: number): number {
         const { max, min } = this.props;
         if((max !== undefined) && (value > max)) {
@@ -136,8 +126,19 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         return 0;
     }
 
-    private _emitError(event: React.KeyboardEvent, error: NumberInputError): void {
-        this._emitChange(event, this.props.value, false, error);
+    private _emitError(error: NumberInputError): void {
+        const { onError } = this.props;
+        if(onError !== undefined) {
+            onError(error);
+        }
+    }
+
+    private _emitChange(event: React.FormEvent, value: number): void {
+        const { onChange } = this.props;
+        if(onChange !== undefined) {
+            onChange(event, value);
+        }
+        this._emitError('none');
     }
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
@@ -155,7 +156,6 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             }
             return;
         }
-        const emitError: (error: NumberInputError) => void = this._emitError.bind(this, eventValue);
         if(key.match(/^(\d|\.|\-|..+)$/)) {
             let valueChange: number;
             let newValue: string;
@@ -171,10 +171,23 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                     if(newValue.match(/^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/)) {
                         valueChange = Number(newValue);
                     } else if(newValue !== '') {
-                        emitError('incompleteNumber');
+                        this._emitError('incompleteNumber');
                     }
                 } else {
-                    emitError('singleNoneNumber');
+                    const last: string = newValue[newValue.length - 1];
+                    let error: NumberInputError;
+                    switch(last) {
+                        case '-':
+                            error = 'singleMinus';
+                            break;
+                        case '.':
+                            error = 'singleFloatingPoint';
+                            break;
+                        default:
+                            error = 'singleZero';
+                            break;
+                    }
+                    this._emitError(error);
                 }
             } else if(key === 'Backspace') {
                 this.setState({ value: '' });
@@ -185,18 +198,18 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                 }
                 switch(this._validateValue(valueChange)) {
                     case 1:
-                        emitError('max');
+                        this._emitError('max');
                         break;
                     case -1:
-                        emitError('min');
+                        this._emitError('min');
                         break;
                     default:
-                        this._emitChange(eventValue as React.FormEvent, valueChange, true, 'none');
+                        this._emitChange(eventValue as React.FormEvent, valueChange);
                         break; 
                 }
             }
         } else {
-            emitError('invalidSymbol');
+            this._emitError('invalidSymbol');
         }
     }
 
@@ -222,22 +235,25 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         }
         const numberValue: number = Number(newState.value !== undefined ? newState.value : oldValue);
         let eventValue: EventValue = getChangeEvent(event);
-        let error: NumberInputError = 'none';
+        let error: NumberInputError;
         switch(this._validateValue(numberValue)) {
             case 1:
                 error = 'max';
                 break;
             case -1:
                 error = 'min';
-                break; 
+                break;
+            default:
+                if((value === '') && required) {
+                    error = 'required';
+                }
+                break;
         }
-        if((value === '') && required) {
-            error = 'required';
-        }
-        const valid: boolean = error === 'none';
-        if((newState.value !== undefined) || (valid && (errorText !== undefined)) || (!valid && (errorText === undefined))) {
+        if(error !== undefined) {
+            this._emitError(error);
+        } else if(newState.value !== undefined) {
             eventValue.target.value = value;
-            this._emitChange(eventValue as React.FormEvent, numberValue, valid, error);
+            this._emitChange(eventValue as React.FormEvent, numberValue);
         }
     }
 
@@ -263,8 +279,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.showDefaultValue !== undefined) {
             delete clonedProps.showDefaultValue;
         }
-        if(clonedProps.onErrorChange !== undefined) {
-            delete clonedProps.onErrorChange;
+        if(clonedProps.onError !== undefined) {
+            delete clonedProps.onError;
         }
         return React.cloneElement(<TextField />, Object.assign(clonedProps, {
             type: 'text',
