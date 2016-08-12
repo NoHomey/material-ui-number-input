@@ -217,19 +217,18 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { showDefaultValue, onBlur, errorText, required } = this.props;
         const { value: oldValue } = this.state;
         let value: string = oldValue;
-        let newState: NumberInputState = {};
+        let newValue: string;
         if(value === '-') {
             value = '';
         } else {
             const last: number = value.length - 1;
             if(value[last] === '.') {
-                newState.value = value.substring(0, last);
+                newValue = value.substring(0, last);
             }
         }
         if((value === '') && (showDefaultValue !== undefined)) {
-            newState.value = String(showDefaultValue);
+            newValue = String(showDefaultValue);
         }
-        const { value: newValue } = newState;
         const numberValue: number = Number(newValue !== undefined ? newValue : oldValue);
         let eventValue: EventValue = getChangeEvent(event);
         let error: NumberInputError;
@@ -246,7 +245,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                 }
                 break;
         }
-        this.setState(newState);
+        this.setState({ value: newValue });
         if(onBlur !== undefined) {
             let blurEvent: EventValue = event;
             blurEvent.target.value = newValue !== undefined ? newValue : value;
