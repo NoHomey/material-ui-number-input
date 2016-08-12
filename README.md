@@ -102,7 +102,7 @@ _handleBlur(event) {
   }
   this.setState({ value: targetValue });
   if(onBlur !== undefined) {
-    event.target.value = newValue !== undefined ? newValue : value;
+    event.target.value = targetValue;
     onBlur(event);
   }
   if(error !== undefined) {
@@ -184,3 +184,5 @@ Fired when user enters number less than `min` prop value.
 ## 'max'
 
 Fired when user enters number greater than `max` prop value.
+
+# Written in Typescript and Typescript Ready! ([check example](https://github.com/NoHomey/material-ui-number-input/blob/master/example/index.tsx))
