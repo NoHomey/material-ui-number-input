@@ -56,7 +56,7 @@ class Demo extends React.Component<void, DemoState> {
                     break;
             }
             console.log(error);
-            this.setState({ errorText: errorText, error: error });
+            this.setState({ errorText: errorText });
         }
     }
 
