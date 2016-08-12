@@ -147,3 +147,37 @@ _handleBlur(event) {
 | underlineDisabledStyle  | *object*   |         | *true*    | Override the inline-styles of the TextField's underline element when disabled. |
 | underlineFocusStyle     | *object*   |         | *true*    | Override the inline-styles of the TextField's underline element when focussed. |
 | underlineStyle          | *object*   |         | *true*    | Override the inline-styles of the TextField's underline element. |
+
+# Errors
+
+## 'required'
+
+Fired when `required` prop is `true` and user leaves empty the input or it gets cleard from onBlur listener.
+
+## 'invalidSymbol'
+
+Fired when user enters none special key which is different than `-,.,[0-9]`.
+
+## 'incompleteNumber'
+
+Fired wehn user enters `-` as first char in the input or when user enters the first `.`.
+
+## 'singleMinus'
+
+Fired when user enters `-` not as a first char.
+
+## 'singleFloatingPoint'
+
+Fired when user enters `.` and there is already one entered.
+
+## 'singleZero'
+
+Fired when user has entered `0` as first char and presses a digit key.
+
+## 'min'
+
+Fired when user enters number less than `min` prop value.
+
+## 'max'
+
+Fired when user enters number greater than `max` prop value.
