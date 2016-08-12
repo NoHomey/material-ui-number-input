@@ -107,10 +107,14 @@ _handleBlur(event) {
   }
   if(error !== undefined) {
     this._emitError(error);
-  } else if(newValue !== undefined) {
-    let eventValue = getChangeEvent(event);
-    eventValue.target.value = newValue;
-    this._emitChange(eventValue, numberValue);
+  } else {
+    if(newValue !== undefined) {
+      let eventValue = getChangeEvent(event);
+      eventValue.target.value = newValue;
+      this._emitChange(eventValue, numberValue);
+    } else {
+      this._emitError('none');
+    }
   }
 }
 ```
@@ -184,5 +188,82 @@ Fired when user enters number less than `min` prop value.
 ## 'max'
 
 Fired when user enters number greater than `max` prop value.
+
+# Example
+
+```js
+import * as React from 'react';
+import NumberInput from 'material-ui-number-input';
+
+class Demo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+        
+    this.onKeyDown = (event) => {
+      console.log(`onKeyDown ${event.key}`);
+    };
+        
+    this.onChange = (event, value) => {
+      const e = event;
+      console.log(`onChange ${e.target.value}, ${value}`);
+      this.setState({ value: value });
+    };
+        
+    this.onError = (error) => {
+      let errorText;
+      switch (error) {
+        case 'required':
+          errorText = 'This field is required';
+          break;
+        case 'invalidSymbol':
+          errorText = 'You are tring to enter none number symbol';
+          break;
+        case 'incompleteNumber':
+          errorText = 'Number is incomplete';
+          break;
+        case 'singleMinus':
+          errorText = 'Minus can be use only for negativity';
+          break;
+        case 'singleFloatingPoint':
+          errorText = 'There is already a floating point';
+          break;
+        case 'singleZero':
+          errorText = 'Floating point is expected';
+          break;
+        case 'min':
+          errorText = 'You are tring to enter number less than -10';
+          break;
+        case 'max':
+          errorText = 'You are tring to enter number greater than 12';
+          break;
+      }
+      console.log(error);
+      this.setState({ errorText: errorText });
+    };
+  }
+    
+  componentDidMount() {
+    this.onError('required');
+  }
+    
+  render() {
+    const { state, onChange, onError, onKeyDown } = this;
+    const { value, errorText } = state;  
+    return (
+      <NumberInput
+        id="num"
+        required
+        value={value}
+        min={-10}
+        max={12}
+        errorText={errorText}
+        onChange={onChange}
+        onError={onError}
+        onKeyDown={onKeyDown} />
+    );
+  }
+}
+```
 
 # Written in Typescript and Typescript Ready! ([check example](https://github.com/NoHomey/material-ui-number-input/blob/master/example/index.tsx))
