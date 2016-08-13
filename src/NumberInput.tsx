@@ -112,6 +112,38 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
 }
 
 export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
+    public static propTypes: Object = {
+        children: React.PropTypes.node,
+        className: React.PropTypes.string,
+        disabled: React.PropTypes.bool,
+        errorStyle: React.PropTypes.object,
+        errorText: React.PropTypes.node,
+        floatingLabelFixed: React.PropTypes.bool,
+        floatingLabelFocusStyle: React.PropTypes.object,
+        floatingLabelStyle: React.PropTypes.object,
+        floatingLabelText: React.PropTypes.node,
+        fullWidth: React.PropTypes.bool,
+        hintStyle: React.PropTypes.object,
+        hintText: React.PropTypes.node,
+        id: React.PropTypes.string,
+        inputStyle: React.PropTypes.object,
+        name: React.PropTypes.string,
+        onBlur: React.PropTypes.func,
+        onChange: React.PropTypes.func,
+        onFocus: React.PropTypes.func,
+        onErrro: React.PropTypes.func,
+        onKeyDown: React.PropTypes.func,
+        style: React.PropTypes.object,
+        underlineDisabledStyle: React.PropTypes.object,
+        underlineFocusStyle: React.PropTypes.object,
+        underlineShow: React.PropTypes.bool,
+        underlineStyle: React.PropTypes.object,
+        showDefaultValue: React.PropTypes.number,
+        min: React.PropTypes.number,
+        max: React.PropTypes.number,
+        required: React.PropTypes.bool,
+        value: React.PropTypes.number
+    };
     public static defaultProps: NumberInputProps = { required: false };
     private _onKeyDown: React.KeyboardEventHandler;
     private _onBlur: React.FocusEventHandler;
