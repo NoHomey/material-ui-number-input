@@ -167,7 +167,7 @@ Fired when `required` prop is `true` and user leaves empty the input or it gets 
 
 ## 'invalidSymbol'
 
-Fired when user enters none special key which is different than `-`,`.`,`[0-9]``.
+Fired when user enters none special key which is different than `-`,`.`,`[0-9]`.
 
 ## 'incompleteNumber'
 
