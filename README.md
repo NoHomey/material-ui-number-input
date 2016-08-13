@@ -140,8 +140,8 @@ _handleBlur(event) {
 | max                     | *number*   |         | *false*   | The number used as maximum value limit. |
 | reqired                 | *bool*     | *false* | *false*   | If true and if input is left empty than 'required' error will be emited throughout onChange and onErrorChange handlers. |
 | value                   | *number*   |         | *true*   | The value of the input field. |
-| onChange                | *function* |         | *true*   | Callback function that is fired when a valid number is entered in the input filed. **Signature:** `function(event: React.FormEvent, value: number)`. |
-| onError           | *function* |         | *false*   | Callback function that is fired when input error status changes.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required')`. |
+| onChange                | *function* |         | *true*   | Callback function that is fired when a valid number is entered in the input filed. **Signature:** `function(event: React.FormEvent, value: number) => void`. |
+| onError           | *function* |         | *false*   | Callback function that is fired when input error status changes.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required') => void`. |
 | errorText               | *node*     |         | *true*    | The error content to display. |
 | errorStyle              | *object*   |         | *true*    | The style object to use to override error styles. |
 | floatingLabelFocusStyle | *object*   |         | *true*    | The style object to use to override floating label styles when focused. |
