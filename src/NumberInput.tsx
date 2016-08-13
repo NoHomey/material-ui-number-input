@@ -94,21 +94,23 @@ function getNumberInputPropsDeepEqual(props: NumberInputProps): NumberInputProps
 }
 
 function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.SyntheticEvent {
-    return Object.assign({}, event, {
-        altKey: undefined,
-        charCode: undefined,
-        ctrlKey: undefined,
-        getModifierState: undefined,
-        key: undefined,
-        keyCode: undefined,
-        locale: undefined,
-        location: undefined,
-        metaKey: undefined,
-        repeat: undefined,
-        shiftKey: undefined,
-        which: undefined,
-        type: 'change'
-    });
+    return {
+        bubbles: event.bubbles,
+        cancelable: event.cancelable,
+        currentTarget: event.currentTarget,
+        defaultPrevented: event.defaultPrevented,
+        eventPhase: event.eventPhase,
+        isTrusted: event.isTrusted,
+        nativeEvent: event.nativeEvent,
+        preventDefault: event.preventDefault,
+        //isDefaultPrevented: event.isDefaultPrevented,
+        stopPropagation: event.stopPropagation,
+        //isPropagationStopped: event.isPropagationStopped,
+        persist: event.persist,
+        target: event.target,
+        timeStamp: event.timeStamp,
+        type: 'change',
+    };
 }
 
 export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
@@ -184,13 +186,12 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { onKeyDown } = props;
         const { value } = state;
         const canCallOnKeyDown: boolean = onKeyDown !== undefined;
-        let maskedEvent = Object.assign({}, event);
-        let eventValue: EventValue = getChangeEvent(Object.assign({}, event));
+        let eventValue: EventValue = getChangeEvent(event);
         if(key.match(/^(Backspace|.)$/)) {
             event.preventDefault();
         } else {
             if(canCallOnKeyDown) {
-                onKeyDown(maskedEvent);
+                onKeyDown(event);
             }
             return;
         }
@@ -232,7 +233,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             }
             if(valueChange !== undefined) {
                 if(canCallOnKeyDown)  {
-                    onKeyDown(maskedEvent);
+                    onKeyDown(event);
                 }
                 switch(this._validateValue(valueChange)) {
                     case 1:
