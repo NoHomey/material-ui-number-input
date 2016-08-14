@@ -5,7 +5,8 @@ import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, Nu
 const { div, link, input } = React.DOM;
 
 interface DemoState {
-    value?: number;
+    value?: string;
+    error?: NumberInputError;
     errorText?: string;
 }
 
@@ -20,13 +21,14 @@ export default class Demo extends React.Component<void, DemoState> {
         this.onKeyDown = (event: React.KeyboardEvent): void => {
             console.log(`onKeyDown ${event.key}`);
         }
-        this.onChange = (event: React.FormEvent, value: number): void => {
+        this.onChange = (event: React.FormEvent, value: string, complete: boolean): void => {
             const e: EventValue = event;
-            console.log(`onChange ${e.target.value}, ${value}`);
+            console.log(`onChange ${e.target.value}, ${value}, ${complete}`);
             this.setState({ value: value });
         };
         this.onError = (error: NumberInputError): void => {
             let errorText: string;
+            console.log(error);
             switch(error) {
                 case 'required':
                     errorText = 'This field is required';
@@ -53,8 +55,10 @@ export default class Demo extends React.Component<void, DemoState> {
                     errorText = 'You are tring to enter number greater than 12';
                     break;
             }
-            console.log(error);
-            this.setState({ errorText: errorText });
+            this.setState({
+                errorText: errorText,
+                error: error
+            });
         }
     }
 
@@ -64,7 +68,7 @@ export default class Demo extends React.Component<void, DemoState> {
 
     public render(): JSX.Element {
         const { state, onChange, onError, onKeyDown } = this;
-        const { value, errorText } = state;
+        const { value, error, errorText } = state;
         return (
             <MuiThemeProvider>
                 <div>
@@ -73,6 +77,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         id="num"
                         required
                         value={value}
+                        error={error}
                         min={-10}
                         max={12}
                         errorText={errorText}
