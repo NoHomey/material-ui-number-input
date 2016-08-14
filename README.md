@@ -40,7 +40,7 @@ Such as:
 | reqired                 | *bool*     | *false*   | *false*   | If true and if input is left empty than 'required' error will be emited throughout onChange and onErrorChange handlers. |
 | value                   | *string*   | *''*      | *true*   | The value of the input field. |
 | onChange                | *function* |           | *true*   | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string, complate: boolean) => void`. |
-| error                   | *'none' \| 'invalidSymbol' \| 'incompleteNumber' \| 'singleMinus' \| 'singleFloatingPoint' \| 'singleZero' \| 'min' \| 'max' \| 'required'* | *'none'* | *false* |
+| error                   | *'none' \| 'invalidSymbol' \| 'incompleteNumber' \| 'singleMinus' \| 'singleFloatingPoint' \| 'singleZero' \| 'min' \| 'max' \| 'required'* | *'none'* | *false* | Error status required in order to decide when to call onError when error changes. |
 | onError           | *function* |         | *false*   | Callback function that is fired when input error status changes.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required') => void`. |
 | errorText               | *node*     |           | *true*    | The error content to display. |
 | errorStyle              | *object*   |           | *true*    | The style object to use to override error styles. |
