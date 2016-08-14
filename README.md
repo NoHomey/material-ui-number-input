@@ -16,7 +16,11 @@ Such as:
 
 # Install
 
-```npm install material-ui-number-input```
+`npm install material-ui-number-input`
+
+# Changelog
+
+**Check [Change log](https://github.com/NoHomey/material-ui-number-input/blob/master/CHANGELOG.md) for changes.**
 
 # Properties
 
