@@ -2,11 +2,6 @@
 
 ## [v2.0.0](https://github.com/NoHomey/react-material-ui-keyboard/releases/tag/2.0.0)
 
-### Feutures
-
-- replacing state double with controlled input
-- `value` is now watched for changes
-
 ### Properties
 
 - `value` is now of type 'string'
@@ -15,6 +10,8 @@
 
 ### Changes
 
+- replacing state double with controlled input
+- `value` is now watched for changes
 - `onChange` is now called every time when input value must change, third argument provides infomration is value a complete number.
 
 ### Bug fixes
