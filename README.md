@@ -149,6 +149,13 @@ class Demo extends React.Component {
   componentDidMount() {
     this.onError('required');
   }
+  
+  componentDidUpdate() {
+    const { error, value } = this.state;
+    if(error === 'none') {
+      alert(`${Number(value)} is a valid number`);
+    }
+  }
     
   render() {
     const { state, onChange, onError, onKeyDown } = this;
