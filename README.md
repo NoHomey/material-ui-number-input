@@ -11,7 +11,7 @@ Such as:
 - includes validation out of the box for required & min/max value limits
 - follows material-ui v0.16 unified `onChange` event handler callback signature `(event, value, ...)` in the form of `(event, value, complete)` before v0.16 is even released
 -  fully compatible with `TextField` and `input` elements when it comes to event passed to event handlers while still keeping high performance
--  You as a developer can always be sure you get a valid number value when `onChange` is called
+-  You as a developer can always be sure you get a valid number value when `onChange` has been called and `onError` is called with `'none'`
 -  You can be sure that mateial-ui-number-input will always try to provide you a valid number when user leaves the input field while still providing validation
 
 # Install
