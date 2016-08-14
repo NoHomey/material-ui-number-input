@@ -5,7 +5,7 @@
 ### Properties
 
 - `value` is now of type 'string'
-- `onChange` changed signature to `function (event: React.FormEvent, value: string, complete: boolean)`
+- `onChange` changed signature to `function (event: React.FormEvent, value: string, complete: boolean) => void`
 - `error` is new prop of type `React.PropTypes.oneOf(['none', 'invalidSymbol', 'incompleteNumber', 'singleMinus', 'singleFloatingPoint', 'singleZero', 'min', 'max', 'required'])` and it's the controlled error so `onError` can be called only when error changes. Default value is `'none'`
 
 ### Changes
