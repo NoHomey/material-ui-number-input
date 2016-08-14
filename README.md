@@ -150,9 +150,10 @@ class Demo extends React.Component {
     this.onError('required');
   }
   
-  componentDidUpdate() {
+  componentDidUpdate(props, state) {
+    const { error: prevError } = state;
     const { error, value } = this.state;
-    if(error === 'none') {
+    if((error === 'none') && (prevError !== 'none')) {
       alert(`${Number(value)} is a valid number`);
     }
   }
