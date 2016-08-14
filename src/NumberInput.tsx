@@ -286,7 +286,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         }
         return React.cloneElement(<TextField />, Object.assign(clonedProps, {
             type: 'text',
-            value: error !== 'required' ? value : (showDefaultValue !== undefined ? String(showDefaultValue) : ''),
+            value: error !== 'required' ? value : (showDefaultValue !== undefined ? String(showDefaultValue) : value),
             onKeyDown: _onKeyDown,
             onBlur: _onBlur
         }));

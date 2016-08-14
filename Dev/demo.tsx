@@ -66,9 +66,10 @@ export default class Demo extends React.Component<void, DemoState> {
         this.onError('required');
     }
 
-    public componentDidUpdate(): void {
+    public componentDidUpdate(props: void, state: DemoState): void {
+        const { error: prevError } = state;
         const { error, value } = this.state;
-        if(error === 'none') {
+        if((error === 'none') && (prevError !== 'none')) {
             alert(`${Number(value)} is a valid number`);
         }
     }
