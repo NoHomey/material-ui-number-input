@@ -4,13 +4,11 @@ import * as DeepEqual from 'deep-equal';
 
 export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required';
 
-export type NumberInputChangeHandler = (event: React.FormEvent, value: string, complete: boolean) => void;
+export type NumberInputChangeHandler = (event: React.FormEvent, value: string) => void;
+
+export type NumberInputValidHandler = (valid: number) => void;
 
 export type NumberInputErrorHandler = (error: NumberInputError) => void;
-
-export interface NumberInputPropsDeepEqual {
-
-}
 
 export interface EventValue {
     target: {
@@ -31,7 +29,6 @@ export interface NumberInputProps {
     max?: number;
     required?: boolean;
     value?: string;
-    error?: NumberInputError;
     errorText?: React.ReactNode;
     errorStyle?: React.CSSProperties;
     floatingLabelFocusStyle?: React.CSSProperties;
@@ -47,8 +44,13 @@ export interface NumberInputProps {
     onBlur?: React.FocusEventHandler;
     onChange?: NumberInputChangeHandler;
     onError?: NumberInputErrorHandler;
+    onValid?: NumberInputValidHandler;
     onFocus?: React.FocusEventHandler;
     onKeyDown?: React.KeyboardEventHandler;
+}
+
+export interface NumberInputState {
+    error?: NumberInputError;
 }
 
 function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.SyntheticEvent {
@@ -71,7 +73,7 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
     };
 }
 
-export class NumberInput extends React.Component<NumberInputProps, void> {
+export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
     public static propTypes: Object = {
         children: React.PropTypes.node,
         className: React.PropTypes.string,
@@ -102,18 +104,35 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         min: React.PropTypes.number,
         max: React.PropTypes.number,
         required: React.PropTypes.bool,
-        value: React.PropTypes.string,
-        error: React.PropTypes.oneOf(['none', 'invalidSymbol', 'incompleteNumber', 'singleMinus', 'singleFloatingPoint', 'singleZero', 'min', 'max', 'required'])
+        value: React.PropTypes.string
     };
-    public static defaultProps: NumberInputProps = {
-        required: false,
-        value: '',
-        error: 'none',
-    };
+    public static defaultProps: NumberInputProps = { required: false };
+    public textField: TextField;
     private _onKeyDown: React.KeyboardEventHandler;
+    private _onChange: React.FormEventHandler;
     private _onBlur: React.FocusEventHandler;
 
-    private _validateValue(value: number): number {
+    private _emitError(nextError: NumberInputError): void {
+        const { props, state } = this;
+        const { onError } = props;
+        const { error } = state;
+        if((error !== nextError)) {
+            if(onError !== undefined) {
+                onError(nextError);
+            }
+            this.setState({ error: nextError });
+        }
+    }
+
+    private _emitValid(value: number): void {
+        const { onValid } = this.props;
+        if(onValid !== undefined) {
+            onValid(value);
+        }
+        this._emitError('none');
+    }
+
+    private _validateNumberValue(value: number): number {
         const { max, min } = this.props;
         if((max !== undefined) && (value > max)) {
             return 1;
@@ -124,65 +143,37 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         return 0;
     }
 
-    private _emitError(nextError: NumberInputError): void {
-        const { error, onError } = this.props;
-        if((onError !== undefined) && (error !== nextError)) {
-            onError(nextError);
-        }
-    }
-
-    private _emitChange(event: React.FormEvent, value: string, complete: boolean): void {
-        const { onChange } = this.props;
-        if(onChange !== undefined) {
-            onChange(event, value, complete);
-        }
-        this._emitError('none');
-    }
-    
-    private _handleKeyDown(event: React.KeyboardEvent): void {
-        const { key } = event;
-        const { value, onKeyDown } = this.props;
-        const canCallOnKeyDown: boolean = onKeyDown !== undefined;
-        let eventValue: EventValue = getChangeEvent(event);
-        if(key.match(/^(Backspace|.)$/)) {
-            event.preventDefault();
-        } else {
-            if(canCallOnKeyDown) {
-                onKeyDown(event);
-            }
+    private _validateValue(value: string): void {
+        const { props } = this;
+        const { showDefaultValue } = props;
+        if(value === undefined) {
             return;
         }
-        if(key.match(/^(\d|\.|\-|..+)$/)) {
-            let valueChange: number;
-            let newValue: string;
-            if(key === 'Backspace') {
-                newValue = value.substring(0, value.length - 1);
-            } else if(key.length === 1) {
-                newValue = value + key;
+        if(value === '') {
+            if(showDefaultValue !== undefined) {
+                this._emitError('required');
             }
-            if(newValue !== undefined) {
-                if(newValue.match(/^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/)) {
-                    const complete: boolean = newValue.match(/^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/) !== null;
-                    eventValue.target.value = newValue;
-                    if(canCallOnKeyDown)  {
-                        onKeyDown(event);
-                    }
-                    this._emitChange(eventValue as React.FormEvent, newValue, complete);
-                    if(complete) {
-                        valueChange = Number(newValue);
-                        switch(this._validateValue(valueChange)) {
+        } else {
+            if(value.match(/^(\-|\.|\d)+$/)) {
+                if(value.match(/^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/)) {
+                    if(value.match(/^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/)) {
+                        const numberValue: number = Number(value);
+                        switch(this._validateNumberValue(numberValue)) {
                             case 1:
                                 this._emitError('max');
                                 break;
                             case -1:
                                 this._emitError('min');
                                 break;
+                            default:
+                                this._emitValid(numberValue);
+                                break;
                         }
-                    } else if(newValue !== '') {
+                    } else {
                         this._emitError('incompleteNumber');
                     }
                 } else {
-                    const last: string = newValue[newValue.length - 1];
+                    const last: string = value[value.length - 1];
                     let error: NumberInputError;
                     switch(last) {
                         case '-':
@@ -197,98 +188,87 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
                     }
                     this._emitError(error);
                 }
-            } else if(key === 'Backspace') {
-                newValue = '';
-                eventValue.target.value = newValue;
-                this._emitChange(eventValue as React.FormEvent, newValue, false);
+            } else {
+                this._emitError('invalidSymbol');
+            }
+        }
+    }
+    
+    private _handleKeyDown(event: React.KeyboardEvent): void {
+        const { key } = event;
+        const { value, onKeyDown } = this.props;
+        if(key.match(/^(\d|\.|\-|..+)$/)) {
+            if(onKeyDown !== undefined) {
+                onKeyDown(event);
             }
         } else {
-            this._emitError('invalidSymbol');
+            event.preventDefault();
+        }
+    }
+
+    private _handleChange(event: React.FormEvent): void {
+        const eventValue: EventValue = event;
+        const { value } = eventValue.target;
+        const { onChange, value: propsValue } = this.props;
+        if(onChange !== undefined) {
+            onChange(event, value);
+        }
+        if(propsValue === undefined) {
+            this._validateValue(value);
         }
     }
 
     private _handleBlur(event: React.FocusEvent): void {
-        const { showDefaultValue, onBlur, errorText, required, value: oldValue } = this.props;
-        let value: string = oldValue;
-        let newValue: string;
-        if(value === '-') {
-            value = '';
-        } else {
-            const last: number = value.length - 1;
-            if(value[last] === '.') {
-                newValue = value.substring(0, last);
-            }
-        }
-        if((value === '') && (showDefaultValue !== undefined)) {
-            newValue = String(showDefaultValue);
-        }
-        const newValueDefined: boolean = newValue !== undefined;
-        let numberValue: number;
-        let targetValue: string;
-        let error: NumberInputError;
-        if(newValueDefined) {
-            numberValue = Number(newValue);
-            targetValue = newValue;
-        } else {
-            newValue = '';
-            numberValue = Number(oldValue);
-            targetValue = value;
-        }
-        switch(this._validateValue(numberValue)) {
-            case 1:
-                error = 'max';
-                break;
-            case -1:
-                error = 'min';
-                break;
-            default:
-                if((value === '') && (newValue === '') && required) {
-                    error = 'required';
-                }
-                break;
-        }
-        if(onBlur !== undefined) {
-            let blurEvent: EventValue = event;
-            blurEvent.target.value = targetValue;
-            onBlur(blurEvent as React.FocusEvent);
-        }
-        if(error !== undefined) {
-            this._emitError(error);
-        } else {
-            if(newValueDefined) {
-                let eventValue: EventValue = getChangeEvent(event);
-                eventValue.target.value = newValue;
-                this._emitChange(eventValue as React.FormEvent, newValue, true);
-            } else {
-                this._emitError('none');
-            }
-        }
+        
+    }
+
+    public getInputNode(): Element {
+        return this.textField.getInputNode();
     }
 
     public constructor(props: NumberInputProps) {
         super(props);
+        this.state = { error: undefined };
         this._onKeyDown = this._handleKeyDown.bind(this);
+        this._onChange = this._handleChange.bind(this);
         this._onBlur = this._handleBlur.bind(this);
     }
 
+    public componentDidMount(): void {
+        this._validateValue(this.props.value);
+    }
+
+    public componentWillReceiveProps(props: NumberInputProps) {
+        const { value } = props;
+        if(value !== this.props.value) {
+            this._validateValue(props.value);
+        }
+    }
+
     public render(): JSX.Element {
-        const { props, _onKeyDown, _onBlur } = this;
+        const { props, state, _onKeyDown, _onChange, _onBlur } = this;
+        const { value, showDefaultValue } = props;
+         const { error } = state;
         let clonedProps: NumberInputProps = Object.assign({}, props);
-        const { error, value, showDefaultValue } = props;
+        let newValue: string = error !== 'required' ? value : (showDefaultValue !== undefined ? String(showDefaultValue) : value);
         if(clonedProps.showDefaultValue !== undefined) {
             delete clonedProps.showDefaultValue;
-        }
-        if(clonedProps.error !== undefined) {
-            delete clonedProps.error;
         }
         if(clonedProps.onError !== undefined) {
             delete clonedProps.onError;
         }
+        if(clonedProps.onValid !== undefined) {
+            delete clonedProps.onValid;
+        }
         return React.cloneElement(<TextField />, Object.assign(clonedProps, {
             type: 'text',
-            value: error !== 'required' ? value : (showDefaultValue !== undefined ? String(showDefaultValue) : value),
+            value: newValue,
             onKeyDown: _onKeyDown,
-            onBlur: _onBlur
+            onChange: _onChange,
+            onBlur: _onBlur,
+            ref: (textField: TextField) => {
+                this.textField = textField;
+            }
         }));
     }
 }

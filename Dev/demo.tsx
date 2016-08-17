@@ -1,12 +1,11 @@
 import * as React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler } from './../src/index';
+import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler, NumberInputValidHandler } from './../src/index';
 
 const { div, link, input } = React.DOM;
 
 interface DemoState {
     value?: string;
-    error?: NumberInputError;
     errorText?: string;
 }
 
@@ -14,21 +13,22 @@ export default class Demo extends React.Component<void, DemoState> {
     private onKeyDown: React.KeyboardEventHandler;
     private onChange: NumberInputChangeHandler;
     private onError: NumberInputErrorHandler;
+    private onValid: NumberInputValidHandler;
 
     public constructor(props: void) {
         super(props);
-        this.state = {};
+        this.state = { value: '' };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
-            console.log(`onKeyDown ${event.key}`);
+            //console.log(`onKeyDown ${event.key}`);
         }
-        this.onChange = (event: React.FormEvent, value: string, complete: boolean): void => {
+        this.onChange = (event: React.FormEvent, value: string): void => {
             const e: EventValue = event;
-            console.log(`onChange ${e.target.value}, ${value}, ${complete}`);
+            console.log(`onChange ${e.target.value}, ${value}`);
             this.setState({ value: value });
         };
         this.onError = (error: NumberInputError): void => {
             let errorText: string;
-            console.log(error);
+            //console.log(error);
             switch(error) {
                 case 'required':
                     errorText = 'This field is required';
@@ -55,10 +55,10 @@ export default class Demo extends React.Component<void, DemoState> {
                     errorText = 'You are tring to enter number greater than 12';
                     break;
             }
-            this.setState({
-                errorText: errorText,
-                error: error
-            });
+            this.setState({ errorText: errorText });
+        }
+        this.onValid = (value: number): void => {
+            alert(`${value} is a valid number!`);
         }
     }
 
@@ -66,17 +66,9 @@ export default class Demo extends React.Component<void, DemoState> {
         this.onError('required');
     }
 
-    public componentDidUpdate(props: void, state: DemoState): void {
-        const { error: prevError } = state;
-        const { error, value } = this.state;
-        if((error === 'none') && (prevError !== 'none')) {
-            alert(`${Number(value)} is a valid number`);
-        }
-    }
-
     public render(): JSX.Element {
-        const { state, onChange, onError, onKeyDown } = this;
-        const { value, error, errorText } = state;
+        const { state, onChange, onError, onValid, onKeyDown } = this;
+        const { value, errorText } = state;
         return (
             <MuiThemeProvider>
                 <div>
@@ -85,12 +77,12 @@ export default class Demo extends React.Component<void, DemoState> {
                         id="num"
                         required
                         value={value}
-                        error={error}
                         min={-10}
                         max={12}
                         errorText={errorText}
-                        onChange={onChange}
                         onError={onError}
+                        onValid={onValid}
+                        onChange={onChange}
                         onKeyDown={onKeyDown} />
                 </div>
             </MuiThemeProvider>
