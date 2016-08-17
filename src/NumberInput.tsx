@@ -75,7 +75,7 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
 }
 
 function allowedError(error: NumberInputError): boolean {
-    return (error === 'none') && (error === 'incompleteNumber');
+    return (error === 'none') || (error === 'incompleteNumber');
 }
 
 export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
@@ -206,9 +206,13 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             const { value } = eventValue.target;
             const nextValue: string = key.length === 1 ? value + key : value;
             const error: NumberInputError = this._validateValue(nextValue);
-            if((useStrategy !== 'allow') && allowedError(error)) {
+            console.log(error);
+            if((useStrategy !== 'allow') && !allowedError(error)) {
                 console.log(`prevent ${key}`);
                 event.preventDefault();
+                if(useStrategy === 'warn') {
+                    this._emitEvents(error, nextValue);
+                }
             } else {
                 emitKeyDown();
             }
