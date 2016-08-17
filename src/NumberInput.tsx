@@ -74,8 +74,8 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
     };
 }
 
-function notAllowedError(error: NumberInputError): boolean {
-    return (error !== 'none') && (error !== 'incompleteNumber');
+function allowedError(error: NumberInputError): boolean {
+    return (error === 'none') && (error === 'incompleteNumber');
 }
 
 export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
@@ -206,13 +206,12 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             const { value } = eventValue.target;
             const nextValue: string = key.length === 1 ? value + key : value;
             const error: NumberInputError = this._validateValue(nextValue);
-            if((useStrategy !== 'allow') && notAllowedError(error)) {
+            if((useStrategy !== 'allow') && allowedError(error)) {
+                console.log(`prevent ${key}`);
                 event.preventDefault();
             } else {
                 emitKeyDown();
             }
-            console.log(error);
-            this._emitEvents(error, nextValue);
         } else {
             emitKeyDown();
         }
@@ -223,7 +222,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { props, state } = this;
         const { onChange, useStrategy } = props;
         const { error } = state;
-        if((onChange !== undefined) && ((useStrategy !== 'ignore') || ((useStrategy === 'ignore') && !notAllowedError(error)))) {
+        if(onChange !== undefined) {
             onChange(event,  eventValue.target.value);
         }
     }
@@ -259,26 +258,15 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         }
     }
 
-    public shouldComponentUpdate(props: NumberInputProps, state: NumberInputState): boolean {
-        const { value, useStrategy } = props;
-        if(value === undefined) {
-            return true;
-        }
-        const equalProps: boolean = DeepEqual(this.props, props);
-        console.log(this.state.error, state.error);
-        const ret: boolean = equalProps && ((useStrategy !== 'ignore') || ((useStrategy === 'ignore') && !notAllowedError(state.error) && ((this.state.error === undefined) || !notAllowedError(this.state.error))));
-        console.log(ret);
-        return ret; 
-    }
-
     public render(): JSX.Element {
         const { props, state, _onKeyDown, _onChange, _onBlur } = this;
         const { value, showDefaultValue, useStrategy } = props;
         const { error } = state;
-        const showValue: string = (notAllowedError(error) && (useStrategy === 'ignore') && (value !== undefined)) ? '' : value;
+        const showValue: string = (!allowedError(error) && (useStrategy === 'ignore') && (value !== undefined)) ? '' : value;
         console.log(error, useStrategy, showValue);
         let clonedProps: NumberInputProps = Object.assign({}, props);
         let newValue: string = error !== 'required' ? showValue : (showDefaultValue !== undefined ? String(showDefaultValue) : showValue);
+        console.log(newValue);
         if(clonedProps.useStrategy !== undefined) {
             delete clonedProps.useStrategy;
         }
