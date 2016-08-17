@@ -17,9 +17,9 @@ export default class Demo extends React.Component<void, DemoState> {
 
     public constructor(props: void) {
         super(props);
-        this.state = { value: '' };
+        this.state = { value: 'a23' };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
-            //console.log(`onKeyDown ${event.key}`);
+            console.log(`onKeyDown ${event.key}`);
         }
         this.onChange = (event: React.FormEvent, value: string): void => {
             const e: EventValue = event;
@@ -28,7 +28,6 @@ export default class Demo extends React.Component<void, DemoState> {
         };
         this.onError = (error: NumberInputError): void => {
             let errorText: string;
-            //console.log(error);
             switch(error) {
                 case 'required':
                     errorText = 'This field is required';
@@ -58,12 +57,12 @@ export default class Demo extends React.Component<void, DemoState> {
             this.setState({ errorText: errorText });
         }
         this.onValid = (value: number): void => {
-            alert(`${value} is a valid number!`);
+            console.debug(`${value} is a valid number!`);
         }
     }
 
     public componentDidMount(): void {
-        this.onError('required');
+        //this.onError('required');
     }
 
     public render(): JSX.Element {
@@ -76,9 +75,10 @@ export default class Demo extends React.Component<void, DemoState> {
                     <NumberInput
                         id="num"
                         required
-                        value={value}
                         min={-10}
                         max={12}
+                        value={value}
+                        useStrategy="ignore"
                         errorText={errorText}
                         onError={onError}
                         onValid={onValid}
