@@ -62,7 +62,7 @@ export default class Demo extends React.Component<void, DemoState> {
     }
 
     public componentDidMount(): void {
-        //this.onError('required');
+        this.onError('required');
     }
 
     public render(): JSX.Element {
