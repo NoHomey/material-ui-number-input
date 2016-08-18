@@ -21,3 +21,31 @@
 ### Implementation
 
 - `shouldComponentUpdate` is now not overrided
+
+## [v3.0.0](https://github.com/NoHomey/react-material-ui-keyboard/releases/tag/3.0.0)
+
+### Properties
+
+#### Deprecated
+
+- `showDefaultValue`
+- `error`
+
+#### New
+
+- `defaultValue` is of type `number` and is the same as `TextField` and `input` `defaultValue` prop
+- `onValid`is function with signature `function(value: number) => void` called when input's value is a valid number
+- `useStrategy` is of type `React.PropTypes.oneOf(['ignore', 'warn', 'allow'])` with defualt value `'allow'` and sets used error strategy refer to [Strategy](https://github.com/NoHomey/material-ui-number-input#strategies) and [Errors](https://github.com/NoHomey/material-ui-number-input#errors) 
+
+#### Changed
+
+- `onError` signature changed to `function(event: React.FromEvent, value: string) => void`
+- `onChange` signature changed to `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero'| 'min' | 'max' | 'required' | 'clean';) => void`
+
+### Errors
+
+- `'clean'` equivalent of `'required'` when `required` prop is `false`
+
+### Implementation
+
+- `error` is moved from `props` to `state`
