@@ -23,7 +23,7 @@ The better TextField for number inputs.
 | fullWidth               | *bool*     | *false*   | *true*    | If true, the field receives the property width 100%. |
 | underlineShow           | *bool*     | *true*    | *true*    | If true, shows the underline for the input field. |
 | defaultValue            | *number*   |           | *true*    | The number to use for the default value. |
-| useStrategy             | *'ignore' | 'warn' | 'allow'* | *false* | Strategy to use when user presses key and when value prop change it's value |
+| useStrategy             | *'ignore' \| 'warn' \| 'allow'* | *false* | Strategy to use when user presses key and when value prop change it's value |
 | min                     | *number*   |           | *false*   | The number used as minimum value limit. |
 | max                     | *number*   |           | *false*   | The number used as maximum value limit. |
 | reqired                 | *bool*     | *false*   | *false*   | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
