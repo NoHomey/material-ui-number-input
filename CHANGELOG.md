@@ -1,6 +1,6 @@
 # Change Log
 
-## [v2.0.0](https://github.com/NoHomey/react-material-ui-keyboard/releases/tag/2.0.0)
+## [v2.0.0](https://github.com/NoHomey/material-ui-number-input/releases/tag/2.0.0)
 
 ### Properties
 
@@ -22,7 +22,7 @@
 
 - `shouldComponentUpdate` is now not overrided
 
-## [v3.0.0](https://github.com/NoHomey/react-material-ui-keyboard/releases/tag/3.0.0)
+## [v3.0.0](https://github.com/NoHomey/material-ui-number-input/releases/tag/3.0.0)
 
 ### Properties
 
