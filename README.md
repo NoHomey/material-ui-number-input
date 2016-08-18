@@ -2,18 +2,6 @@
 
 The better TextField for number inputs.
 
-Fixing all the bugs inherited by `<TextField type="number" />` from the Browser's `<input type="number" />`.
-
-Such as:
-
-- allows only valid number symbols and special keys to be entered while fixing all Backspace bugs of `<input type="number" />` (fixing the posibility that a user might enter ```0.---..12313.``` in the input filed and you as a developer still geting a false validity)
-- emits errors which you can use to give hints to user about what he should enter or even what he entered wrong
-- includes validation out of the box for required & min/max value limits
-- follows material-ui v0.16 unified `onChange` event handler callback signature `(event, value, ...)` in the form of `(event, value, complete)` before v0.16 is even released
--  fully compatible with `TextField` and `input` elements when it comes to event passed to event handlers while still keeping high performance
--  You as a developer can always be sure you get a valid number value by implementing `componentDidUpdate` as demonstrated in [Example](https://github.com/NoHomey/material-ui-number-input#example)
--  You can be sure that mateial-ui-number-input will always try to provide you a valid number when user leaves the input field while still providing validation
-
 # Install
 
 `npm install material-ui-number-input`
@@ -34,14 +22,15 @@ Such as:
 | name                    | *string*   |           | *true*    | Name applied to the input. |
 | fullWidth               | *bool*     | *false*   | *true*    | If true, the field receives the property width 100%. |
 | underlineShow           | *bool*     | *true*    | *true*    | If true, shows the underline for the input field. |
-| showDefaultValue        | *number*   |           | *false*   | The number showed as default value (if input is left empty and if there is onChange handler than it will be invoked with showDefaultValue). |
+| defaultValue            | *number*   |           | *true*    | The number to use for the default value. |
+| useStrategy             | *'ignore' | 'warn' | 'allow'* | *false* | Strategy to use when user presses key and when value prop change it's value |
 | min                     | *number*   |           | *false*   | The number used as minimum value limit. |
 | max                     | *number*   |           | *false*   | The number used as maximum value limit. |
-| reqired                 | *bool*     | *false*   | *false*   | If true and if input is left empty than 'required' error will be emited throughout onChange and onErrorChange handlers. |
-| value                   | *string*   | *''*      | *true*   | The value of the input field. |
-| onChange                | *function* |           | *true*   | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string, complate: boolean) => void`. |
-| error                   | *'none' \| 'invalidSymbol' \| 'incompleteNumber' \| 'singleMinus' \| 'singleFloatingPoint' \| 'singleZero' \| 'min' \| 'max' \| 'required'* | *'none'* | *false* | Error status required in order to decide when to call onError when error changes. |
-| onError           | *function* |         | *false*   | Callback function that is fired when input error status changes.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required') => void`. |
+| reqired                 | *bool*     | *false*   | *false*   | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
+| value                   | *string*   |           | *true*   | The value of the input field. |
+| onChange                | *function* |           | *true*   | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
+| onError           | *function* |         | *false*   | Callback function that is fired when input error status changes.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'empty') => void`. |
+| onValid                 | *function*|            | *false*   | Callback function that is fired when input's value is a valid number ('none' error was catched).  **Signature:** `function(value: number) => void` |
 | errorText               | *node*     |           | *true*    | The error content to display. |
 | errorStyle              | *object*   |           | *true*    | The style object to use to override error styles. |
 | floatingLabelFocusStyle | *object*   |           | *true*    | The style object to use to override floating label styles when focused. |
@@ -55,6 +44,20 @@ Such as:
 | underlineFocusStyle     | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element when focussed. |
 | underlineStyle          | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element. |
 
+# Strategies
+
+## 'ignore'
+
+When `useStrategy` is `'ignore'` `onError` is never called. Internally catches `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` errors to allow valid numbers only to be entered. All other errors are prevented from ocurring when user types in the input field, but not when `value` prop is changed other than after call from `onChange`. In all cases when `value` is setted with `string` which would generate error other than the pointed errors input value will be cleared including the intial value.
+
+## 'warn'
+
+When `useStrategy` is `'warn'` `onError` will be always called with catched error but when error other than `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` occures `preventDefault` will be called on the `KeyboardEvent`  when `onKeyDown` is fired and the event will be trapped so no calls to `onKeyDown`, `onKeyUp`, `onKeyPress` and `onChange` will be delegated. Manually setting `value` with `string` that will generate error other than the pointed won't stop input value from change.
+
+## 'allow'
+
+When `useStrategy` is `'allow'` no error is prevented from changing input's value and all are emitted with call to `onError`. This is the default strategy.
+
 # Errors
 
 ## 'none'
@@ -63,7 +66,11 @@ Fired when input's value is valid (there is no error).
 
 ## 'required'
 
-Fired when `required` prop is `true` and user leaves empty the input or it gets cleard after onBlur listener.
+Fired when `required` prop is `true` and user leaves empty the input or it gets cleared.
+
+## 'clean'
+
+Fired when `required` prop is `false` and user leaves empty the input or it gets cleared.
 
 ## 'invalidSymbol'
 
@@ -102,15 +109,15 @@ import NumberInput from 'material-ui-number-input';
 class Demo extends React.Component {
   constructor(props) {
   super(props);
-  this.state = {};
+  this.state = { value: '12.' };
   
   this.onKeyDown = (event) => {
     console.log(`onKeyDown ${event.key}`);
   };
   
-  this.onChange = (event, value, complete) => {
+  this.onChange = (event, value) => {
     const e = event;
-    console.log(`onChange ${e.target.value}, ${value}, ${complete}`);
+    console.log(`onChange ${e.target.value}, ${value}`);
     this.setState({ value: value });
   };
   
@@ -143,37 +150,31 @@ class Demo extends React.Component {
             errorText = 'You are tring to enter number greater than 12';
             break;
       }
-      this.setState({
-        errorText: errorText,
-        error: error
-      });
+      this.setState({ errorText: errorText });
+    };
+    this.onValid = (value) => {
+      console.debug(`${value} is a valid number`);
     };
   }
     
   componentDidMount() {
     this.onError('required');
   }
-  
-  componentDidUpdate(props, state) {
-    const { error: prevError } = state;
-    const { error, value } = this.state;
-    if((error === 'none') && (prevError !== 'none')) {
-      alert(`${Number(value)} is a valid number`);
-    }
-  }
     
   render() {
-    const { state, onChange, onError, onKeyDown } = this;
-    const { error, value, errorText } = state;  
+    const { state, onChange, onError, onKeyDown, onValid } = this;
+    const { value, errorText } = state;  
     return (
       <NumberInput
         id="num"
         required
+        defaultValue={9}
         min={-10}
         max={12}
         value={value}
-        error={error}
+        useStrategy="warn"
         errorText={errorText}
+        onValid={onValid}
         onChange={onChange}
         onError={onError}
         onKeyDown={onKeyDown} />
