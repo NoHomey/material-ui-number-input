@@ -29,7 +29,7 @@ export interface NumberInputProps {
     min?: number;
     max?: number;
     required?: boolean;
-    useStrategy?: 'ignore' | 'warn' | 'allow';
+    strategy?: 'ignore' | 'warn' | 'allow';
     value?: string;
     errorText?: React.ReactNode;
     errorStyle?: React.CSSProperties;
@@ -116,10 +116,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         min: React.PropTypes.number,
         max: React.PropTypes.number,
         required: React.PropTypes.bool,
-        useStrategy: React.PropTypes.oneOf(['ignore', 'warn', 'allow']),
+        strategy: React.PropTypes.oneOf(['ignore', 'warn', 'allow']),
         value: React.PropTypes.string
     };
-    public static defaultProps: NumberInputProps = { required: false, useStrategy: 'allow' };
+    public static defaultProps: NumberInputProps = { required: false, strategy: 'allow' };
     public textField: TextField;
     private _onKeyDown: React.KeyboardEventHandler;
     private _onChange: React.FormEventHandler;
@@ -127,10 +127,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     private _emitEvents(nextError: NumberInputErrorExtended, value: string, valid: boolean = true): void {
         const { props, state } = this;
-        const { onError, onValid, useStrategy } = props;
+        const { onError, onValid, strategy } = props;
         const { error } = state;
         if((error !== nextError)) {
-            if((onError !== undefined) && (useStrategy !== 'ignore') && (nextError !== 'limit')) {
+            if((onError !== undefined) && (strategy !== 'ignore') && (nextError !== 'limit')) {
                 onError(nextError as NumberInputError);
             }
             this.setState({ error: nextError });
@@ -153,7 +153,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     private _validateValue(value: string): NumberInputErrorExtended {
         const { props } = this;
-        const { required, useStrategy, max, min } = props;
+        const { required, strategy, max, min } = props;
         if(value === '') {
             return required ? 'required' : 'clean';
         } else {
@@ -167,7 +167,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                         }
                     } else {
                         const checkLimit: number = parseFloat(removeLastChar(value));
-                        return ((useStrategy === 'ignore') && ((checkLimit === max) || (checkLimit === min))) ? 'limit' : 'incompleteNumber';
+                        return ((strategy === 'ignore') && ((checkLimit === max) || (checkLimit === min))) ? 'limit' : 'incompleteNumber';
                     }
                 } else {
                     const last: string = value[value.length - 1];
@@ -197,7 +197,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
         const { key } = event;
-        const { onKeyDown, useStrategy } = this.props;
+        const { onKeyDown, strategy } = this.props;
         const canCallOnKeyDown: boolean = onKeyDown !== undefined;
         const emitKeyDown: () => void = (): void => {
             if(canCallOnKeyDown) {
@@ -209,9 +209,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             const { value } = eventValue.target;
             const nextValue: string = key.length === 1 ? value + key : value;
             const error: NumberInputErrorExtended = this._validateValue(nextValue);
-            if((useStrategy !== 'allow') && !allowedError(error)) {
+            if((strategy !== 'allow') && !allowedError(error)) {
                 event.preventDefault();
-                if(useStrategy === 'warn') {
+                if(strategy === 'warn') {
                     this._emitEvents(error, nextValue);
                 }
             } else {
@@ -226,7 +226,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const eventValue: EventValue = event;
         const { value } = eventValue.target;
         const { props, state } = this;
-        const { onChange, useStrategy, value: propsValue } = props;
+        const { onChange, strategy, value: propsValue } = props;
         const { error } = state;
         if(onChange !== undefined) {
             onChange(event, value);
@@ -238,13 +238,13 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     private _handleBlur(event: React.FocusEvent): void {
         const eventValue: EventValue = event;
-        const { useStrategy } = this.props;
-        if(useStrategy === 'warn') {
+        const { strategy } = this.props;
+        if(strategy === 'warn') {
             this._validateAndEmit(eventValue.target.value, false);
         }
     }
 
-    public getInputNode(): Element {
+    public getInputNode(): HTMLInputElement {
         return this.textField.getInputNode();
     }
 
@@ -272,13 +272,13 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     public render(): JSX.Element {
         const { props, state, _onKeyDown, _onChange, _onBlur } = this;
-        const { value, defaultValue, useStrategy } = props;
+        const { value, defaultValue, strategy } = props;
         const { error } = state;
-        const shouldOverwrite: boolean = (value !== undefined) && (useStrategy === 'ignore') && !allowedError(error);
+        const shouldOverwrite: boolean = (value !== undefined) && (strategy === 'ignore') && !allowedError(error);
         const newValue: string = shouldOverwrite ? (error !== 'limit' ? '' : removeLastChar(value)) : value;
         let clonedProps: NumberInputProps = ObjectAssign({}, props);
-        if(clonedProps.useStrategy !== undefined) {
-            delete clonedProps.useStrategy;
+        if(clonedProps.strategy !== undefined) {
+            delete clonedProps.strategy;
         }
         if(clonedProps.onError !== undefined) {
             delete clonedProps.onError;
