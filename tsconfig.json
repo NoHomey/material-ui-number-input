@@ -10,7 +10,6 @@
         "typings/index.d.ts",
         "Dev/demo.tsx",
         "Dev/index.tsx",
-        "src/Object_assign.d.ts",
         "src/NumberInput.tsx",
         "src/index.tsx"
     ],

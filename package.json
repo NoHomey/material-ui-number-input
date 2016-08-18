@@ -33,7 +33,7 @@
     "url": "git+https://github.com/NoHomey/material-ui-number-input.git"
   },
   "peerDependencies": {
-    "material-ui": "^0.15.3",
+    "material-ui": "^0.15.4",
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
     "react-tap-event-plugin": "^1.0.0"
@@ -54,6 +54,6 @@
     "webpack-hot-middleware": "^2.12.2"
   },
   "dependencies": {
-    "deep-equal": "^1.0.1"
+    "object-assign": "^4.1.0"
   }
 }

@@ -5,6 +5,6 @@
     "react-dom": "registry:dt/react-dom",
     "react-tap-event-plugin": "registry:dt/react-tap-event-plugin",
     "material-ui": "registry:dt/material-ui",
-    "deep-equal": "registry:dt/deep-equal"
+    "object-assign": "registry:dt/object-assign"
   }
 }

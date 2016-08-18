@@ -1,8 +1,9 @@
 import * as React from 'react';
 import TextField from 'material-ui/TextField';
-import * as DeepEqual from 'deep-equal';
+import ObjectAssign = require('object-assign');
 
-export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'empty';
+export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus'
+    | 'singleFloatingPoint' | 'singleZero'| 'min' | 'max' | 'required' | 'clean';
 
 export type NumberInputChangeHandler = (event: React.FormEvent, value: string) => void;
 
@@ -77,7 +78,7 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
 }
 
 function allowedError(error: NumberInputErrorExtended): boolean {
-    return (error === 'none') || (error === 'incompleteNumber') || (error === 'empty') || (error === 'required');
+    return (error === 'none') || (error === 'incompleteNumber') || (error === 'clean') || (error === 'required');
 }
 
 function removeLastChar(value: string): string {
@@ -132,10 +133,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             if((onError !== undefined) && (useStrategy !== 'ignore') && (nextError !== 'limit')) {
                 onError(nextError as NumberInputError);
             }
-            if((nextError === 'none') && (onValid !== undefined) && valid) {
-                onValid(Number(value));
-            }
             this.setState({ error: nextError });
+        }
+        if((nextError === 'none') && (onValid !== undefined) && valid) {
+            onValid(Number(value));
         }
     }
 
@@ -153,10 +154,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     private _validateValue(value: string): NumberInputErrorExtended {
         const { props } = this;
         const { required, useStrategy, max, min } = props;
-        console.log(`validateing ${value}`);
         if(value === '') {
-            console.log('empty value');
-            return required ? 'required' : 'empty';
+            return required ? 'required' : 'clean';
         } else {
             if(value.match(/^(\-|\.|\d)+$/)) {
                 if(value.match(/^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/)) {
@@ -210,9 +209,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             const { value } = eventValue.target;
             const nextValue: string = key.length === 1 ? value + key : value;
             const error: NumberInputErrorExtended = this._validateValue(nextValue);
-            console.log(error);
             if((useStrategy !== 'allow') && !allowedError(error)) {
-                console.log(`prevent ${key}`);
                 event.preventDefault();
                 if(useStrategy === 'warn') {
                     this._emitEvents(error, nextValue);
@@ -279,8 +276,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { error } = state;
         const shouldOverwrite: boolean = (value !== undefined) && (useStrategy === 'ignore') && !allowedError(error);
         const newValue: string = shouldOverwrite ? (error !== 'limit' ? '' : removeLastChar(value)) : value;
-        let clonedProps: NumberInputProps = Object.assign({}, props);
-        console.log(error, useStrategy, newValue);
+        let clonedProps: NumberInputProps = ObjectAssign({}, props);
         if(clonedProps.useStrategy !== undefined) {
             delete clonedProps.useStrategy;
         }
@@ -290,16 +286,14 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.onValid !== undefined) {
             delete clonedProps.onValid;
         }
-        return React.cloneElement(<TextField />, Object.assign(clonedProps, {
+        return React.cloneElement(<TextField />, ObjectAssign(clonedProps, {
             type: 'text',
             defaultValue: defaultValue === undefined ? defaultValue : String(defaultValue), 
             value: newValue,
             onKeyDown: _onKeyDown,
             onChange: _onChange,
             onBlur: _onBlur,
-            ref: (textField: TextField) => {
-                this.textField = textField;
-            }
+            ref: (textField: TextField) => { this.textField = textField; }
         }));
     }
 }
