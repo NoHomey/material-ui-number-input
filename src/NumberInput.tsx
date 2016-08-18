@@ -50,8 +50,10 @@ export interface NumberInputProps {
     onKeyDown?: React.KeyboardEventHandler;
 }
 
+type NumberInputErrorExtended = NumberInputError | 'limit';
+
 export interface NumberInputState {
-    error?: NumberInputError;
+    error?: NumberInputErrorExtended;
 }
 
 function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.SyntheticEvent {
@@ -64,9 +66,9 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
         isTrusted: event.isTrusted,
         nativeEvent: event.nativeEvent,
         preventDefault: event.preventDefault,
-        //isDefaultPrevented: event.isDefaultPrevented,
+        isDefaultPrevented: event.isDefaultPrevented,
         stopPropagation: event.stopPropagation,
-        //isPropagationStopped: event.isPropagationStopped,
+        isPropagationStopped: event.isPropagationStopped,
         persist: event.persist,
         target: event.target,
         timeStamp: event.timeStamp,
@@ -74,8 +76,12 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
     };
 }
 
-function allowedError(error: NumberInputError): boolean {
+function allowedError(error: NumberInputErrorExtended): boolean {
     return (error === 'none') || (error === 'incompleteNumber');
+}
+
+function removeLastChar(value: string): string {
+    return value.substring(0, value.length - 1);
 }
 
 export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
@@ -118,13 +124,13 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     private _onChange: React.FormEventHandler;
     private _onBlur: React.FocusEventHandler;
 
-    private _emitEvents(nextError: NumberInputError, value: string): void {
+    private _emitEvents(nextError: NumberInputErrorExtended, value: string): void {
         const { props, state } = this;
         const { onError, onValid, useStrategy } = props;
         const { error } = state;
         if((error !== nextError)) {
-            if((onError !== undefined) && (useStrategy !== 'ignore')) {
-                onError(nextError);
+            if((onError !== undefined) && (useStrategy !== 'ignore') && (nextError !== 'limit')) {
+                onError(nextError as NumberInputError);
             }
             if((nextError === 'none') && (onValid !== undefined)) {
                 onValid(Number(value));
@@ -144,9 +150,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         return 0;
     }
 
-    private _validateValue(value: string): NumberInputError {
+    private _validateValue(value: string): NumberInputErrorExtended {
         const { props } = this;
-        const { showDefaultValue } = props;
+        const { showDefaultValue, useStrategy, max, min } = props;
         if(value === undefined) {
             return;
         }
@@ -164,7 +170,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                             default: return 'none';
                         }
                     } else {
-                        return 'incompleteNumber';
+                        const checkLimit: number = parseFloat(removeLastChar(value));
+                        return ((useStrategy === 'ignore') && ((checkLimit === max) || (checkLimit === min))) ? 'limit' : 'incompleteNumber';
                     }
                 } else {
                     const last: string = value[value.length - 1];
@@ -205,7 +212,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             const eventValue: EventValue = event;
             const { value } = eventValue.target;
             const nextValue: string = key.length === 1 ? value + key : value;
-            const error: NumberInputError = this._validateValue(nextValue);
+            const error: NumberInputErrorExtended = this._validateValue(nextValue);
             console.log(error);
             if((useStrategy !== 'allow') && !allowedError(error)) {
                 console.log(`prevent ${key}`);
@@ -266,7 +273,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { props, state, _onKeyDown, _onChange, _onBlur } = this;
         const { value, showDefaultValue, useStrategy } = props;
         const { error } = state;
-        const showValue: string = (!allowedError(error) && (useStrategy === 'ignore') && (value !== undefined)) ? '' : value;
+        const shouldOverwrite: boolean = (value !== undefined) && (useStrategy === 'ignore') && !allowedError(error);
+        const showValue: string = shouldOverwrite ? (error !== 'limit' ? '' : removeLastChar(value)) : value;
         console.log(error, useStrategy, showValue);
         let clonedProps: NumberInputProps = Object.assign({}, props);
         let newValue: string = error !== 'required' ? showValue : (showDefaultValue !== undefined ? String(showDefaultValue) : showValue);

@@ -17,7 +17,7 @@ export default class Demo extends React.Component<void, DemoState> {
 
     public constructor(props: void) {
         super(props);
-        this.state = { value: 'a23' };
+        this.state = { value: '12.' };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
             console.log(`onKeyDown ${event.key}`);
         }
@@ -78,7 +78,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         min={-10}
                         max={12}
                         value={value}
-                        useStrategy="warn"
+                        useStrategy="ignore"
                         errorText={errorText}
                         onError={onError}
                         onValid={onValid}
