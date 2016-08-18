@@ -51,7 +51,7 @@ export interface NumberInputProps {
     onKeyDown?: React.KeyboardEventHandler;
 }
 
-type NumberInputErrorExtended = NumberInputError | 'limit';
+export type NumberInputErrorExtended = NumberInputError | 'limit';
 
 export interface NumberInputState {
     error?: NumberInputErrorExtended;
