@@ -22,10 +22,10 @@ The better TextField for number inputs.
 | name                    | *string*   |           | *true*    | Name applied to the input. |
 | fullWidth               | *bool*     | *false*   | *true*    | If true, the field receives the property width 100%. |
 | underlineShow           | *bool*     | *true*    | *true*    | If true, shows the underline for the input field. |
-| defaultValue            | *number*   |           | *true*    | The number to use for the default value. |
+| defaultValue            | *number*   |           | *true*    | The number to use for the default value. Must be in range [min, max] if any is setted. |
 | useStrategy             | *'ignore' \| 'warn' \| 'allow'* | *'allow'* | *false* | Strategy to use when user presses key and when value prop change it's value. |
-| min                     | *number*   |           | *false*   | The number used as minimum value limit. |
-| max                     | *number*   |           | *false*   | The number used as maximum value limit. |
+| min                     | *number*   |           | *false*   | The number used as minimum value limit. Must be less than max. |
+| max                     | *number*   |           | *false*   | The number used as maximum value limit. Must be greater than min. |
 | reqired                 | *bool*     | *false*   | *false*   | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
 | value                   | *string*   |           | *true*   | The value of the input field. |
 | onChange                | *function* |           | *true*   | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
