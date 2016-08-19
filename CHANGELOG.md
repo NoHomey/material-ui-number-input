@@ -50,6 +50,7 @@
 
 - `error` is moved from `props` to `state`
 - re-exposing public method `getInputNode` of `TextField`
+- using polyfillied Object.assign ('object-assign')
 
 ## [v3.1.0](https://github.com/NoHomey/material-ui-number-input/releases/tag/3.1.0)
 
