@@ -204,10 +204,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                 onKeyDown(event);
             }
         }
-        if(key.length === 1) {
+        if(key.match(/^(.|Backspace)$/)) {
             const eventValue: EventValue = event;
             const { value } = eventValue.target;
-            const nextValue: string = key.length === 1 ? value + key : value;
+            const nextValue: string = key.length === 1 ? value + key : removeLastChar(value);
             const error: NumberInputErrorExtended = this._validateValue(nextValue);
             if((strategy !== 'allow') && !allowedError(error)) {
                 event.preventDefault();

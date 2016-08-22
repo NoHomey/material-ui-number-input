@@ -62,3 +62,9 @@
 - `useStrategy` has been renamed to `strategy`
 
 ### README changes
+
+## [v3.1.2](https://github.com/NoHomey/material-ui-number-input/releases/tag/3.1.2)
+
+### Bug fixes
+
+- fixing when `event.preventDefault()` is called and when `event` is delegated

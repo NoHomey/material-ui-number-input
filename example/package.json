@@ -8,11 +8,11 @@
   "author": "Ivo Stratev",
   "license": "MIT",
   "dependencies": {
-    "material-ui": "^0.15.3",
-    "react": "^15.3.0",
-    "react-dom": "^15.3.0",
+    "material-ui": "^0.15.4",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
     "react-tap-event-plugin": "^1.0.0",
-    "material-ui-number-input": "^2.0.0"
+    "material-ui-number-input": "^3.1.1"
   },
   "devDependencies": {
     "html-webpack-plugin": "^2.22.0",

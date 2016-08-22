@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render as ReactDomRender } from 'react-dom';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler } from 'material-ui-number-input';
+import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler, NumberInputValidHandler } from 'material-ui-number-input';
 
 const { div, link, input } = React.DOM;
 
