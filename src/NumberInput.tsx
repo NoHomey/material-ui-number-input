@@ -194,6 +194,18 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     private _validateAndEmit(value: string, valid: boolean = true) {
         this._emitEvents(this._validateValue(value), value, valid);
     }
+
+    private _overwriteValue(): string {
+        const { props, state } = this;
+        const { min, max, value } = props;
+        const { error } = state;
+        switch(error) {
+            case 'limit': return removeLastChar(value);
+            case 'min': return String(min);
+            case 'max': return String(max);
+            default: return '';
+        }
+    }
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
         const { key } = event;
@@ -275,7 +287,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { value, defaultValue, strategy } = props;
         const { error } = state;
         const shouldOverwrite: boolean = (value !== undefined) && (strategy === 'ignore') && !allowedError(error);
-        const newValue: string = shouldOverwrite ? (error !== 'limit' ? '' : removeLastChar(value)) : value;
+        const newValue: string = shouldOverwrite ? this._overwriteValue() : value;
         let clonedProps: NumberInputProps = ObjectAssign({}, props);
         if(clonedProps.strategy !== undefined) {
             delete clonedProps.strategy;

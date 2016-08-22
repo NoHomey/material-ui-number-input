@@ -48,7 +48,7 @@ The better TextField for number inputs.
 
 ## 'ignore'
 
-When `srategy` is `'ignore'` `onError` is never called. Internally catches `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` errors to allow valid numbers only to be entered. All other errors are prevented from ocurring when user types in the input field, but not when `value` prop is changed other than after call from `onChange`. In all cases when `value` is setted with `string` which would generate error other than the pointed errors input value will be cleared including the intial value.
+When `srategy` is `'ignore'` `onError` is never called. Internally catches `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` errors to allow valid numbers only to be entered. All other errors are prevented from ocurring when user types in the input field, but not when `value` prop is changed other than after call from `onChange`. In all cases when `value` is setted with `string` which would generate error other than the pointed errors input value will be cleared including the intial value, except when error is `min` or `max` in this cases value will be overwritten with `String(props[error])`.
 
 ## 'warn'
 

@@ -68,3 +68,9 @@
 ### Bug fixes
 
 - fixing when `event.preventDefault()` is called and when `event` is delegated
+
+## [v3.2.0](https://github.com/NoHomey/material-ui-number-input/releases/tag/3.2.0)
+
+### Breaking changes
+
+- When `strategy` is `'ignore'` and `error` is `min` or `max` instead of clearing input field it's value is overwritten with `String(props[error])`

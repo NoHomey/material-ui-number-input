@@ -78,7 +78,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         min={-10}
                         max={12}
                         defaultValue={0.1}
-                        strategy="warn"
+                        strategy="ignore"
                         errorText={errorText}
                         onError={onError}
                         onValid={onValid}
