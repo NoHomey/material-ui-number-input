@@ -129,9 +129,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { props, state } = this;
         const { onError, onValid, strategy } = props;
         const { error } = state;
-        const correctError: NumberInputErrorExtended = nextError !== 'allow' ? nextError : 'min';
+        const ignore: boolean = (strategy === 'ignore');
+        const correctError: NumberInputErrorExtended = (nextError !== 'allow' || ignore) ? nextError : 'min';
         if((error !== correctError)) {
-            if((onError !== undefined) && (strategy !== 'ignore') && (correctError !== 'limit')) {
+            if((onError !== undefined) && !ignore && (correctError !== 'limit')) {
                 onError(correctError as NumberInputError);
             }
             this.setState({ error: correctError });
@@ -165,7 +166,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                         const whole: number = numberValue % 10;
                         switch(this._validateNumberValue(numberValue)) {
                             case 1: return 'max';
-                            case -1: return ((strategy !== 'allow') && (min > 0) && ((min * 10) >= max) && (((whole === numberValue) || (whole === 0)) || (numberValue <= max / 10))) ? 'allow' : 'min';
+                            case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue > 0) && ((min * 10) >= max) && (((whole === numberValue) || (whole === 0)) || (numberValue <= (max / 10)))) ? 'allow' : 'min';
                             default: return 'none';
                         }
                     } else {
@@ -200,14 +201,30 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     private _overwriteValue(): string {
         const { props, state } = this;
-        const { min, max, value } = props;
+        const { min, max, value, onValid } = props;
         const { error } = state;
+        const shouldEmit: boolean = onValid !== undefined;
+        const emitValid: (valid: number) => void = (valid: number): void => {
+            if(shouldEmit) {
+                onValid(valid);
+            }
+        }
         switch(error) {
             case 'limit': return removeLastChar(value);
-            case 'min': return String(min);
-            case 'max': return String(max);
+            case 'min':
+                emitValid(min);
+                return String(min);
+            case 'max':
+                emitValid(max);
+                return String(max);
             default: return '';
         }
+    }
+
+    private _getRenderValue(value: string): string {
+        const { props, state } = this;
+        const shouldOverwrite: boolean = (props.strategy === 'ignore') && !allowedError(state.error);
+        return shouldOverwrite ? this._overwriteValue() : value;
     }
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
@@ -271,24 +288,39 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         this._onBlur = this._handleBlur.bind(this);
     }
 
+    public componentWillMount(): void {
+        const { value } = this.props;
+        if(value !== undefined) {
+            this._validateAndEmit(value);
+        }
+    }
+
     public componentDidMount(): void {
-        this._validateAndEmit(this.getInputNode().value);
+        const { value } = this.props;
+        if(value === undefined) {
+            this._validateAndEmit(this.getInputNode().value);
+        }
     }
 
     public componentWillReceiveProps(props: NumberInputProps) {
         const { value } = props;
         const { error } = this.state;
-        if((value !== this.props.value) || (error == 'min') || (error === 'max')) {
-           this._validateAndEmit(value);
+        if((value !== undefined) && ((value !== this.props.value) || (error == 'min') || (error === 'max'))) {
+            this._validateAndEmit(value);
+        }
+    }
+
+    public componentDidUpdate(): void {
+        if(this.props.value === undefined) {
+            let input: HTMLInputElement = this.getInputNode();
+            input.value = this._getRenderValue(input.value);
         }
     }
 
     public render(): JSX.Element {
         const { props, state, _onKeyDown, _onChange, _onBlur } = this;
         const { value, defaultValue, strategy } = props;
-        const { error } = state;
-        const shouldOverwrite: boolean = (value !== undefined) && (strategy === 'ignore') && !allowedError(error);
-        const newValue: string = shouldOverwrite ? this._overwriteValue() : value;
+        const newValue: string = this._getRenderValue(value);
         let clonedProps: NumberInputProps = ObjectAssign({}, props);
         if(clonedProps.strategy !== undefined) {
             delete clonedProps.strategy;
@@ -299,7 +331,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.onValid !== undefined) {
             delete clonedProps.onValid;
         }
-        return React.cloneElement(<TextField />, ObjectAssign(clonedProps, {
+        const inputProps: NumberInputProps = ObjectAssign(clonedProps, {
             type: 'text',
             defaultValue: defaultValue === undefined ? defaultValue : String(defaultValue), 
             value: newValue,
@@ -307,7 +339,11 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             onChange: _onChange,
             onBlur: _onBlur,
             ref: (textField: TextField) => { this.textField = textField; }
-        }));
+        });
+        if(value === undefined) {
+            delete inputProps.value;
+        }
+        return React.cloneElement(<TextField />, inputProps);
     }
 }
 
