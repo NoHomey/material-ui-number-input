@@ -17,7 +17,7 @@ export default class Demo extends React.Component<void, DemoState> {
 
     public constructor(props: void) {
         super(props);
-        this.state = { value: '12.' };
+        this.state = { value: '' };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
             console.log(`onKeyDown ${event.key}`);
         }
@@ -48,10 +48,10 @@ export default class Demo extends React.Component<void, DemoState> {
                     errorText = 'Floating point is expected';
                     break;
                 case 'min':
-                    errorText = 'You are tring to enter number less than -10';
+                    errorText = 'You are tring to enter number less than 20';
                     break;
                 case 'max':
-                    errorText = 'You are tring to enter number greater than 12';
+                    errorText = 'You are tring to enter number greater than 150';
                     break;
             }
             this.setState({ errorText: errorText });
@@ -59,10 +59,6 @@ export default class Demo extends React.Component<void, DemoState> {
         this.onValid = (value: number): void => {
             console.debug(`${value} is a valid number!`);
         }
-    }
-
-    public componentDidMount(): void {
-        this.onError('required');
     }
 
     public render(): JSX.Element {
@@ -78,7 +74,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         min={20}
                         max={150}
                         value={value}
-                        strategy="ignore"
+                        strategy="warn"
                         errorText={errorText}
                         onError={onError}
                         onValid={onValid}
