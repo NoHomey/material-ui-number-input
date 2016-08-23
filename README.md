@@ -114,7 +114,7 @@ Fired when user enters number less than `min` prop value.
 
 Fired when user enters number greater than `max` prop value.
 
-# Internal errors
+## Internal errors
 
 - errors `'limit'` and `'allow'` are catched internally and never emitted since they are part of the implementation and are not user defined. 
 

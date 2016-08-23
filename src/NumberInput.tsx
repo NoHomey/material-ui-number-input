@@ -163,10 +163,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                 if(value.match(/^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/)) {
                     if(value.match(/^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/)) {
                         const numberValue: number = Number(value);
-                        const whole: number = numberValue % 10;
                         switch(this._validateNumberValue(numberValue)) {
                             case 1: return 'max';
-                            case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue > 0) && ((min * 10) >= max) && (((whole === numberValue) || (whole === 0)) || (numberValue <= (max / 10)))) ? 'allow' : 'min';
+                            case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue > 0) && ((min * 10) >= max) && (numberValue <= (max / 10))) ? 'allow' : 'min';
                             default: return 'none';
                         }
                     } else {
