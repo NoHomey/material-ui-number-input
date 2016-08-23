@@ -64,10 +64,6 @@ class Demo extends React.Component<void, DemoState> {
         }
     }
 
-    public componentDidMount(): void {
-        this.onError('required');
-    }
-
     public render(): JSX.Element {
         const { state, onChange, onError, onValid, onKeyDown } = this;
         const { value, errorText } = state;
@@ -80,7 +76,7 @@ class Demo extends React.Component<void, DemoState> {
                         required
                         min={-10}
                         max={12}
-                        defaultValue={0.1}
+                        value={value}
                         strategy="warn"
                         errorText={errorText}
                         onError={onError}

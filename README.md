@@ -132,7 +132,6 @@ import NumberInput from 'material-ui-number-input';
 class Demo extends React.Component {
   constructor(props) {
   super(props);
-  this.state = { value: '12.' };
   
   this.onKeyDown = (event) => {
     console.log(`onKeyDown ${event.key}`);
@@ -141,7 +140,6 @@ class Demo extends React.Component {
   this.onChange = (event, value) => {
     const e = event;
     console.log(`onChange ${e.target.value}, ${value}`);
-    this.setState({ value: value });
   };
   
   this.onError = (error) => {
@@ -180,13 +178,8 @@ class Demo extends React.Component {
     };
   }
     
-  componentDidMount() {
-    this.onError('required');
-  }
-    
   render() {
-    const { state, onChange, onError, onKeyDown, onValid } = this;
-    const { value, errorText } = state;  
+    const { state, onChange, onError, onKeyDown, onValid } = this; 
     return (
       <NumberInput
         id="num"
@@ -194,9 +187,8 @@ class Demo extends React.Component {
         defaultValue={9}
         min={-10}
         max={12}
-        value={value}
-        strategy="warn"
-        errorText={errorText}
+        strategy="ignore"
+        errorText={state.errorText}
         onValid={onValid}
         onChange={onChange}
         onError={onError}
