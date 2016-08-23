@@ -165,7 +165,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                         const numberValue: number = Number(value);
                         switch(this._validateNumberValue(numberValue)) {
                             case 1: return 'max';
-                            case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue > 0) && ((min * 10) >= max) && (numberValue <= (max / 10))) ? 'allow' : 'min';
+                            case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue >= 0)) ? 'allow' : 'min';
                             default: return 'none';
                         }
                     } else {

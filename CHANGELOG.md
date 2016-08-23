@@ -83,3 +83,8 @@
 - Fixing a bug after `v3.2.0`. Now `onValid` is emitted when input's value is beeing overwritten when ''min'' or `'max'` errors are cathced and `strategy` is not `'allow'`.
 - Fixing a bug after `v3.2.0` where input value was not overwritten when `'min'` or `'max'` errors are cathced and `strategy` is not `'allow'` and input is `uncontrolled`.
 - Fixing a bug where input's value is not beeing validated before and after initial `render` depending on that is the input `controlled` or not.
+
+## [v4.0.1](https://github.com/NoHomey/material-ui-number-input/releases/tag/4.0.1)
+
+- Fixing a bug where valid numbers are prevented from beeing entered. This bug occures when `(min * 10) < max` (not fixed in `v4.0.0`)
+- Fixing a bug where valid numbers are prevented from beeing entered. This bug occures when `Number(checkedValue) === 0` (not fixed in `v4.0.0`)

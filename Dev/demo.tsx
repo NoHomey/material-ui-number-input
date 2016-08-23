@@ -72,7 +72,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         id="num"
                         required
                         min={20}
-                        max={150}
+                        max={1500}
                         value={value}
                         strategy="ignore"
                         errorText={errorText}
