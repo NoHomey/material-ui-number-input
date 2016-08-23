@@ -74,3 +74,12 @@
 ### Breaking changes
 
 - When `strategy` is `'ignore'` and `error` is `min` or `max` instead of clearing input field it's value is overwritten with `String(props[error])`
+
+## [v4.0.0](https://github.com/NoHomey/material-ui-number-input/releases/tag/4.0.0)
+
+### Bug fixes
+
+- Fixing all bugs introduced after `v3.0.0` which prevented valid numbers to be entered when `strategy` is `'ignore'` or `'warn'`.
+- Fixing a bug after `v3.2.0`. Now `onValid` is emitted when input's value is beeing overwritten when ''min'' or `'max'` errors are cathced and `strategy` is not `'allow'`.
+- Fixing a bug after `v3.2.0` where input value was not overwritten when ''min'' or `'max'` errors are cathced and `strategy` is not `'allow'` and input is `uncontrolled`.
+- Fixing a bug where input's value is not beeing validated before and after initial `render` depending on that is the input `controlled` or not.

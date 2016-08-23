@@ -48,11 +48,25 @@ The better TextField for number inputs.
 
 ## 'ignore'
 
-When `srategy` is `'ignore'` `onError` is never called. Internally catches `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` errors to allow valid numbers only to be entered. All other errors are prevented from ocurring when user types in the input field, but not when `value` prop is changed other than after call from `onChange`. In all cases when `value` is setted with `string` which would generate error other than the pointed errors input value will be cleared including the intial value, except when error is `min` or `max` in this cases value will be overwritten with `String(props[error])`.
+When `srategy` is `'ignore'` `onError` is never called. Internally catches `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` errors to allow valid numbers only to be entered. All other errors are prevented from ocurring when user types in the input field, but not when `value` prop is changed other than after call from `onChange`. In all cases when `value` is setted with `string` which would generate error other than the pointed errors input value will be cleared including the intial value, except is when error is `'min'` or `'max'` in those cases value will be overwritten with `String(props[error])` and `onValid` will be emited*.
+
+* Exception is `'min'` which will be bypassed if `value` can allow valid number to be entered in the future.
+
+```js
+  ...
+const numberValue = Number(value);
+onst whole = numberValue % 10;
+switch(this._validateNumberValue(numberValue)) {
+  case 1: return 'max';
+  case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue > 0) && ((min * 10) >= max) && (((whole === numberValue) || (whole === 0)) || (numberValue <= (max / 10)))) ? 'allow' : 'min';
+  ...
+```
 
 ## 'warn'
 
-When `strategy` is `'warn'` `onError` will be always called with catched error but when error other than `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` occures `preventDefault` will be called on the `KeyboardEvent`  when `onKeyDown` is fired and the event will be trapped so no calls to `onKeyDown`, `onKeyUp`, `onKeyPress` and `onChange` will be delegated. Manually setting `value` with `string` that will generate error other than the pointed won't stop input value from change.
+When `strategy` is `'warn'` `onError` will be always called with catched error* but when error other than `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` occures `preventDefault` will be called on the `KeyboardEvent`  when `onKeyDown` is fired and the event will be trapped so no calls to `onKeyDown`, `onKeyUp`, `onKeyPress` and `onChange` will be delegated. Manually setting `value` with `string` that will generate error other than the pointed won't stop input value from change.
+
+If internal `'allow'` `error` is catched it will be masked back to `'min'` this is required in order to allow valid numbers to be entered.
 
 ## 'allow'
 
