@@ -75,9 +75,9 @@ export default class Demo extends React.Component<void, DemoState> {
                     <NumberInput
                         id="num"
                         required
-                        min={-10}
-                        max={12}
-                        defaultValue={0.1}
+                        min={20}
+                        max={150}
+                        value={value}
                         strategy="ignore"
                         errorText={errorText}
                         onError={onError}

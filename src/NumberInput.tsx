@@ -160,14 +160,17 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             if(value.match(/^(\-|\.|\d)+$/)) {
                 if(value.match(/^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/)) {
                     if(value.match(/^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/)) {
-                        switch(this._validateNumberValue(Number(value))) {
+                        const numberValue: number = Number(value);
+                        const whole: number = numberValue % 10;
+                        console.log(numberValue, whole);
+                        switch(this._validateNumberValue(numberValue)) {
                             case 1: return 'max';
-                            case -1: return 'min';
+                            case -1: return ((strategy === 'ignore') && (min > 0) && ((min * 10) >= max) && (((whole === numberValue) || (whole === 0)) || (numberValue <= max / 10))) ? 'none' : 'min';
                             default: return 'none';
                         }
                     } else {
                         const checkLimit: number = parseFloat(removeLastChar(value));
-                        return ((strategy === 'ignore') && ((checkLimit === max) || (checkLimit === min))) ? 'limit' : 'incompleteNumber';
+                        return ((strategy === 'ignore') && ((checkLimit === max) || ((checkLimit === min) && (min < 0)) || (isNaN(checkLimit) && (min >= 0)))) ? 'limit' : 'incompleteNumber';
                     }
                 } else {
                     const last: string = value[value.length - 1];
@@ -221,9 +224,12 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             const { value } = eventValue.target;
             const nextValue: string = key.length === 1 ? value + key : removeLastChar(value);
             const error: NumberInputErrorExtended = this._validateValue(nextValue);
+            console.log(error);
             if((strategy !== 'allow') && !allowedError(error)) {
                 event.preventDefault();
                 if(strategy === 'warn') {
+                    this._emitEvents(error, nextValue);
+                } else if((error == 'min') || (error === 'max')) {
                     this._emitEvents(error, nextValue);
                 }
             } else {
@@ -244,6 +250,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             onChange(event, value);
         }
         if(propsValue === undefined) {
+            console.log(value);
             this._validateAndEmit(value);
         }
     }
@@ -277,7 +284,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     public componentWillReceiveProps(props: NumberInputProps) {
         const { value } = props;
-        if(value !== this.props.value) {
+        const { error } = this.state;
+        if((value !== this.props.value) || (error == 'min') || (error === 'max')) {
            this._validateAndEmit(value);
         }
     }
@@ -286,6 +294,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { props, state, _onKeyDown, _onChange, _onBlur } = this;
         const { value, defaultValue, strategy } = props;
         const { error } = state;
+        console.log(error);
         const shouldOverwrite: boolean = (value !== undefined) && (strategy === 'ignore') && !allowedError(error);
         const newValue: string = shouldOverwrite ? this._overwriteValue() : value;
         let clonedProps: NumberInputProps = ObjectAssign({}, props);
