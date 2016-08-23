@@ -55,10 +55,9 @@ When `srategy` is `'ignore'` `onError` is never called. Internally catches `'non
 ```js
   ...
 const numberValue = Number(value);
-onst whole = numberValue % 10;
 switch(this._validateNumberValue(numberValue)) {
   case 1: return 'max';
-  case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue > 0) && ((min * 10) >= max) && (((whole === numberValue) || (whole === 0)) || (numberValue <= (max / 10)))) ? 'allow' : 'min';
+  case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue > 0) && ((min * 10) >= max) && (numberValue <= (max / 10))) ? 'allow' : 'min';
   ...
 ```
 
