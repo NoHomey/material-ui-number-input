@@ -121,6 +121,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     };
     public static defaultProps: NumberInputProps = { required: false, strategy: 'allow' };
     public textField: TextField;
+    private _refTextField: (textField: TextField) => void;
     private _onKeyDown: React.KeyboardEventHandler;
     private _onChange: React.FormEventHandler;
     private _onBlur: React.FocusEventHandler;
@@ -225,6 +226,10 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const shouldOverwrite: boolean = (props.strategy === 'ignore') && !allowedError(state.error);
         return shouldOverwrite ? this._overwriteValue() : value;
     }
+
+    private _handleTextField(textField: TextField): void {
+        this.textField = textField;
+    }
     
     private _handleKeyDown(event: React.KeyboardEvent): void {
         const { key } = event;
@@ -269,9 +274,12 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     private _handleBlur(event: React.FocusEvent): void {
         const eventValue: EventValue = event;
-        const { strategy } = this.props;
+        const { strategy, onBlur } = this.props;
         if(strategy === 'warn') {
             this._validateAndEmit(eventValue.target.value, false);
+        }
+        if(onBlur !== undefined) {
+            onBlur(event);
         }
     }
 
@@ -279,9 +287,14 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         return this.textField.getInputNode();
     }
 
+    public getTextField(): TextField {
+        return this.textField;
+    }
+
     public constructor(props: NumberInputProps) {
         super(props);
         this.state = { error: undefined };
+        this._refTextField = this._handleTextField.bind(this);
         this._onKeyDown = this._handleKeyDown.bind(this);
         this._onChange = this._handleChange.bind(this);
         this._onBlur = this._handleBlur.bind(this);
@@ -317,7 +330,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
 
     public render(): JSX.Element {
-        const { props, state, _onKeyDown, _onChange, _onBlur } = this;
+        const { props, state, _refTextField, _onKeyDown, _onChange, _onBlur } = this;
         const { value, defaultValue, strategy } = props;
         const newValue: string = this._getRenderValue(value);
         let clonedProps: NumberInputProps = ObjectAssign({}, props);
@@ -337,7 +350,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             onKeyDown: _onKeyDown,
             onChange: _onChange,
             onBlur: _onBlur,
-            ref: (textField: TextField) => { this.textField = textField; }
+            ref: _refTextField
         });
         if(value === undefined) {
             delete inputProps.value;

@@ -86,5 +86,17 @@
 
 ## [v4.0.1](https://github.com/NoHomey/material-ui-number-input/releases/tag/4.0.1)
 
+### Bug fixes
+
 - Fixing a bug where valid numbers are prevented from beeing entered. This bug occures when `(min * 10) < max` (not fixed in `v4.0.0`)
 - Fixing a bug where valid numbers are prevented from beeing entered. This bug occures when `Number(checkedValue) === 0` (not fixed in `v4.0.0`)
+
+## [v4.0.2](https://github.com/NoHomey/material-ui-number-input/releases/tag/4.0.2)
+
+### Bug fixes
+
+- Ensure `onBlur` is called if a handler is passed via `props`
+
+### New
+
+- Adding new `public` method `getTextField` with signature `() => TextField` which returns underling `TextField` `ref`
