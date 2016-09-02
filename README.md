@@ -29,8 +29,9 @@ The better TextField for number inputs.
 | reqired                 | *bool*     | *false*   | *false*   | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
 | value                   | *string*   |           | *true*   | The value of the input field. |
 | onChange                | *function* |           | *true*   | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
-| onError           | *function* |         | *false*   | Callback function that is fired when input error status changes.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') => void`. |
-| onValid                 | *function*|            | *false*   | Callback function that is fired when input's value is a valid number ('none' error was catched).  **Signature:** `function(value: number) => void` |
+| onError           | *function* |         | *false*   | Callback function that is fired when input error status changes and strategy is not 'ignore'.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') => void`. |
+| onValid                 | *function*|            | *false*   | Callback function that is fired when input's value is a valid number.  **Signature:** `function(value: number) => void` |
+| onReqestValue\*         | *function* |           | *false*   | Callback function that is fired when strategy is 'warn' or 'ignore', input is controlled and an invalid number value is passed. It provides valid number value which needs to be setted. **Signature:** `function(value: string) => void` |
 | errorText               | *node*     |           | *true*    | The error content to display. |
 | errorStyle              | *object*   |           | *true*    | The style object to use to override error styles. |
 | floatingLabelFocusStyle | *object*   |           | *true*    | The style object to use to override floating label styles when focused. |
@@ -44,24 +45,17 @@ The better TextField for number inputs.
 | underlineFocusStyle     | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element when focussed. |
 | underlineStyle          | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element. |
 
+\* onReqestValue is required when strategy is 'warn' or 'ignore' and input is controlled in order to ensure correct strategy behaviour.
+
 # Strategies
 
-## 'ignore'
+| strategy | onError fired | onReqestValue fired |
+| -------- | ------------- | ------------------- |
+| 'allow'  |       ✓       |                     |
+| 'warn'   |       ✓       |          ✓\*        |
+| 'ignore' |               |          ✓\*        |
 
-When `srategy` is `'ignore'` `onError` is never called. Internally catches `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` errors to allow valid numbers only to be entered. All other errors are prevented from ocurring when user types in the input field, but not when `value` prop is changed other than after call from `onChange`. In all cases when `value` is setted with `string` which would generate error other than the pointed errors input value will be cleared including the intial value, except is when error is `'min'` or `'max'` in those cases value will be overwritten with `String(props[error])` and `onValid` will be emited\*.e
-
-\* Exception is `'min'` which will be bypassed and masked to  `'allow'` if `value` can allow valid number to be entered in the future (`min` is greater than `0` and validated value can be converted to number which is equal or greater than `0`).
-
-
-## 'warn'
-
-When `strategy` is `'warn'` `onError` will be always called with catched error\* but when error other than `'none'`, `'incompleteNumber'`, `'clean'` and `'required'` occures `preventDefault` will be called on the `KeyboardEvent`  when `onKeyDown` is fired and the event will be trapped so no calls to `onKeyDown`, `onKeyUp`, `onKeyPress` and `onChange` will be delegated. Manually setting `value` with `string` that will generate error other than the pointed won't stop input value from change.
-
-\* If internal `'allow'` `error` is catched it will be masked back to `'min'`. `'min'` is masked to `'allow'` in order to allow valid numbers to be entered.
-
-## 'allow'
-
-When `strategy` is `'allow'` no error is prevented from changing input's value and all are emitted with call to `onError`. This is the default strategy.
+\* Fired when input is controlled (`value` is provided). If input is not controlled it's value will be automaticlly corrected when it get's invalid number value.
 
 # Errors
 
@@ -104,10 +98,6 @@ Fired when user enters number less than `min` prop value.
 ## 'max'
 
 Fired when user enters number greater than `max` prop value.
-
-## Internal errors
-
-- errors `'limit'` and `'allow'` are catched internally and never emitted since they are part of the implementation and are not user defined. 
 
 # public methods
 
@@ -165,13 +155,19 @@ class Demo extends React.Component {
       }
       this.setState({ errorText: errorText });
     };
+
     this.onValid = (value) => {
       console.debug(`${value} is a valid number`);
     };
+
+    this.onReqestValue = (value) => {
+      console.log(`request ${JSON.stringify(value)}`);
+      this.setState({ value: value })
+    }
   }
     
   render() {
-    const { state, onChange, onError, onKeyDown, onValid } = this; 
+    const { state, onChange, onError, onKeyDown, onValid, onReqestValue } = this; 
     return (
       <NumberInput
         id="num"
@@ -184,6 +180,7 @@ class Demo extends React.Component {
         onValid={onValid}
         onChange={onChange}
         onError={onError}
+        onReqestValue={onReqestValue}
         onKeyDown={onKeyDown} />
     );
   }

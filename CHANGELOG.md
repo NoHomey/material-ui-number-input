@@ -100,3 +100,15 @@
 ### New
 
 - Adding new `public` method `getTextField` with signature `() => TextField` which returns underling `TextField` `ref`
+
+## [v5.0.0](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.0)
+
+### Properties
+
+#### New
+
+- `onRequestValue`is function with signature `function(value: string) => void` called with correct number value when  `strategy` is `'warn'` or `'ignore'` and `value` is provided.
+
+### Implementation
+
+- Droping alot of the logic for correcting value when `strategy` is `'warn'` or `'ignore'` and simplified it by introducing new prop `onRequestValue` which should ensure correct behavior when consumed by third party libraries such as `'react-material-ui-keyboard'` 

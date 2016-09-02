@@ -2,25 +2,25 @@ import * as React from 'react';
 import { render as ReactDomRender } from 'react-dom';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler, NumberInputValidHandler } from 'material-ui-number-input';
+import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler, NumberInputValidHandler, NumberInputReqestValueHandller } from 'material-ui-number-input';
 
 const { div, link, input } = React.DOM;
 
 interface DemoState {
     value?: string;
-    error?: NumberInputError;
     errorText?: string;
 }
 
-class Demo extends React.Component<void, DemoState> {
+export default class Demo extends React.Component<void, DemoState> {
     private onKeyDown: React.KeyboardEventHandler;
     private onChange: NumberInputChangeHandler;
     private onError: NumberInputErrorHandler;
     private onValid: NumberInputValidHandler;
+    private onReqestValue: NumberInputReqestValueHandller;
 
     public constructor(props: void) {
         super(props);
-        this.state = { value: '12.' };
+        this.state = { value: '30' };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
             console.log(`onKeyDown ${event.key}`);
         }
@@ -51,10 +51,10 @@ class Demo extends React.Component<void, DemoState> {
                     errorText = 'Floating point is expected';
                     break;
                 case 'min':
-                    errorText = 'You are tring to enter number less than -10';
+                    errorText = 'You are tring to enter number less than 11';
                     break;
                 case 'max':
-                    errorText = 'You are tring to enter number greater than 12';
+                    errorText = 'You are tring to enter number greater than 150';
                     break;
             }
             this.setState({ errorText: errorText });
@@ -62,10 +62,14 @@ class Demo extends React.Component<void, DemoState> {
         this.onValid = (value: number): void => {
             console.debug(`${value} is a valid number!`);
         }
+        this.onReqestValue = (value: string): void => {
+            console.log(`request ${JSON.stringify(value)}`);
+            this.setState({ value: value })
+        }
     }
 
     public render(): JSX.Element {
-        const { state, onChange, onError, onValid, onKeyDown } = this;
+        const { state, onChange, onError, onValid, onKeyDown, onReqestValue } = this;
         const { value, errorText } = state;
         return (
             <MuiThemeProvider>
@@ -74,13 +78,13 @@ class Demo extends React.Component<void, DemoState> {
                     <NumberInput
                         id="num"
                         required
-                        min={-10}
-                        max={12}
-                        value={value}
+                        min={11}
+                        max={1500}
                         strategy="warn"
                         errorText={errorText}
                         onError={onError}
                         onValid={onValid}
+                        onReqestValue={onReqestValue}
                         onChange={onChange}
                         onKeyDown={onKeyDown} />
                 </div>
