@@ -82,7 +82,9 @@ export default class Demo extends React.Component<void, DemoState> {
                         errorText={errorText}
                         onError={onError}
                         onValid={onValid}
-                        onReqestValue={onReqestValue} />
+                        onReqestValue={onReqestValue}
+                        onChange={onChange}
+                        onKeyDown={onKeyDown} />
                 </div>
             </MuiThemeProvider>
         );
