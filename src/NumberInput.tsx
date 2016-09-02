@@ -11,6 +11,8 @@ export type NumberInputValidHandler = (valid: number) => void;
 
 export type NumberInputErrorHandler = (error: NumberInputError) => void;
 
+export type NumberInputReqestValueHandller = (value: string) => void;
+
 export interface EventValue {
     target: {
         value?: string
@@ -47,6 +49,7 @@ export interface NumberInputProps {
     onChange?: NumberInputChangeHandler;
     onError?: NumberInputErrorHandler;
     onValid?: NumberInputValidHandler;
+    onReqestValue?: NumberInputReqestValueHandller;
     onFocus?: React.FocusEventHandler;
     onKeyDown?: React.KeyboardEventHandler;
 }
@@ -77,8 +80,10 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
     };
 }
 
+const allowedErrors: Array<NumberInputErrorExtended> = ['none', 'incompleteNumber', 'clean', 'required', 'allow', 'min', 'max']
+
 function allowedError(error: NumberInputErrorExtended): boolean {
-    return (error === 'none') || (error === 'incompleteNumber') || (error === 'clean') || (error === 'required') || (error === 'allow');
+    return allowedErrors.indexOf(error) > -1;
 }
 
 function removeLastChar(value: string): string {
@@ -105,7 +110,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         onBlur: React.PropTypes.func,
         onChange: React.PropTypes.func,
         onFocus: React.PropTypes.func,
-        onErrro: React.PropTypes.func,
+        onValid: React.PropTypes.func,
+        onError: React.PropTypes.func,
+        onReqestValue: React.PropTypes.func,
         onKeyDown: React.PropTypes.func,
         style: React.PropTypes.object,
         underlineDisabledStyle: React.PropTypes.object,
@@ -121,8 +128,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     };
     public static defaultProps: NumberInputProps = { required: false, strategy: 'allow' };
     public textField: TextField;
+    private _lastValid: string;
     private _refTextField: (textField: TextField) => void;
-    private _onKeyDown: React.KeyboardEventHandler;
     private _onChange: React.FormEventHandler;
     private _onBlur: React.FocusEventHandler;
 
@@ -138,8 +145,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
             }
             this.setState({ error: correctError });
         }
-        if((nextError === 'none') && (onValid !== undefined) && valid) {
+        if((nextError === 'none') && (onValid !== undefined) && (this._lastValid !== value) && valid) {
             onValid(Number(value));
+            this._lastValid = value;
         }
     }
 
@@ -195,88 +203,60 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         }
     }
 
-    private _validateAndEmit(value: string, valid: boolean = true) {
-        this._emitEvents(this._validateValue(value), value, valid);
-    }
-
-    private _overwriteValue(): string {
-        const { props, state } = this;
-        const { min, max, value, onValid } = props;
-        const { error } = state;
-        const shouldEmit: boolean = onValid !== undefined;
-        const emitValid: (valid: number) => void = (valid: number): void => {
-            if(shouldEmit) {
-                onValid(valid);
+    private _takeActionForValue(value: string): void {
+        const { strategy, onReqestValue, min, max, value: propsValue } = this.props;
+        const { error: stateError } = this.state;
+        let validateValue: string = value;
+        let error: NumberInputErrorExtended = this._validateValue(validateValue);
+        this._emitEvents(error, value);
+        if((error === 'none') || (strategy === 'allow')) {
+            return;
+        }
+        while(1) {
+            error = this._validateValue(validateValue);
+            if(allowedError(error) || (validateValue === '')) {
+                if((validateValue !== value) || (error === 'max') || (error === 'min')) {
+                    if(error === 'min') {
+                        validateValue = String(min);
+                    }
+                    if(error === 'max') {
+                        validateValue = String(max);
+                    }
+                    if((onReqestValue !== undefined) && (this.props.value !== undefined)) {
+                        onReqestValue(validateValue);
+                    } else {
+                        this.getInputNode().value = validateValue;
+                    }
+                }
+                break;
+            } else {
+                validateValue = removeLastChar(validateValue);
             }
         }
-        switch(error) {
-            case 'limit': return removeLastChar(value);
-            case 'min':
-                emitValid(min);
-                return String(min);
-            case 'max':
-                emitValid(max);
-                return String(max);
-            default: return '';
-        }
-    }
-
-    private _getRenderValue(value: string): string {
-        const { props, state } = this;
-        const shouldOverwrite: boolean = (props.strategy === 'ignore') && !allowedError(state.error);
-        return shouldOverwrite ? this._overwriteValue() : value;
     }
 
     private _handleTextField(textField: TextField): void {
         this.textField = textField;
-    }
-    
-    private _handleKeyDown(event: React.KeyboardEvent): void {
-        const { key } = event;
-        const { onKeyDown, strategy } = this.props;
-        const canCallOnKeyDown: boolean = onKeyDown !== undefined;
-        const emitKeyDown: () => void = (): void => {
-            if(canCallOnKeyDown) {
-                onKeyDown(event);
-            }
-        }
-        if(key.match(/^(.|Backspace)$/)) {
-            const eventValue: EventValue = event;
-            const { value } = eventValue.target;
-            const nextValue: string = key.length === 1 ? value + key : removeLastChar(value);
-            const error: NumberInputErrorExtended = this._validateValue(nextValue);
-            if((strategy !== 'allow') && !allowedError(error)) {
-                event.preventDefault();
-                if((strategy === 'warn') || (error == 'min') || (error === 'max')) {
-                    this._emitEvents(error, nextValue);
-                }
-            } else {
-                emitKeyDown();
-            }
-        } else {
-            emitKeyDown();
-        }
-    }   
+    } 
 
     private _handleChange(event: React.FormEvent): void {
         const eventValue: EventValue = event;
         const { value } = eventValue.target;
         const { props, state } = this;
-        const { onChange, strategy, value: propsValue } = props;
+        const { onChange, onValid, value: propsValue } = props;
         const { error } = state;
         if(onChange !== undefined) {
             onChange(event, value);
         }
-        if(propsValue === undefined) {
-            this._validateAndEmit(value);
-        }
+        this._takeActionForValue(value);
     }
 
     private _handleBlur(event: React.FocusEvent): void {
         const eventValue: EventValue = event;
         const { strategy, onBlur } = this.props;
+        const { value } = eventValue.target;
         if(strategy === 'warn') {
-            this._validateAndEmit(eventValue.target.value, false);
+            this._emitEvents(this._validateValue(value), value, false);
         }
         if(onBlur !== undefined) {
             onBlur(event);
@@ -295,44 +275,25 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         super(props);
         this.state = { error: undefined };
         this._refTextField = this._handleTextField.bind(this);
-        this._onKeyDown = this._handleKeyDown.bind(this);
         this._onChange = this._handleChange.bind(this);
         this._onBlur = this._handleBlur.bind(this);
     }
 
-    public componentWillMount(): void {
-        const { value } = this.props;
-        if(value !== undefined) {
-            this._validateAndEmit(value);
-        }
-    }
-
     public componentDidMount(): void {
         const { value } = this.props;
-        if(value === undefined) {
-            this._validateAndEmit(this.getInputNode().value);
-        }
+        this._takeActionForValue(value !== undefined ? value : this.getInputNode().value);
     }
 
     public componentWillReceiveProps(props: NumberInputProps) {
         const { value } = props;
-        const { error } = this.state;
-        if((value !== undefined) && ((value !== this.props.value) || (error == 'min') || (error === 'max'))) {
-            this._validateAndEmit(value);
-        }
-    }
-
-    public componentDidUpdate(): void {
-        if(this.props.value === undefined) {
-            let input: HTMLInputElement = this.getInputNode();
-            input.value = this._getRenderValue(input.value);
+        if((value !== undefined) && (value !== this.props.value)) {
+            this._takeActionForValue(value);
         }
     }
 
     public render(): JSX.Element {
-        const { props, state, _refTextField, _onKeyDown, _onChange, _onBlur } = this;
+        const { props, state, _refTextField, _onChange, _onBlur } = this;
         const { value, defaultValue, strategy } = props;
-        const newValue: string = this._getRenderValue(value);
         let clonedProps: NumberInputProps = ObjectAssign({}, props);
         if(clonedProps.strategy !== undefined) {
             delete clonedProps.strategy;
@@ -343,11 +304,13 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.onValid !== undefined) {
             delete clonedProps.onValid;
         }
+        if(clonedProps.onReqestValue !== undefined) {
+            delete clonedProps.onReqestValue;
+        }
         const inputProps: NumberInputProps = ObjectAssign(clonedProps, {
             type: 'text',
             defaultValue: defaultValue === undefined ? defaultValue : String(defaultValue), 
-            value: newValue,
-            onKeyDown: _onKeyDown,
+            value: value,
             onChange: _onChange,
             onBlur: _onBlur,
             ref: _refTextField

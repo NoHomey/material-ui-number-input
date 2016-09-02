@@ -1,6 +1,6 @@
 import * as React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler, NumberInputValidHandler } from './../src/index';
+import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler, NumberInputValidHandler, NumberInputReqestValueHandller } from './../src/index';
 
 const { div, link, input } = React.DOM;
 
@@ -14,10 +14,11 @@ export default class Demo extends React.Component<void, DemoState> {
     private onChange: NumberInputChangeHandler;
     private onError: NumberInputErrorHandler;
     private onValid: NumberInputValidHandler;
+    private onReqestValue: NumberInputReqestValueHandller;
 
     public constructor(props: void) {
         super(props);
-        this.state = { value: '-10' };
+        this.state = { value: '30' };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
             console.log(`onKeyDown ${event.key}`);
         }
@@ -48,7 +49,7 @@ export default class Demo extends React.Component<void, DemoState> {
                     errorText = 'Floating point is expected';
                     break;
                 case 'min':
-                    errorText = 'You are tring to enter number less than 20';
+                    errorText = 'You are tring to enter number less than 11';
                     break;
                 case 'max':
                     errorText = 'You are tring to enter number greater than 150';
@@ -59,10 +60,14 @@ export default class Demo extends React.Component<void, DemoState> {
         this.onValid = (value: number): void => {
             console.debug(`${value} is a valid number!`);
         }
+        this.onReqestValue = (value: string): void => {
+            console.log(`request ${JSON.stringify(value)}`);
+            this.setState({ value: value })
+        }
     }
 
     public render(): JSX.Element {
-        const { state, onChange, onError, onValid, onKeyDown } = this;
+        const { state, onChange, onError, onValid, onKeyDown, onReqestValue } = this;
         const { value, errorText } = state;
         return (
             <MuiThemeProvider>
@@ -71,15 +76,13 @@ export default class Demo extends React.Component<void, DemoState> {
                     <NumberInput
                         id="num"
                         required
-                        min={20}
+                        min={11}
                         max={1500}
-                        value={value}
-                        strategy="ignore"
+                        strategy="warn"
                         errorText={errorText}
                         onError={onError}
                         onValid={onValid}
-                        onChange={onChange}
-                        onKeyDown={onKeyDown} />
+                        onReqestValue={onReqestValue} />
                 </div>
             </MuiThemeProvider>
         );
