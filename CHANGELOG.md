@@ -112,3 +112,7 @@
 ### Implementation
 
 - Droping alot of the logic for correcting value when `strategy` is `'warn'` or `'ignore'` and simplified it by introducing new prop `onRequestValue` which should ensure correct behavior when consumed by third party libraries such as `'react-material-ui-keyboard'` 
+
+## [v5.0.1](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.1)
+ 
+ - Re-exporting `default` from `'./NumberInput'`
