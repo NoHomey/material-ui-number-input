@@ -116,3 +116,7 @@
 ## [v5.0.1](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.1)
  
  - Re-exporting `default` from `'./NumberInput'`
+
+## [v5.0.2](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.2)
+
+- Using npm badge for README.md#Install

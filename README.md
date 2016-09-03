@@ -4,7 +4,7 @@ The better TextField for number inputs.
 
 # Install
 
-`npm install material-ui-number-input`
+[![NPM](https://nodei.co/npm/material-ui-number-input.png?downloads=true&stars=true)](https://nodei.co/npm/material-ui-number-input/)
 
 # Changelog
 
