@@ -14,7 +14,7 @@ export default class Demo extends React.Component<void, DemoState> {
     private onChange: NumberInputChangeHandler;
     private onError: NumberInputErrorHandler;
     private onValid: NumberInputValidHandler;
-    private onReqestValue: NumberInputReqestValueHandller;
+    private onRequestValue: NumberInputReqestValueHandller;
 
     public constructor(props: void) {
         super(props);
@@ -60,14 +60,14 @@ export default class Demo extends React.Component<void, DemoState> {
         this.onValid = (value: number): void => {
             console.debug(`${value} is a valid number!`);
         }
-        this.onReqestValue = (value: string): void => {
+        this.onRequestValue = (value: string): void => {
             console.log(`request ${JSON.stringify(value)}`);
             this.setState({ value: value })
         }
     }
 
     public render(): JSX.Element {
-        const { state, onChange, onError, onValid, onKeyDown, onReqestValue } = this;
+        const { state, onChange, onError, onValid, onKeyDown, onRequestValue } = this;
         const { value, errorText } = state;
         return (
             <MuiThemeProvider>
@@ -82,7 +82,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         errorText={errorText}
                         onError={onError}
                         onValid={onValid}
-                        onReqestValue={onReqestValue}
+                        onRequestValue={onRequestValue}
                         onChange={onChange}
                         onKeyDown={onKeyDown} />
                 </div>

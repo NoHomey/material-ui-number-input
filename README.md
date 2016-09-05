@@ -31,7 +31,7 @@ The better TextField for number inputs.
 | onChange                | *function* |           | *true*   | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
 | onError           | *function* |         | *false*   | Callback function that is fired when input error status changes and strategy is not 'ignore'.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') => void`. |
 | onValid                 | *function*|            | *false*   | Callback function that is fired when input's value is a valid number.  **Signature:** `function(value: number) => void` |
-| onReqestValue\*         | *function* |           | *false*   | Callback function that is fired when strategy is 'warn' or 'ignore', input is controlled and an invalid number value is passed. It provides valid number value which needs to be setted. **Signature:** `function(value: string) => void` |
+| onRequestValue\*         | *function* |           | *false*   | Callback function that is fired when strategy is 'warn' or 'ignore', input is controlled and an invalid number value is passed. It provides valid number value which needs to be setted. **Signature:** `function(value: string) => void` |
 | errorText               | *node*     |           | *true*    | The error content to display. |
 | errorStyle              | *object*   |           | *true*    | The style object to use to override error styles. |
 | floatingLabelFocusStyle | *object*   |           | *true*    | The style object to use to override floating label styles when focused. |
@@ -45,11 +45,11 @@ The better TextField for number inputs.
 | underlineFocusStyle     | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element when focussed. |
 | underlineStyle          | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element. |
 
-\* onReqestValue is required when strategy is 'warn' or 'ignore' and input is controlled in order to ensure correct strategy behaviour.
+\* onRequestValue is required when strategy is 'warn' or 'ignore' and input is controlled in order to ensure correct strategy behaviour.
 
 # Strategies
 
-| strategy | onError fired | onReqestValue fired |
+| strategy | onError fired | onRequestValue fired |
 | -------- | ------------- | ------------------- |
 | 'allow'  |       ✓       |                     |
 | 'warn'   |       ✓       |          ✓\*        |
@@ -160,14 +160,14 @@ class Demo extends React.Component {
       console.debug(`${value} is a valid number`);
     };
 
-    this.onReqestValue = (value) => {
+    this.onRequestValue = (value) => {
       console.log(`request ${JSON.stringify(value)}`);
       this.setState({ value: value })
     }
   }
     
   render() {
-    const { state, onChange, onError, onKeyDown, onValid, onReqestValue } = this; 
+    const { state, onChange, onError, onKeyDown, onValid, onRequestValue } = this; 
     return (
       <NumberInput
         id="num"
@@ -180,7 +180,7 @@ class Demo extends React.Component {
         onValid={onValid}
         onChange={onChange}
         onError={onError}
-        onReqestValue={onReqestValue}
+        onRequestValue={onRequestValue}
         onKeyDown={onKeyDown} />
     );
   }

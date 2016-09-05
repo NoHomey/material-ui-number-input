@@ -49,7 +49,7 @@ export interface NumberInputProps {
     onChange?: NumberInputChangeHandler;
     onError?: NumberInputErrorHandler;
     onValid?: NumberInputValidHandler;
-    onReqestValue?: NumberInputReqestValueHandller;
+    onRequestValue?: NumberInputReqestValueHandller;
     onFocus?: React.FocusEventHandler;
     onKeyDown?: React.KeyboardEventHandler;
 }
@@ -112,7 +112,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         onFocus: React.PropTypes.func,
         onValid: React.PropTypes.func,
         onError: React.PropTypes.func,
-        onReqestValue: React.PropTypes.func,
+        onRequestValue: React.PropTypes.func,
         onKeyDown: React.PropTypes.func,
         style: React.PropTypes.object,
         underlineDisabledStyle: React.PropTypes.object,
@@ -204,7 +204,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
 
     private _takeActionForValue(value: string): void {
-        const { strategy, onReqestValue, min, max, value: propsValue } = this.props;
+        const { strategy, onRequestValue, min, max, value: propsValue } = this.props;
         const { error: stateError } = this.state;
         let validateValue: string = value;
         let error: NumberInputErrorExtended = this._validateValue(validateValue);
@@ -222,8 +222,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                     if(error === 'max') {
                         validateValue = String(max);
                     }
-                    if((onReqestValue !== undefined) && (this.props.value !== undefined)) {
-                        onReqestValue(validateValue);
+                    if((onRequestValue !== undefined) && (this.props.value !== undefined)) {
+                        onRequestValue(validateValue);
                     } else {
                         this.getInputNode().value = validateValue;
                     }
@@ -242,9 +242,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     private _handleChange(event: React.FormEvent): void {
         const eventValue: EventValue = event;
         const { value } = eventValue.target;
-        const { props, state } = this;
-        const { onChange, onValid, value: propsValue } = props;
-        const { error } = state;
+        const { onChange } = this.props;
         if(onChange !== undefined) {
             onChange(event, value);
         }
@@ -304,8 +302,8 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(clonedProps.onValid !== undefined) {
             delete clonedProps.onValid;
         }
-        if(clonedProps.onReqestValue !== undefined) {
-            delete clonedProps.onReqestValue;
+        if(clonedProps.onRequestValue !== undefined) {
+            delete clonedProps.onRequestValue;
         }
         const inputProps: NumberInputProps = ObjectAssign(clonedProps, {
             type: 'text',
