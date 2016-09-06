@@ -77,7 +77,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         id="num"
                         required
                         min={11}
-                        max={1500}
+                        max={150}
                         strategy="warn"
                         errorText={errorText}
                         onError={onError}

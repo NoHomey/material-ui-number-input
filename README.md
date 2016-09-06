@@ -171,11 +171,12 @@ class Demo extends React.Component {
     return (
       <NumberInput
         id="num"
+        value={state.value}
         required
         defaultValue={9}
         min={-10}
         max={12}
-        strategy="ignore"
+        strategy="warn"
         errorText={state.errorText}
         onValid={onValid}
         onChange={onChange}

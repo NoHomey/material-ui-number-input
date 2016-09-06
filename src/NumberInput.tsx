@@ -80,17 +80,19 @@ function getChangeEvent<E extends React.SyntheticEvent>(event: E): React.Synthet
     };
 }
 
-const allowedErrors: Array<NumberInputErrorExtended> = ['none', 'incompleteNumber', 'clean', 'required', 'allow', 'min', 'max']
-
-function allowedError(error: NumberInputErrorExtended): boolean {
-    return allowedErrors.indexOf(error) > -1;
-}
-
-function removeLastChar(value: string): string {
-    return value.substring(0, value.length - 1);
-}
-
 export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
+    private static _getValidValue(value: string): string {
+        const emptyString: string = '';
+        const match: RegExpMatchArray = value.match(NumberInput._allowed);
+        console.log(match);
+        return match !== null ? (match.index === 0 ? match[0] : match.join(emptyString)) : emptyString;
+    }
+
+    private static _validSymbols: RegExp = /(\-|\.|\d)+/;
+    private static _stricAllowed: RegExp = /^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/;
+    private static _validNumber: RegExp = /^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/;
+    private static _allowed: RegExp = /-?((0|([1-9]\d{0,}))(\.\d{0,})?)?/;
+
     public static propTypes: Object = {
         children: React.PropTypes.node,
         className: React.PropTypes.string,
@@ -168,9 +170,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(value === '') {
             return required ? 'required' : 'clean';
         } else {
-            if(value.match(/^(\-|\.|\d)+$/)) {
-                if(value.match(/^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/)) {
-                    if(value.match(/^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/)) {
+            if(value.match(NumberInput._validSymbols)) {
+                if(value.match(NumberInput._stricAllowed)) {
+                    if(value.match(NumberInput._validNumber)) {
                         const numberValue: number = Number(value);
                         switch(this._validateNumberValue(numberValue)) {
                             case 1: return 'max';
@@ -178,24 +180,15 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                             default: return 'none';
                         }
                     } else {
-                        const checkLimit: number = parseFloat(removeLastChar(value));
+                        const checkLimit: number = parseFloat(value.substring(0, value.length - 1));
                         return ((strategy === 'ignore') && ((checkLimit === max) || ((checkLimit === min) && (min < 0)) || (isNaN(checkLimit) && (min >= 0)))) ? 'limit' : 'incompleteNumber';
                     }
                 } else {
-                    const last: string = value[value.length - 1];
-                    let error: NumberInputError;
-                    switch(last) {
-                        case '-':
-                            error = 'singleMinus';
-                            break;
-                        case '.':
-                            error = 'singleFloatingPoint';
-                            break;
-                        default:
-                            error = 'singleZero';
-                            break;
+                    switch(value[value.length - 1]) {
+                        case '-': return 'singleMinus';
+                        case '.': return 'singleFloatingPoint';
+                        default : return 'singleZero';
                     }
-                    return error;
                 }
             } else {
                 return 'invalidSymbol';
@@ -204,33 +197,25 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     }
 
     private _takeActionForValue(value: string): void {
+        console.log(`_takeActionForValue(${value})`);
         const { strategy, onRequestValue, min, max, value: propsValue } = this.props;
         const { error: stateError } = this.state;
-        let validateValue: string = value;
-        let error: NumberInputErrorExtended = this._validateValue(validateValue);
-        this._emitEvents(error, value);
-        if((error === 'none') || (strategy === 'allow')) {
-            return;
-        }
-        while(1) {
-            error = this._validateValue(validateValue);
-            if(allowedError(error) || (validateValue === '')) {
-                if((validateValue !== value) || (error === 'max') || (error === 'min')) {
-                    if(error === 'min') {
-                        validateValue = String(min);
-                    }
-                    if(error === 'max') {
-                        validateValue = String(max);
-                    }
-                    if((onRequestValue !== undefined) && (this.props.value !== undefined)) {
-                        onRequestValue(validateValue);
-                    } else {
-                        this.getInputNode().value = validateValue;
-                    }
+        const error: NumberInputErrorExtended = this._validateValue(value);
+        let valid: string = NumberInput._getValidValue(value);
+        this._emitEvents(error, valid);
+        if(strategy !== 'allow') {
+            if(error === 'min') {
+                valid = String(min);
+            }
+            if(error === 'max') {
+                valid = String(max);
+            }
+            if(valid !== value) {
+                if(propsValue === undefined) {
+                    this.getInputNode().value = valid;
+                } else if(onRequestValue) {
+                    onRequestValue(valid);
                 }
-                break;
-            } else {
-                validateValue = removeLastChar(validateValue);
             }
         }
     }

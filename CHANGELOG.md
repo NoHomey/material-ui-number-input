@@ -124,3 +124,7 @@
 ## [v5.0.3](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.3)
 
 - Fixing spelling bug onReqestValue -> onRequestValue, Opps sry ...
+
+## [v5.0.4](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.4)
+
+- Performance improvment
