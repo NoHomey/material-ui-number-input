@@ -57,11 +57,45 @@ export interface NumberInputProps {
 
 export type NumberInputErrorExtended = NumberInputError | 'limit' | 'allow';
 
+namespace errorNames {
+    export const none: 'none' = 'none';
+    export const invalidSymbol: 'invalidSymbol' = 'invalidSymbol';
+    export const incompleteNumber: 'incompleteNumber' = 'incompleteNumber';
+    export const singleMinus: 'singleMinus' = 'singleMinus';
+    export const singleFloatingPoint: 'singleFloatingPoint' = 'singleFloatingPoint';
+    export const singleZero: 'singleZero' = 'singleZero';
+    export const min: 'min' = 'min';
+    export const max: 'max' = 'max';
+    export const required: 'required' = 'required';
+    export const clean: 'clean' = 'clean';
+    export const allow: 'allow' = 'allow';
+    export const limit: 'limit' = 'limit';
+}
+
+namespace strategies {
+    export const ignore: 'ignore' = 'ignore';
+    export const warn: 'warn' = 'warn';
+    export const allow: 'allow' = 'allow';
+}
+
+namespace typeofs {
+    export const stringType: string = 'string';
+    export const numberType: string = 'number';
+}
+
+namespace constants {
+    export const emptyString: string = '';
+    export const dash: string = '-';
+    export const dot: string = '.';
+    export const zero: number = 0;
+    export const one: number = 1;
+    export const minusOne: number = -1;
+}
+
 export class NumberInput extends React.Component<NumberInputProps, void> {
     private static getValidValue(value: string): string {
-        const emptyString: string = '';
         const match: RegExpMatchArray = value.match(NumberInput.allowed);
-        return match !== null ? (match.index === 0 ? match[0] : match.join(emptyString)) : emptyString;
+        return match !== null ? (match.index === constants.zero ? match[constants.zero] : match.join(constants.emptyString)) : constants.emptyString;
     }
 
     private static deleteOwnProps(props: any): void {
@@ -110,10 +144,17 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         min: React.PropTypes.number,
         max: React.PropTypes.number,
         required: React.PropTypes.bool,
-        strategy: React.PropTypes.oneOf(['ignore', 'warn', 'allow']),
+        strategy: React.PropTypes.oneOf([
+            strategies.ignore,
+            strategies.warn,
+            strategies.allow
+        ]),
         value: React.PropTypes.string
     };
-    public static defaultProps: NumberInputProps = { required: false, strategy: 'allow' };
+    public static defaultProps: NumberInputProps = {
+        required: false,
+        strategy: strategies.allow
+    };
     public textField: TextField;
     private error: NumberInputErrorExtended;
     private lastValid: string;
@@ -128,7 +169,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
             }
             this.error = nextError;
         }
-        if((nextError === 'none') && onValid && (this.lastValid !== value) && valid) {
+        if(onValid && valid && (this.lastValid !== value)) {
             onValid(Number(value));
             this.lastValid = value;
         }
@@ -136,79 +177,82 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
 
     private validateNumberValue(value: number): number {
         const { max, min } = this.props;
-        if((typeof max === 'number') && (value > max)) {
-            return 1;
+        if((typeof max === typeofs.numberType) && (value > max)) {
+            return constants.one;
         }
-        if((typeof min === 'number') && (value < min)) {
-            return -1;
+        if((typeof min === typeofs.numberType) && (value < min)) {
+            return constants.minusOne;
         }
-        return 0;
+        return constants.zero;
     }
 
     private validateValue(value: string): NumberInputErrorExtended {
         const { props } = this;
         const { required, strategy, min } = props;
-        if(value === '') {
-            return required ? 'required' : 'clean';
+        if(value === constants.emptyString) {
+            return required ? errorNames.required : errorNames.clean;
         } else {
             if(value.match(NumberInput.validSymbols)) {
                 if(value.match(NumberInput.stricAllowed)) {
                     if(value.match(NumberInput.validNumber)) {
                         const numberValue: number = Number(value);
-                        const floatingPoint: number = value.indexOf('.');
-                        const decimal: boolean = floatingPoint > -1;
-                        const whole: number = decimal ? Number(value.substring(0, floatingPoint)) : min;
+                        const floatingPoint: number = value.indexOf(constants.dot);
+                        const decimal: boolean = floatingPoint > constants.minusOne;
+                        const whole: number = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min;
                         switch(this.validateNumberValue(numberValue)) {
-                            case 1: return 'max';
-                            case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue >= 0) && (!decimal || (decimal && (whole > min)))) ? 'allow' : 'min';
-                            default: return 'none';
+                            case constants.one: return errorNames.max;
+                            case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue >= constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
+                            default: return errorNames.none;
                         }
                     } else {
-                        return (strategy !== 'allow') && (value === '-') && (min >= 0) ? 'limit' : 'incompleteNumber';
+                        return (strategy !== strategies.allow) && (value === constants.dash) && (min >= constants.zero) ? errorNames.limit : errorNames.incompleteNumber;
                     }
                 } else {
-                    switch(value[value.length - 1]) {
-                        case '-': return 'singleMinus';
-                        case '.': return 'singleFloatingPoint';
-                        default : return 'singleZero';
+                    switch(value[value.length - constants.one]) {
+                        case constants.dash: return errorNames.singleMinus;
+                        case constants.dot: return errorNames.singleFloatingPoint;
+                        default : return errorNames.singleZero;
                     }
                 }
             } else {
-                return 'invalidSymbol';
+                return errorNames.invalidSymbol;
             }
         }
     }
 
     private overrideRequestedValue(error: string, value: string): string {
-        const { strategy, min, max } = this.props;
+        const { props } = this;
         switch(error) {
-            case 'min': return String(min);
-            case 'max': return String(max);
-            default: return strategy !== 'allow' && value === '-' ? '' : value; 
+            case errorNames.min: return String(props.min);
+            case errorNames.max: return String(props.max);
+            default: return props.strategy !== strategies.allow && value === constants.dash ? constants.emptyString : value; 
         }
     }
 
     private overrideError(error: string): string {
         switch(error) {
-            case 'allow': return 'none';
-            case 'limit': return this.props.required ? 'required' : 'clean';
+            case errorNames.allow: return errorNames.none;
+            case errorNames.limit: return this.props.required ? errorNames.required : errorNames.clean;
             default: return error;
         }
     }
 
-    private emitValid(error: string, valid: string): boolean {
-        return error !== 'allow';
+    private emitValid(value: string, error: string, overridenError: string, valid: string): boolean {
+        return (error === errorNames.none) && (overridenError !== errorNames.allow);
     }
 
     private takeActionForValue(value: string): void {
         const { strategy, onRequestValue, min, max, value: propsValue } = this.props;
         const error: NumberInputErrorExtended = this.validateValue(value);
         const valid: string = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
-        const emitError: boolean = (this.requestedValue !== value) && (strategy !== 'ignore');
-        this.emitEvents(this.overrideError(error) as NumberInputErrorExtended, valid, emitError, this.emitValid(error, valid));
-        if((strategy !== 'allow') && (valid !== value)) {
+        const overridenError: string = this.overrideError(error);
+        const notIgnore: boolean = strategy != strategies.ignore;
+        const emitError: boolean = (this.requestedValue !== value) && notIgnore;
+        const emitValid: boolean = this.emitValid(value, error, overridenError, valid);
+        this.emitEvents(overridenError as NumberInputErrorExtended, valid, emitError, emitValid);
+        if(notIgnore && (valid !== value)) {
             this.requestedValue = valid;
-            if(typeof propsValue !== 'string') {
+            if(typeof propsValue !== typeofs.stringType) {
                 this.getInputNode().value = valid;
             } else if(onRequestValue) {
                 onRequestValue(valid);
@@ -229,7 +273,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         if(onChange) {
             onChange(event, value);
         }
-        if(typeof this.props.value !== 'string') {
+        if(typeof this.props.value !== typeofs.stringType) {
             this.takeActionForValue(value);
         }
     }
@@ -239,7 +283,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         const eventValue: EventValue = event;
         const { strategy, onBlur } = this.props;
         const { value } = eventValue.target;
-        if(strategy === 'warn') {
+        if(strategy === strategies.warn) {
             this.emitEvents(this.validateValue(value), value, true, false);
         }
         if(onBlur) {
@@ -267,7 +311,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
 
     public componentDidMount(): void {
         const { value } = this.props;
-        this.takeActionForValue(typeof value === 'string' ? value : this.getInputNode().value);
+        this.takeActionForValue(typeof value === typeofs.stringType ? value : this.getInputNode().value);
     }
 
     public componentWillReceiveProps(props: NumberInputProps): void {
@@ -281,10 +325,10 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         const { props, constProps } = this;
         const { value, defaultValue } = props;
         let inputProps: any = ObjectAssign({}, props, constProps, {
-            defaultValue: typeof defaultValue === 'number' ? String(defaultValue) : undefined, 
+            defaultValue: typeof defaultValue === typeofs.numberType ? String(defaultValue) : undefined, 
             value: value,
         });
-        if(typeof inputProps.value !== 'string') {
+        if(typeof inputProps.value !== typeofs.stringType) {
             delete inputProps.value;
         }
         if(inputProps.defaultValue === undefined) {
