@@ -76,6 +76,7 @@ export default class Demo extends React.Component<void, DemoState> {
                     <NumberInput
                         id="num"
                         required
+                        value={value}
                         min={11}
                         max={150}
                         strategy="warn"

@@ -1,4 +1,5 @@
-/// <reference path="./../typings/index.d.ts" /> 
+/// <reference path="./../typings/index.d.ts" />
+
 import NumberInput from './NumberInput';
 export * from './NumberInput';
 export default NumberInput;
