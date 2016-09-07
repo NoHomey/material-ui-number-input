@@ -55,13 +55,9 @@ export interface NumberInputProps {
     onKeyDown?: React.KeyboardEventHandler;
 }
 
-export type NumberInputErrorExtended = NumberInputError | 'allow';
+export type NumberInputErrorExtended = NumberInputError | 'limit' | 'allow';
 
-export interface NumberInputState {
-    error?: NumberInputErrorExtended;
-}
-
-export class NumberInput extends React.Component<NumberInputProps, NumberInputState> {
+export class NumberInput extends React.Component<NumberInputProps, void> {
     private static getValidValue(value: string): string {
         const emptyString: string = '';
         const match: RegExpMatchArray = value.match(NumberInput.allowed);
@@ -119,20 +115,18 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
     };
     public static defaultProps: NumberInputProps = { required: false, strategy: 'allow' };
     public textField: TextField;
+    private error: NumberInputErrorExtended;
     private lastValid: string;
     private constProps: Object;
+    private requestedValue: string;
 
-    private emitEvents(nextError: NumberInputErrorExtended, value: string, valid: boolean = true): void {
-        const { props, state } = this;
-        const { onError, onValid, strategy } = props;
-        const { error } = state;
-        const ignore: boolean = (strategy === 'ignore');
-        const correctError: NumberInputErrorExtended = (nextError !== 'allow' || ignore) ? nextError : 'min';
-        if((error !== correctError)) {
-            if(onError && !ignore) {
-                onError(correctError as NumberInputError);
+    private emitEvents(nextError: NumberInputErrorExtended, value: string, emitError: boolean, valid: boolean): void {
+        const { onError, onValid, strategy } = this.props;
+        if((this.error !== nextError) && emitError) {
+            if(onError) {
+                onError(nextError as NumberInputError);
             }
-            this.setState({ error: correctError });
+            this.error = nextError;
         }
         if((nextError === 'none') && onValid && (this.lastValid !== value) && valid) {
             onValid(Number(value));
@@ -164,14 +158,13 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
                         const floatingPoint: number = value.indexOf('.');
                         const decimal: boolean = floatingPoint > -1;
                         const whole: number = decimal ? Number(value.substring(0, floatingPoint)) : min;
-                        console.log(whole, min);
                         switch(this.validateNumberValue(numberValue)) {
                             case 1: return 'max';
                             case -1: return ((strategy !== 'allow') && (min > 0) && (numberValue >= 0) && (!decimal || (decimal && (whole > min)))) ? 'allow' : 'min';
                             default: return 'none';
                         }
                     } else {
-                        return 'incompleteNumber';
+                        return (strategy !== 'allow') && (value === '-') && (min >= 0) ? 'limit' : 'incompleteNumber';
                     }
                 } else {
                     switch(value[value.length - 1]) {
@@ -186,26 +179,39 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         }
     }
 
+    private overrideRequestedValue(error: string, value: string): string {
+        const { strategy, min, max } = this.props;
+        switch(error) {
+            case 'min': return String(min);
+            case 'max': return String(max);
+            default: return strategy !== 'allow' && value === '-' ? '' : value; 
+        }
+    }
+
+    private overrideError(error: string): string {
+        switch(error) {
+            case 'allow': return 'none';
+            case 'limit': return this.props.required ? 'required' : 'clean';
+            default: return error;
+        }
+    }
+
+    private emitValid(error: string, valid: string): boolean {
+        return error !== 'allow';
+    }
+
     private takeActionForValue(value: string): void {
         const { strategy, onRequestValue, min, max, value: propsValue } = this.props;
-        const { error: stateError } = this.state;
         const error: NumberInputErrorExtended = this.validateValue(value);
-        let valid: string = NumberInput.getValidValue(value);
-        this.emitEvents(error, valid);
-        if(strategy !== 'allow') {
-            if(error === 'min') {
-                console.log(value, this.state.error, error);
-                valid = String(min);
-            }
-            if(error === 'max') {
-                valid = String(max);
-            }
-            if(valid !== value) {
-                if(typeof propsValue !== 'string') {
-                    this.getInputNode().value = valid;
-                } else if(onRequestValue) {
-                    onRequestValue(valid);
-                }
+        const valid: string = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
+        const emitError: boolean = (this.requestedValue !== value) && (strategy !== 'ignore');
+        this.emitEvents(this.overrideError(error) as NumberInputErrorExtended, valid, emitError, this.emitValid(error, valid));
+        if((strategy !== 'allow') && (valid !== value)) {
+            this.requestedValue = valid;
+            if(typeof propsValue !== 'string') {
+                this.getInputNode().value = valid;
+            } else if(onRequestValue) {
+                onRequestValue(valid);
             }
         }
     }
@@ -223,7 +229,9 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         if(onChange) {
             onChange(event, value);
         }
-        this.takeActionForValue(value);
+        if(typeof this.props.value !== 'string') {
+            this.takeActionForValue(value);
+        }
     }
 
     @bind
@@ -232,7 +240,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         const { strategy, onBlur } = this.props;
         const { value } = eventValue.target;
         if(strategy === 'warn') {
-            this.emitEvents(this.validateValue(value), value, false);
+            this.emitEvents(this.validateValue(value), value, true, false);
         }
         if(onBlur) {
             onBlur(event);
@@ -249,7 +257,6 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
 
     public constructor(props: NumberInputProps) {
         super(props);
-        this.state = { error: undefined };
         this.constProps = {
             type: 'text',
             onChange: this.onChange,
@@ -263,7 +270,7 @@ export class NumberInput extends React.Component<NumberInputProps, NumberInputSt
         this.takeActionForValue(typeof value === 'string' ? value : this.getInputNode().value);
     }
 
-    public componentWillReceiveProps(props: NumberInputProps) {
+    public componentWillReceiveProps(props: NumberInputProps): void {
         const { value } = props;
         if(value !== this.props.value) {
             this.takeActionForValue(value);
