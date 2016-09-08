@@ -8,7 +8,7 @@ The better TextField for number inputs.
 
 # Changelog
 
-**Check [Change log](https://github.com/NoHomey/material-ui-number-input/blob/master/CHANGELOG.md) for changes.**
+**Check [Change log](CHANGELOG.md) for changes.**
 
 # Properties
 
@@ -188,7 +188,7 @@ class Demo extends React.Component {
 }
 ```
 
-# Written in Typescript and Typescript Ready! ([check example](https://github.com/NoHomey/material-ui-number-input/blob/master/example/index.tsx))
+# Written in Typescript and Typescript Ready! ([check example](example/index.tsx))
 
 # Supports propTypes for regular JavaScript users
 
