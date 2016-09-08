@@ -35,7 +35,7 @@
 
 - `defaultValue` is of type `number` and is the same as `TextField` and `input` `defaultValue` prop
 - `onValid`is function with signature `function(value: number) => void` called when input's value is a valid number
-- `useStrategy` is of type `React.PropTypes.oneOf(['ignore', 'warn', 'allow'])` with defualt value `'allow'` and sets used error strategy refer to [Strategy](../#strategies) and [Errors](../#errors) 
+- `useStrategy` is of type `React.PropTypes.oneOf(['ignore', 'warn', 'allow'])` with defualt value `'allow'` and sets used error strategy refer to [Strategy](https://github.com/NoHomey/material-ui-number-input/#strategies) and [Errors](https://github.com/NoHomey/material-ui-number-input/#errors) 
 
 #### Changed
 
