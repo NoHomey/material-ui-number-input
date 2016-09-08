@@ -250,11 +250,10 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         const error: NumberInputErrorExtended = this.validateValue(value);
         const valid: string = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
         const overridenError: string = this.overrideError(error);
-        const notIgnore: boolean = strategy != strategies.ignore;
-        const emitError: boolean = (this.requestedValue !== value) && notIgnore;
+        const emitError: boolean = (this.requestedValue !== value) && (strategy != strategies.ignore);
         const emitValid: boolean = this.emitValid(value, error, overridenError, valid);
         this.emitEvents(overridenError as NumberInputErrorExtended, valid, emitError, emitValid);
-        if(notIgnore && (valid !== value)) {
+        if((strategy != strategies.allow) && (valid !== value)) {
             this.requestedValue = valid;
             if(typeof propsValue !== typeofs.stringType) {
                 this.getInputNode().value = valid;
