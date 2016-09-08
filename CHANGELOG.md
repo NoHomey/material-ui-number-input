@@ -150,3 +150,7 @@
 ### Bug fixes
 
 - Fixing a bug which caused input value overriding to be skipped when `strategy` is `'ignore'` instead of when it's `'allow'`
+
+## [v5.0.8](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.8)
+
+- NPM dependencies update
