@@ -90,6 +90,8 @@ namespace constants {
     export const zero: number = 0;
     export const one: number = 1;
     export const minusOne: number = -1;
+    export const boolTrue: boolean = true;
+    export const boolFalse: boolean = false;
 }
 
 export class NumberInput extends React.Component<NumberInputProps, void> {
@@ -154,7 +156,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         value: React.PropTypes.string
     };
     public static defaultProps: NumberInputProps = {
-        required: false,
+        required: constants.boolFalse,
         strategy: strategies.allow
     };
     public textField: TextField;
@@ -286,7 +288,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         const { strategy, onBlur } = this.props;
         const { value } = eventValue.target;
         if(strategy === strategies.warn) {
-            this.emitEvents(this.validateValue(value), value, true, false);
+            this.emitEvents(this.validateValue(value), value, constants.boolTrue, constants.boolFalse);
         }
         if(onBlur) {
             onBlur(event);
