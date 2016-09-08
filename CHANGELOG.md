@@ -144,3 +144,9 @@
 ## TypeScript Users Only
 
 - `propTypes` is now `React.ValidationMap<NumberInputProps>` instead of just `Object` making `React.createElement` callable
+
+## [v5.0.7](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.7)
+
+### Bug fixes
+
+- Fixing a bug which caused input value overriding to be skipped when `strategy` is `'ignore'` instead of when it's `'allow'`
