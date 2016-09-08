@@ -116,7 +116,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     private static allowed: RegExp = /-?((0|([1-9]\d{0,}))(\.\d{0,})?)?/;
     private static deleteProps: Array<string> = ['strategy', 'onError', 'onValid', 'onRequestValue'];
 
-    public static propTypes: Object = {
+    public static propTypes: React.ValidationMap<NumberInputProps> = {
         children: React.PropTypes.node,
         className: React.PropTypes.string,
         disabled: React.PropTypes.bool,
