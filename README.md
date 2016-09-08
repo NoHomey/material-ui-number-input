@@ -14,36 +14,36 @@ The better TextField for number inputs.
 
 | Name                    | Type       | Default   | TextField | Description                                             |
 | ----------------------- | ---------- | --------- | --------- | ------------------------------------------------------- |
-| children                | *node*     |           | *true*    |                                                         |
-| className               | *string*   |           | *true*    | The css class name of the root element. |
-| disabled                | *bool*     | *false*   | *true*    | Disables the input field if set to true.|
-| floatingLabelFixed      | *bool*     | *false*   | *true*    | If true, the floating label will float even when there is no value. |
-| id                      | *string*   |           | *true*    | The id prop for the input field. |
-| name                    | *string*   |           | *true*    | Name applied to the input. |
-| fullWidth               | *bool*     | *false*   | *true*    | If true, the field receives the property width 100%. |
-| underlineShow           | *bool*     | *true*    | *true*    | If true, shows the underline for the input field. |
-| defaultValue            | *number*   |           | *true*    | The number to use for the default value. Must be in range [min, max] if any is setted. |
-| strategy             | *'ignore' \| 'warn' \| 'allow'* | *'allow'* | *false* | Strategy to use when user presses key and when value prop change it's value. |
-| min                     | *number*   |           | *false*   | The number used as minimum value limit. Must be less than max. |
-| max                     | *number*   |           | *false*   | The number used as maximum value limit. Must be greater than min. |
-| reqired                 | *bool*     | *false*   | *false*   | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
-| value                   | *string*   |           | *true*   | The value of the input field. |
-| onChange                | *function* |           | *true*   | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
-| onError           | *function* |         | *false*   | Callback function that is fired when input error status changes and strategy is not 'ignore'.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') => void`. |
-| onValid                 | *function*|            | *false*   | Callback function that is fired when input's value is a valid number.  **Signature:** `function(value: number) => void` |
-| onRequestValue\*         | *function* |           | *false*   | Callback function that is fired when strategy is 'warn' or 'ignore', input is controlled and an invalid number value is passed. It provides valid number value which needs to be setted. **Signature:** `function(value: string) => void` |
-| errorText               | *node*     |           | *true*    | The error content to display. |
-| errorStyle              | *object*   |           | *true*    | The style object to use to override error styles. |
-| floatingLabelFocusStyle | *object*   |           | *true*    | The style object to use to override floating label styles when focused. |
-| floatingLabelStyle      | *object*   |           | *true*    | The style object to use to override floating label styles. |
-| floatingLabelText       | *node*     |           | *true*    | The content to use for the floating label element. |
-| hintStyle               | *object*   |           | *true*    | Override the inline-styles of the TextField's hint text element. |
-| hintText                | *node*     |           | *true*    | The hint content to display. |
-| inputStyle              | *object*   |           | *true*    | Override the inline-styles of the TextField's input element. When multiLine is false: define the style of the input element. When multiLine is true: define the style of the container of the textarea. |
-| style                   | *object*   |           | *true*    | Override the inline-styles of the root element. |
-| underlineDisabledStyle  | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element when disabled. |
-| underlineFocusStyle     | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element when focussed. |
-| underlineStyle          | *object*   |           | *true*    | Override the inline-styles of the TextField's underline element. |
+| children                | *node*     |           | ✓         |                                                         |
+| className               | *string*   |           | ✓         | The css class name of the root element. |
+| disabled                | *bool*     | ❌         | ✓         | Disables the input field if set to true.|
+| floatingLabelFixed      | *bool*     | ❌         | ✓         | If true, the floating label will float even when there is no value. |
+| id                      | *string*   |           | ✓         | The id prop for the input field. |
+| name                    | *string*   |           | ✓         | Name applied to the input. |
+| fullWidth               | *bool*     | ❌         | ✓         | If true, the field receives the property width 100%. |
+| underlineShow           | *bool*     | ✓         | ✓         | If true, shows the underline for the input field. |
+| defaultValue            | *number*   |           | ✓         | The number to use for the default value. Must be in range [min, max] if any is setted. |
+| strategy                | *'ignore' \| 'warn' \| 'allow'* | *'allow'* | ❌       | Strategy to use when user presses key and when value prop change it's value. |
+| min                     | *number*   |           | ❌         | The number used as minimum value limit. Must be less than max. |
+| max                     | *number*   |           | ❌         | The number used as maximum value limit. Must be greater than min. |
+| reqired                 | *bool*     | ❌         | ❌         | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
+| value                   | *string*   |           | ✓        | The value of the input field. |
+| onChange                | *function* |           | ✓        | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
+| onError                 | *function* |         | ❌         | Callback function that is fired when input error status changes and strategy is not 'ignore'.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') => void`. |
+| onValid                 | *function*|            | ❌         | Callback function that is fired when input's value is a valid number.  **Signature:** `function(value: number) => void` |
+| onRequestValue\*        | *function* |           | ❌         | Callback function that is fired when strategy is 'warn' or 'ignore', input is controlled and an invalid number value is passed. It provides valid number value which needs to be setted. **Signature:** `function(value: string) => void` |
+| errorText               | *node*     |           | ✓         | The error content to display. |
+| errorStyle              | *object*   |           | ✓         | The style object to use to override error styles. |
+| floatingLabelFocusStyle | *object*   |           | ✓         | The style object to use to override floating label styles when focused. |
+| floatingLabelStyle      | *object*   |           | ✓         | The style object to use to override floating label styles. |
+| floatingLabelText       | *node*     |           | ✓         | The content to use for the floating label element. |
+| hintStyle               | *object*   |           | ✓         | Override the inline-styles of the TextField's hint text element. |
+| hintText                | *node*     |           | ✓         | The hint content to display. |
+| inputStyle              | *object*   |           | ✓         | Override the inline-styles of the TextField's input element. When multiLine is false: define the style of the input element. When multiLine is true: define the style of the container of the textarea. |
+| style                   | *object*   |           | ✓         | Override the inline-styles of the root element. |
+| underlineDisabledStyle  | *object*   |           | ✓         | Override the inline-styles of the TextField's underline element when disabled. |
+| underlineFocusStyle     | *object*   |           | ✓         | Override the inline-styles of the TextField's underline element when focussed. |
+| underlineStyle          | *object*   |           | ✓         | Override the inline-styles of the TextField's underline element. |
 
 \* onRequestValue is required when strategy is 'warn' or 'ignore' and input is controlled in order to ensure correct strategy behaviour.
 
