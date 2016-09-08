@@ -339,7 +339,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
             delete inputProps.defaultValue;
         }
         NumberInput.deleteOwnProps(inputProps);
-        return <TextField {...inputProps} />;
+        return React.createElement(TextField, inputProps);
     }
 }
 
