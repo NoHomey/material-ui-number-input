@@ -16,17 +16,17 @@ The better TextField for number inputs.
 | ----------------------- | ---------- | --------- | --------- | ------------------------------------------------------- |
 | children                | *node*     |           | ✓         |                                                         |
 | className               | *string*   |           | ✓         | The css class name of the root element. |
-| disabled                | *bool*     | ❌         | ✓         | Disables the input field if set to true.|
-| floatingLabelFixed      | *bool*     | ❌         | ✓         | If true, the floating label will float even when there is no value. |
+| disabled                | *bool*     | *false*   | ✓         | Disables the input field if set to true.|
+| floatingLabelFixed      | *bool*     | *false*   | ✓         | If true, the floating label will float even when there is no value. |
 | id                      | *string*   |           | ✓         | The id prop for the input field. |
 | name                    | *string*   |           | ✓         | Name applied to the input. |
-| fullWidth               | *bool*     | ❌         | ✓         | If true, the field receives the property width 100%. |
-| underlineShow           | *bool*     | ✓         | ✓         | If true, shows the underline for the input field. |
+| fullWidth               | *bool*     | *false*   | ✓         | If true, the field receives the property width 100%. |
+| underlineShow           | *bool*     | *true*   | ✓         | If true, shows the underline for the input field. |
 | defaultValue            | *number*   |           | ✓         | The number to use for the default value. Must be in range [min, max] if any is setted. |
 | strategy                | *'ignore' \| 'warn' \| 'allow'* | *'allow'* | ❌       | Strategy to use when user presses key and when value prop change it's value. |
 | min                     | *number*   |           | ❌         | The number used as minimum value limit. Must be less than max. |
 | max                     | *number*   |           | ❌         | The number used as maximum value limit. Must be greater than min. |
-| reqired                 | *bool*     | ❌         | ❌         | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
+| reqired                 | *bool*     | *false*   | ❌         | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
 | value                   | *string*   |           | ✓        | The value of the input field. |
 | onChange                | *function* |           | ✓        | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
 | onError                 | *function* |         | ❌         | Callback function that is fired when input error status changes and strategy is not 'ignore'.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') => void`. |
