@@ -1,6 +1,6 @@
 {
   "name": "material-ui-number-input",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "description": "The better TextField for number inputs.",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
