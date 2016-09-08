@@ -99,11 +99,13 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     }
 
     private static deleteOwnProps(props: any): void {
-        NumberInput.deleteProps.forEach((prop: string): void => {
+        let prop: string;
+        for(let index: number = 0; index < NumberInput.deleteProps.length; ++index) {
+            prop = NumberInput.deleteProps[index];
             if(props.hasOwnProperty(prop)) {
                 delete props[prop];
             }
-        });
+        }
     }
 
     private static validSymbols: RegExp = /(\-|\.|\d)+/;
@@ -201,7 +203,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
                         const whole: number = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min;
                         switch(this.validateNumberValue(numberValue)) {
                             case constants.one: return errorNames.max;
-                            case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue >= constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
+                            case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue > constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
                             default: return errorNames.none;
                         }
                     } else {

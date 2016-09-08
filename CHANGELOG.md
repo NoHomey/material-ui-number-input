@@ -128,3 +128,13 @@
 ## [v5.0.4](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.4)
 
 - Performance improvment
+
+## [v5.0.5](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.5)
+
+- Performance improvments and memory optimizations
+
+### Bug fixes
+
+- If `strategy` is not `'allow'` and entered number is less than `min` and  `prop` but it is decimal number input value will be overriden if it's not controlled else `onRequestValue` will be emitted  and `'min'` error will be emitted if `strategy` is `'warn'` 
+
+- If `strategy` is not `'allow'` and `min` is greater than `0` and entered number is `0` input value will be overriden if it's not controlled else `onRequestValue` will be emitted  and `'min'` error will be emitted if `strategy` is `'warn'` 

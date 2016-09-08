@@ -20,11 +20,11 @@ export default class Demo extends React.Component<void, DemoState> {
         super(props);
         this.state = { value: '30' };
         this.onKeyDown = (event: React.KeyboardEvent): void => {
-            //console.log(`onKeyDown ${event.key}`);
+            console.log(`onKeyDown ${event.key}`);
         }
         this.onChange = (event: React.FormEvent, value: string): void => {
             const e: EventValue = event;
-            //console.log(`onChange ${e.target.value}, ${value}`);
+            console.log(`onChange ${e.target.value}, ${value}`);
             this.setState({ value: value });
         };
         this.onError = (error: NumberInputError): void => {
