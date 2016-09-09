@@ -2,18 +2,17 @@
   "name": "material-ui-number-input",
   "version": "5.0.8",
   "description": "The better TextField for number inputs.",
-  "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "main": "./index.js",
+  "typings": "./index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "typings": "typings install",
     "start": "webpack && mv ./demo/index.html ./ && node server.js",
-    "prepublish": "npm run prepublish:rm && npm run prepublish:tsc && npm run prepublish:sed && npm run prepublish:dts",
-    "prepublish:rm": "rm -Rf ./d*",
-    "prepublish:tsc": "tsc -d -m commonjs  --moduleResolution node -t es5 --jsx react --noImplicitAny --experimentalDecorators --outDir ./dist ./src/index.tsx",
+    "prepublish": "tsc && npm run prepublish:sed && npm run prepublish:dts",
     "prepublish:sed": "npm run prepublish:sed:typings",
-    "prepublish:sed:typings": "sed -i '/\\/\\/\\/ <reference path=\".\\/..\\/typings\\/index.d.ts\" \\/>/d' ./dist/index.js",
-    "prepublish:dts": "echo  \"import NumberInput from './NumberInput';\nexport * from './NumberInput';\nexport default NumberInput;\" > ./dist/index.d.ts"
+    "prepublish:sed:typings": "sed -i '/\\/\\/\\/ <reference path=\".\\/..\\/typings\\/index.d.ts\" \\/>/d' ./index.js",
+    "prepublish:dts": "echo  \"import NumberInput from './NumberInput';\nexport * from './NumberInput';\nexport default NumberInput;\" > ./index.d.ts",
+    "postpublish": "rm ./index* ./NumberInput*"
   },
   "keywords": [
     "react",

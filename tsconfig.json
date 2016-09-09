@@ -5,14 +5,18 @@
         "target": "es5",
         "jsx": "react",
         "noImplicitAny": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "declaration": true,
+        "outDir": "./"
     },
     "files": [
-        "typings/index.d.ts",
-        "Dev/demo.tsx",
-        "Dev/index.tsx",
-        "src/NumberInput.tsx",
         "src/index.tsx"
+    ],
+    "includes": [
+        "typings/index.d.ts",
+        "src/NumberInput.tsx",
+        "Dev/demo.tsx",
+        "Dev/index.tsx"
     ],
     "exclude": [
         "node_modules"
