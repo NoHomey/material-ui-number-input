@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { SourceCode, javascript, typescript } from './SourceCode';
+import { StrategySelectField, Strategy,allow } from './StrategySelectField';
 import bind from 'bind-decorator';
-//import { NumberInputProps } from 'material-ui-number-input';
+//import { NumberInput } from 'material-ui-number-input';
 
 function reactiveProps(props: Object): string {
     let dynamicProps: string = '';
+    let value: any;
     for(let prop in props) {
         if(props.hasOwnProperty(prop)) {
-            dynamicProps += `                ${prop}={${(props as any)[prop]}}\n`;
+            value = (props as any)[prop];
+            dynamicProps += `                ${prop}=${value[0] !== '"' ? `{${value}}` : value + '"'}\n`;
         }
     }
     return dynamicProps;
@@ -40,7 +43,9 @@ ${reactiveProps(props)}            />
 }
 
 interface ReactiveExampleState {
-    language: string;
+    language?: string;
+    strategy?: Strategy;
+    props?: any;
 }
 
 export default class ReactiveExample extends React.Component<void, ReactiveExampleState> {
@@ -49,28 +54,39 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         this.setState({ language: language });
     }
 
+    @bind
+    private onStrategyChange(strategy: Strategy): void {
+        const { props } = this.state;
+        props.strategy = '"' + strategy;
+        this.setState({ strategy: strategy, props: props });
+    }
+
     public constructor(props: void) {
         super(props);
-        this.state = { language: javascript };
+        this.state = {
+            language: javascript,
+            strategy: allow,
+            props: {
+                min: 0,
+                max: 30,
+                value: 'value',
+                strategy: '"' + allow
+            }
+        };
     }
 
     public render(): JSX.Element {
-        const { language } = this.state;
-        const props: any = {
-            min: 9,
-            max: 30,
-            value: 'value'
-        };
+        const { language, strategy, props } = this.state;
         return (
             <div>
                 <div>
+                    <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
                 </div>
                 <SourceCode
-                    language={language}
-                    code={code(language, props)}
+                    language={language!}
+                    code={code(language!, props!)}
                     onLanguageChange={this.onLangaugeChange} />
             </div>
         );
     }
-
 }
