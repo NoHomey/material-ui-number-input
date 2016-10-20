@@ -4251,8 +4251,21 @@
 	var React = __webpack_require__(1);
 	var SourceCode_1 = __webpack_require__(35);
 	var bind_decorator_1 = __webpack_require__(534);
-	var typescriptCode = "// Source code:\nimport * as React from 'react';\n\ninterface DemoState {\n    value?: string;\n    errorText?: string;\n}\n\nclass Demo extends React.Component<void, DemoState> {\n    public constructor(props: void) {\n        super(props);\n    }\n\n    public render(): JSX.Element {\n        return (\n            <NumberInput\n            \n\n            />\n        );\n    }\n}";
-	var javascriptCode = "// Source code:\nimport * as React from 'react';\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props);\n    }\n\n    render() {\n        return (\n            <NumberInput\n            \n\n            />\n        );\n    }\n}";
+	//import { NumberInputProps } from 'material-ui-number-input';
+	function reactiveProps(props) {
+	    var dynamicProps = '';
+	    for (var prop in props) {
+	        if (props.hasOwnProperty(prop)) {
+	            dynamicProps += "                " + prop + "={" + props[prop] + "}\n";
+	        }
+	    }
+	    return dynamicProps;
+	}
+	function code(language, props) {
+	    var types = language === SourceCode_1.typescript;
+	    return "import * as React from 'react';\n" + (types ?
+	        "\ninterface DemoState {\n    value?: string;\n    errorText?: string;\n}\n" : '') + "\nclass Demo extends React.Component" + (types ? '<void, DemoState>' : '') + " {\n    public constructor(props" + (types ? ': void' : '') + ") {\n        super(props);\n    }\n\n    public render()" + (types ? ': JSX.Element' : '') + " {\n        return (\n            <NumberInput\n" + reactiveProps(props) + "            />\n        );\n    }\n}";
+	}
 	var ReactiveExample = (function (_super) {
 	    __extends(ReactiveExample, _super);
 	    function ReactiveExample(props) {
@@ -4264,7 +4277,12 @@
 	    };
 	    ReactiveExample.prototype.render = function () {
 	        var language = this.state.language;
-	        return (React.createElement(SourceCode_1.SourceCode, {language: language, code: language === SourceCode_1.javascript ? javascriptCode : typescriptCode, onLanguageChange: this.onLangaugeChange}));
+	        var props = {
+	            min: 9,
+	            max: 30,
+	            value: 'value'
+	        };
+	        return (React.createElement(SourceCode_1.SourceCode, {language: language, code: code(language, props), onLanguageChange: this.onLangaugeChange}));
 	    };
 	    __decorate([
 	        bind_decorator_1.default
@@ -4313,7 +4331,7 @@
 	var themeColor1 = '#155799';
 	var themeColor2 = '#159957';
 	var CodeSize = 40;
-	var startingLineNumber = 0;
+	var startingLineNumber = 1;
 	var labelStyle = { color: themeColor1 };
 	var underlineStyle = { backgroundColor: themeColor1 };
 	var CodeStyle = { width: CodeSize, height: CodeSize, color: themeColor2 };
