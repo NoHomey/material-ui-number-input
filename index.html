@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Material-ui-number-input by NoHomey</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Material-ui-number-input</h1>
+      <h2 class="project-tagline">The &lt;TextField type=&quot;number&quot; /&gt; that user really expects.</h2>
+      <a href="https://github.com/NoHomey/material-ui-number-input" class="btn">View on GitHub</a>
+      <a href="https://github.com/NoHomey/material-ui-number-input/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/NoHomey/material-ui-number-input/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="properties" class="anchor" href="#properties" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Properties</h1>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>TextField</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>children</td>
+<td><em>node</em></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>className</td>
+<td><em>string</em></td>
+<td></td>
+<td>✓</td>
+<td>The css class name of the root element.</td>
+</tr>
+<tr>
+<td>disabled</td>
+<td><em>bool</em></td>
+<td><em>false</em></td>
+<td>✓</td>
+<td>Disables the input field if set to true.</td>
+</tr>
+<tr>
+<td>floatingLabelFixed</td>
+<td><em>bool</em></td>
+<td><em>false</em></td>
+<td>✓</td>
+<td>If true, the floating label will float even when there is no value.</td>
+</tr>
+<tr>
+<td>id</td>
+<td><em>string</em></td>
+<td></td>
+<td>✓</td>
+<td>The id prop for the input field.</td>
+</tr>
+<tr>
+<td>name</td>
+<td><em>string</em></td>
+<td></td>
+<td>✓</td>
+<td>Name applied to the input.</td>
+</tr>
+<tr>
+<td>fullWidth</td>
+<td><em>bool</em></td>
+<td><em>false</em></td>
+<td>✓</td>
+<td>If true, the field receives the property width 100%.</td>
+</tr>
+<tr>
+<td>underlineShow</td>
+<td><em>bool</em></td>
+<td><em>true</em></td>
+<td>✓</td>
+<td>If true, shows the underline for the input field.</td>
+</tr>
+<tr>
+<td>defaultValue</td>
+<td><em>number</em></td>
+<td></td>
+<td>✓</td>
+<td>The number to use for the default value. Must be in range [min, max] if any is setted.</td>
+</tr>
+<tr>
+<td>strategy</td>
+<td><em>'ignore' | 'warn' | 'allow'</em></td>
+<td><em>'allow'</em></td>
+<td><g-emoji alias="x" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" ios-version="6.0">❌</g-emoji></td>
+<td>Strategy to use when user presses key and when value prop change it's value.</td>
+</tr>
+<tr>
+<td>min</td>
+<td><em>number</em></td>
+<td></td>
+<td><g-emoji alias="x" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" ios-version="6.0">❌</g-emoji></td>
+<td>The number used as minimum value limit. Must be less than max.</td>
+</tr>
+<tr>
+<td>max</td>
+<td><em>number</em></td>
+<td></td>
+<td><g-emoji alias="x" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" ios-version="6.0">❌</g-emoji></td>
+<td>The number used as maximum value limit. Must be greater than min.</td>
+</tr>
+<tr>
+<td>reqired</td>
+<td><em>bool</em></td>
+<td><em>false</em></td>
+<td><g-emoji alias="x" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" ios-version="6.0">❌</g-emoji></td>
+<td>If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'.</td>
+</tr>
+<tr>
+<td>value</td>
+<td><em>string</em></td>
+<td></td>
+<td>✓</td>
+<td>The value of the input field.</td>
+</tr>
+<tr>
+<td>onChange</td>
+<td><em>function</em></td>
+<td></td>
+<td>✓</td>
+<td>Callback function that is fired when input filed must change it's value. <strong>Signature:</strong> <code>function(event: React.FormEvent, value: string) =&gt; void</code>.</td>
+</tr>
+<tr>
+<td>onError</td>
+<td><em>function</em></td>
+<td></td>
+<td><g-emoji alias="x" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" ios-version="6.0">❌</g-emoji></td>
+<td>Callback function that is fired when input error status changes and strategy is not 'ignore'.  <strong>Signature:</strong> <code>function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') =&gt; void</code>.</td>
+</tr>
+<tr>
+<td>onValid</td>
+<td><em>function</em></td>
+<td></td>
+<td><g-emoji alias="x" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" ios-version="6.0">❌</g-emoji></td>
+<td>Callback function that is fired when input's value is a valid number.  <strong>Signature:</strong> <code>function(value: number) =&gt; void</code>
+</td>
+</tr>
+<tr>
+<td>onRequestValue*</td>
+<td><em>function</em></td>
+<td></td>
+<td><g-emoji alias="x" fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" ios-version="6.0">❌</g-emoji></td>
+<td>Callback function that is fired when strategy is 'warn' or 'ignore', input is controlled and an invalid number value is passed. It provides valid number value which needs to be setted. <strong>Signature:</strong> <code>function(value: string) =&gt; void</code>
+</td>
+</tr>
+<tr>
+<td>errorText</td>
+<td><em>node</em></td>
+<td></td>
+<td>✓</td>
+<td>The error content to display.</td>
+</tr>
+<tr>
+<td>errorStyle</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>The style object to use to override error styles.</td>
+</tr>
+<tr>
+<td>floatingLabelFocusStyle</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>The style object to use to override floating label styles when focused.</td>
+</tr>
+<tr>
+<td>floatingLabelStyle</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>The style object to use to override floating label styles.</td>
+</tr>
+<tr>
+<td>floatingLabelText</td>
+<td><em>node</em></td>
+<td></td>
+<td>✓</td>
+<td>The content to use for the floating label element.</td>
+</tr>
+<tr>
+<td>hintStyle</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>Override the inline-styles of the TextField's hint text element.</td>
+</tr>
+<tr>
+<td>hintText</td>
+<td><em>node</em></td>
+<td></td>
+<td>✓</td>
+<td>The hint content to display.</td>
+</tr>
+<tr>
+<td>inputStyle</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>Override the inline-styles of the TextField's input element. When multiLine is false: define the style of the input element. When multiLine is true: define the style of the container of the textarea.</td>
+</tr>
+<tr>
+<td>style</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>Override the inline-styles of the root element.</td>
+</tr>
+<tr>
+<td>underlineDisabledStyle</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>Override the inline-styles of the TextField's underline element when disabled.</td>
+</tr>
+<tr>
+<td>underlineFocusStyle</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>Override the inline-styles of the TextField's underline element when focussed.</td>
+</tr>
+<tr>
+<td>underlineStyle</td>
+<td><em>object</em></td>
+<td></td>
+<td>✓</td>
+<td>Override the inline-styles of the TextField's underline element.</td>
+</tr>
+</tbody>
+</table>
+
+<p>* onRequestValue is required when strategy is 'warn' or 'ignore' and input is controlled in order to ensure correct strategy behaviour.</p>
+
+<h1>
+<a id="strategies" class="anchor" href="#strategies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Strategies</h1>
+
+<table>
+<thead>
+<tr>
+<th>strategy</th>
+<th>onError fired</th>
+<th>onRequestValue fired</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>'allow'</td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>'warn'</td>
+<td>✓</td>
+<td>✓*</td>
+</tr>
+<tr>
+<td>'ignore'</td>
+<td></td>
+<td>✓*</td>
+</tr>
+</tbody>
+</table>
+
+<p>* Fired when input is controlled (<code>value</code> is provided). If input is not controlled it's value will be automaticlly corrected when it get's invalid number value.</p>
+
+<h1>
+<a id="errors" class="anchor" href="#errors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Errors</h1>
+
+<h2>
+<a id="none" class="anchor" href="#none" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'none'</h2>
+
+<p>Fired when input's value is valid (there is no error).</p>
+
+<h2>
+<a id="required" class="anchor" href="#required" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'required'</h2>
+
+<p>Fired when <code>required</code> prop is <code>true</code> and user leaves empty the input or it gets cleared.</p>
+
+<h2>
+<a id="clean" class="anchor" href="#clean" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'clean'</h2>
+
+<p>Fired when <code>required</code> prop is <code>false</code> and user leaves empty the input or it gets cleared.</p>
+
+<h2>
+<a id="invalidsymbol" class="anchor" href="#invalidsymbol" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'invalidSymbol'</h2>
+
+<p>Fired when user enters none special key which is different than <code>-</code>,<code>.</code>,<code>[0-9]</code>.</p>
+
+<h2>
+<a id="incompletenumber" class="anchor" href="#incompletenumber" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'incompleteNumber'</h2>
+
+<p>Fired wehn user enters <code>-</code> as first char in the input or when user enters the first <code>.</code>.</p>
+
+<h2>
+<a id="singleminus" class="anchor" href="#singleminus" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'singleMinus'</h2>
+
+<p>Fired when user enters <code>-</code> not as a first char.</p>
+
+<h2>
+<a id="singlefloatingpoint" class="anchor" href="#singlefloatingpoint" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'singleFloatingPoint'</h2>
+
+<p>Fired when user enters <code>.</code> and there is already one entered.</p>
+
+<h2>
+<a id="singlezero" class="anchor" href="#singlezero" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'singleZero'</h2>
+
+<p>Fired when user has entered <code>0</code> as first char and enters a digit key.</p>
+
+<h2>
+<a id="min" class="anchor" href="#min" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'min'</h2>
+
+<p>Fired when user enters number less than <code>min</code> prop value.</p>
+
+<h2>
+<a id="max" class="anchor" href="#max" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>'max'</h2>
+
+<p>Fired when user enters number greater than <code>max</code> prop value.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/NoHomey/material-ui-number-input">Material-ui-number-input</a> is maintained by <a href="https://github.com/NoHomey">NoHomey</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
