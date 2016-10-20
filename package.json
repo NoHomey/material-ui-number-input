@@ -1,0 +1,30 @@
+{
+  "name": "material-ui-number-input.io",
+  "version": "1.0.0",
+  "description": "The <TextField type=\"number\" /> that user really expects.io",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react": "^0.14.41",
+    "material-ui": "^0.16.1",
+    "material-ui-number-input": "^5.0.8",
+    "react": "^15.3.2",
+    "typescript": "^2.0.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoHomey/material-ui-number-input.git"
+  },
+  "keywords": [
+    "gh-page"
+  ],
+  "author": "Ivo Stratev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NoHomey/material-ui-number-input/issues"
+  },
+  "homepage": "https://github.com/NoHomey/material-ui-number-input#readme"
+}
