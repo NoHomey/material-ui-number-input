@@ -5,14 +5,22 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
+    "@types/material-ui": "^0.15.37",
     "@types/react": "^0.14.41",
+    "@types/react-dom": "^0.14.18",
+    "@types/react-tap-event-plugin": "0.0.30",
     "material-ui": "^0.16.1",
     "material-ui-number-input": "^5.0.8",
     "react": "^15.3.2",
-    "typescript": "^2.0.3"
+    "react-dom": "^15.3.2",
+    "react-syntax-highlighter": "^2.10.0",
+    "react-tap-event-plugin": "^1.0.0",
+    "ts-loader": "^0.9.5",
+    "typescript": "^2.0.3",
+    "webpack": "^1.13.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
