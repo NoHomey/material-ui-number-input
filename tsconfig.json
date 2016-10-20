@@ -5,7 +5,7 @@
         "noImplicitAny": true,
         "strictNullChecks": true,
         "noImplicitThis": true,
-        "noUnusedParameters": true,
+        "noUnusedParameters": false,
         "noUnusedLocals": true,
         "experimentalDecorators": true,
         "jsx": "react"

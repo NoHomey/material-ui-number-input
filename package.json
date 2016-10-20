@@ -9,6 +9,7 @@
     "@types/react": "^0.14.41",
     "@types/react-dom": "^0.14.18",
     "@types/react-tap-event-plugin": "0.0.30",
+    "bind-decorator": "^1.0.10",
     "material-ui": "^0.16.1",
     "material-ui-number-input": "^5.0.8",
     "react": "^15.3.2",
