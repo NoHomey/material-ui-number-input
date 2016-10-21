@@ -154,3 +154,9 @@
 ## [v5.0.8](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.8)
 
 - NPM dependencies update
+
+
+## [v5.0.9](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.9)
+
+- NPM dependencies update
+- Moving to TypeScript v2 and replacing typings with @types
