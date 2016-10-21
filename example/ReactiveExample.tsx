@@ -4,7 +4,7 @@ import { StrategySelectField, Strategy, allow } from './StrategySelectField';
 import LimitInput from './LimitInput';
 import RequiredCheckbox from './RequiredCheckbox';
 import ColoredButton from './ColoredButton';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import If from './If';
 import H1 from './H1';
 import { orange500, red500 } from 'material-ui/styles/colors';
@@ -217,6 +217,17 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         const errorStyle: React.CSSProperties = { color: isStrategyWarn ? orange500 : red500 };
         return (
             <div>
+                <H1 id="react-ive-props" label="React-ive Props" />
+                <div>
+                    <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
+                    <br />
+                    <LimitInput limit="min" onValidLimit={this.onValidMin} onInvalidLimit={this.onInValidMin} />
+                    <br />
+                    <LimitInput limit="max" onValidLimit={this.onValidMax} onInvalidLimit={this.onInValidMax} />
+                    <br />
+                    <RequiredCheckbox required={Boolean(props.required)} onRequiredCheck={this.onRequiredCheck} />
+                </div>
+                <H1 id="number-input" label="NumberInput" />
                 <NumberInput
                     id="reactive-number-input"
                     value={value}
@@ -229,16 +240,6 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                     errorText={errorText}
                     onError={this.onError}
                     errorStyle={errorStyle} />
-                <H1 id="react-ive-props" label="React-ive Props" />
-                <div>
-                    <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
-                    <br />
-                    <LimitInput limit="min" onValidLimit={this.onValidMin} onInvalidLimit={this.onInValidMin} />
-                    <br />
-                    <LimitInput limit="max" onValidLimit={this.onValidMax} onInvalidLimit={this.onInValidMax} />
-                    <br />
-                    <RequiredCheckbox required={Boolean(props.required)} onRequiredCheck={this.onRequiredCheck} />
-                </div>
                 <H1 id="called-handlers" label="Called Handlers" />
                 <div>
                     <ColoredButton label="onChange" color="#9b59b6" colored={handlerCalled!.onChange} />
@@ -247,9 +248,9 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                         then={<ColoredButton label="onError" color="#ff5733" colored={handlerCalled!.onError} />} />
                     <ColoredButton label="onValid" color="#2ecc71" colored={handlerCalled!.onValid} />
                     <ColoredButton label="onRequestValue" color="#f39c12" colored={handlerCalled!.onRequestValue} />
-                    <RaisedButton label="Clear" primary onClick={this.onClear} />
+                    <FlatButton label="Clear" primary onClick={this.onClear} />
                 </div>
-                <H1 id="react-ive-source-code" label="React-ive Source code" />
+                <H1 id="source-code" label="Source code" />
                 <SourceCode
                     language={language!}
                     code={code(language!, props!, strategy!)}

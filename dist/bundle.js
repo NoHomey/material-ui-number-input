@@ -48,8 +48,8 @@
 	var React = __webpack_require__(1);
 	var ReactiveExample_1 = __webpack_require__(34);
 	var react_dom_1 = __webpack_require__(312);
-	var injectTapEventPlugin = __webpack_require__(551);
-	var MuiThemeProvider_1 = __webpack_require__(557);
+	var injectTapEventPlugin = __webpack_require__(554);
+	var MuiThemeProvider_1 = __webpack_require__(560);
 	injectTapEventPlugin();
 	react_dom_1.render(React.createElement(MuiThemeProvider_1.default, null, 
 	    React.createElement(ReactiveExample_1.default, null)
@@ -4254,10 +4254,10 @@
 	var LimitInput_1 = __webpack_require__(536);
 	var RequiredCheckbox_1 = __webpack_require__(539);
 	var ColoredButton_1 = __webpack_require__(545);
-	var RaisedButton_1 = __webpack_require__(546);
-	var If_1 = __webpack_require__(548);
-	var H1_1 = __webpack_require__(549);
-	var colors_1 = __webpack_require__(550);
+	var FlatButton_1 = __webpack_require__(548);
+	var If_1 = __webpack_require__(551);
+	var H1_1 = __webpack_require__(552);
+	var colors_1 = __webpack_require__(553);
 	var material_ui_number_input_1 = __webpack_require__(537);
 	var bind_decorator_1 = __webpack_require__(534);
 	var allProps = ['value', 'onChange', 'onValid', 'errorText', 'onError', 'strategy', 'min', 'max', 'required'];
@@ -4282,7 +4282,7 @@
 	    var isStrategyWarn = strategy === 'warn';
 	    var isStrategyNotIngore = isStrategyAllow || isStrategyWarn;
 	    return "import * as React from 'react';\nimport " + (types ? '{ NumberInput, NumberInputError }' : 'NumberInput') + " from 'material-ui-number-input';\nimport bind from 'bind-decorator';\n" + (types ?
-	        "\ninterface DemoState {\n    value?: string;\n    errorText?: string;\n}\n" : '') + "\nclass Demo extends React.Component" + (types ? '<void, DemoState>' : '') + " {\n    @bind\n    " + (types ? 'private ' : '') + "onChange(event" + (types ? ': React.FormEvent<{}>' : '') + ", value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ value: value });\n    }\n\n    @bind\n    " + (types ? 'private ' : '') + "onValid(valid" + (types ? ': number' : '') + ")" + (types ? ': void' : '') + " {\n        alert(valid);\n    }\n" + (isStrategyNotIngore ? "\n    @bind\n    " + (types ? 'private ' : '') + "onError(error" + (types ? ': NumberInputError' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ errorText: error !== 'none' ? '" + (isStrategyWarn ? 'Warning' : 'Error') + ": ' + error : '' });\n    }\n\n" : '') + "    " + (types ? 'public ' : '') + "constructor(props" + (types ? ': void' : '') + ") {\n        super(props);\n        this.state = { value: '', errorText: '' };\n    }\n\n    " + (types ? 'public ' : '') + "render()" + (types ? ': JSX.Element' : '') + " {\n        const { value, errorText } = this.state;\n        return (\n            <NumberInput\n" + reactiveProps(props) + "            />\n        );\n    }\n}";
+	        "\ninterface DemoState {\n    value?: string;\n    errorText?: string;\n}\n" : '') + "\nclass Demo extends React.Component" + (types ? '<void, DemoState>' : '') + " {\n    @bind\n    " + (types ? 'private ' : '') + "onChange(event" + (types ? ': React.FormEvent<{}>' : '') + ", value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ value: value });\n    }\n\n    " + (types ? 'private ' : '') + "onValid(valid" + (types ? ': number' : '') + ")" + (types ? ': void' : '') + " {\n        alert(valid);\n    }\n" + (isStrategyNotIngore ? "\n    @bind\n    " + (types ? 'private ' : '') + "onError(error" + (types ? ': NumberInputError' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ errorText: error !== 'none' ? '" + (isStrategyWarn ? 'Warning' : 'Error') + ": ' + error : '' });\n    }\n\n" : '') + "    " + (types ? 'public ' : '') + "constructor(props" + (types ? ': void' : '') + ") {\n        super(props);\n        this.state = { value: '', errorText: '' };\n    }\n\n    " + (types ? 'public ' : '') + "render()" + (types ? ': JSX.Element' : '') + " {\n        const { value, errorText } = this.state;\n        return (\n            <NumberInput\n" + reactiveProps(props) + "            />\n        );\n    }\n}";
 	}
 	var ReactiveExample = (function (_super) {
 	    __extends(ReactiveExample, _super);
@@ -4387,7 +4387,6 @@
 	        var errorText = isError ? (isStrategyWarn ? 'Warning: ' : 'Error: ') + error : '';
 	        var errorStyle = { color: isStrategyWarn ? colors_1.orange500 : colors_1.red500 };
 	        return (React.createElement("div", null, 
-	            React.createElement(material_ui_number_input_1.NumberInput, {id: "reactive-number-input", value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, onValid: this.onValid, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
 	            React.createElement(H1_1.default, {id: "react-ive-props", label: "React-ive Props"}), 
 	            React.createElement("div", null, 
 	                React.createElement(StrategySelectField_1.StrategySelectField, {strategy: strategy, onStrategyChange: this.onStrategyChange}), 
@@ -4397,14 +4396,16 @@
 	                React.createElement(LimitInput_1.default, {limit: "max", onValidLimit: this.onValidMax, onInvalidLimit: this.onInValidMax}), 
 	                React.createElement("br", null), 
 	                React.createElement(RequiredCheckbox_1.default, {required: Boolean(props.required), onRequiredCheck: this.onRequiredCheck})), 
+	            React.createElement(H1_1.default, {id: "number-input", label: "NumberInput"}), 
+	            React.createElement(material_ui_number_input_1.NumberInput, {id: "reactive-number-input", value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, onValid: this.onValid, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
 	            React.createElement(H1_1.default, {id: "called-handlers", label: "Called Handlers"}), 
 	            React.createElement("div", null, 
 	                React.createElement(ColoredButton_1.default, {label: "onChange", color: "#9b59b6", colored: handlerCalled.onChange}), 
 	                React.createElement(If_1.default, {condition: isStrategyNotIngore, then: React.createElement(ColoredButton_1.default, {label: "onError", color: "#ff5733", colored: handlerCalled.onError})}), 
 	                React.createElement(ColoredButton_1.default, {label: "onValid", color: "#2ecc71", colored: handlerCalled.onValid}), 
 	                React.createElement(ColoredButton_1.default, {label: "onRequestValue", color: "#f39c12", colored: handlerCalled.onRequestValue}), 
-	                React.createElement(RaisedButton_1.default, {label: "Clear", primary: true, onClick: this.onClear})), 
-	            React.createElement(H1_1.default, {id: "react-ive-source-code", label: "React-ive Source code"}), 
+	                React.createElement(FlatButton_1.default, {label: "Clear", primary: true, onClick: this.onClear})), 
+	            React.createElement(H1_1.default, {id: "source-code", label: "Source code"}), 
 	            React.createElement(SourceCode_1.SourceCode, {language: language, code: code(language, props, strategy), onLanguageChange: this.onLangaugeChange})));
 	    };
 	    __decorate([
@@ -4478,7 +4479,7 @@
 	exports.typescript = 'typescript';
 	var JavaScript = 'JavaScript';
 	var TypeScript = 'TypeScript';
-	var title = "Source code: ";
+	var title = "Language: ";
 	var themeColor1 = '#155799';
 	var themeColor2 = '#159957';
 	var CodeSize = 40;
@@ -53894,6 +53895,448 @@
 
 /***/ },
 /* 548 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _FlatButton = __webpack_require__(549);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _FlatButton2.default;
+
+/***/ },
+/* 549 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(213);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(251);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(252);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(257);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(258);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(262);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(297);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(305);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(307);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _childUtils = __webpack_require__(506);
+
+	var _colorManipulator = __webpack_require__(451);
+
+	var _EnhancedButton = __webpack_require__(505);
+
+	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
+
+	var _FlatButtonLabel = __webpack_require__(550);
+
+	var _FlatButtonLabel2 = _interopRequireDefault(_FlatButtonLabel);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function validateLabel(props, propName, componentName) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    if (!props.children && props.label !== 0 && !props.label && !props.icon) {
+	      return new Error('Required prop label or children or icon was not specified in ' + componentName + '.');
+	    }
+	  }
+	}
+
+	var FlatButton = function (_Component) {
+	  (0, _inherits3.default)(FlatButton, _Component);
+
+	  function FlatButton() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, FlatButton);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = FlatButton.__proto__ || (0, _getPrototypeOf2.default)(FlatButton)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      hovered: false,
+	      isKeyboardFocused: false,
+	      touch: false
+	    }, _this.handleKeyboardFocus = function (event, isKeyboardFocused) {
+	      _this.setState({ isKeyboardFocused: isKeyboardFocused });
+	      _this.props.onKeyboardFocus(event, isKeyboardFocused);
+	    }, _this.handleMouseEnter = function (event) {
+	      // Cancel hover styles for touch devices
+	      if (!_this.state.touch) _this.setState({ hovered: true });
+	      _this.props.onMouseEnter(event);
+	    }, _this.handleMouseLeave = function (event) {
+	      _this.setState({ hovered: false });
+	      _this.props.onMouseLeave(event);
+	    }, _this.handleTouchStart = function (event) {
+	      _this.setState({ touch: true });
+	      _this.props.onTouchStart(event);
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(FlatButton, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      if (nextProps.disabled) {
+	        this.setState({
+	          hovered: false
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var children = _props.children;
+	      var disabled = _props.disabled;
+	      var hoverColor = _props.hoverColor;
+	      var backgroundColor = _props.backgroundColor;
+	      var icon = _props.icon;
+	      var label = _props.label;
+	      var labelStyle = _props.labelStyle;
+	      var labelPosition = _props.labelPosition;
+	      var primary = _props.primary;
+	      var rippleColor = _props.rippleColor;
+	      var secondary = _props.secondary;
+	      var style = _props.style;
+	      var other = (0, _objectWithoutProperties3.default)(_props, ['children', 'disabled', 'hoverColor', 'backgroundColor', 'icon', 'label', 'labelStyle', 'labelPosition', 'primary', 'rippleColor', 'secondary', 'style']);
+	      var _context$muiTheme = this.context.muiTheme;
+	      var _context$muiTheme$but = _context$muiTheme.button;
+	      var buttonHeight = _context$muiTheme$but.height;
+	      var buttonMinWidth = _context$muiTheme$but.minWidth;
+	      var buttonTextTransform = _context$muiTheme$but.textTransform;
+	      var _context$muiTheme$fla = _context$muiTheme.flatButton;
+	      var buttonFilterColor = _context$muiTheme$fla.buttonFilterColor;
+	      var buttonColor = _context$muiTheme$fla.color;
+	      var disabledTextColor = _context$muiTheme$fla.disabledTextColor;
+	      var fontSize = _context$muiTheme$fla.fontSize;
+	      var fontWeight = _context$muiTheme$fla.fontWeight;
+	      var primaryTextColor = _context$muiTheme$fla.primaryTextColor;
+	      var secondaryTextColor = _context$muiTheme$fla.secondaryTextColor;
+	      var textColor = _context$muiTheme$fla.textColor;
+	      var _context$muiTheme$fla2 = _context$muiTheme$fla.textTransform;
+	      var textTransform = _context$muiTheme$fla2 === undefined ? buttonTextTransform || 'uppercase' : _context$muiTheme$fla2;
+
+	      var defaultTextColor = disabled ? disabledTextColor : primary ? primaryTextColor : secondary ? secondaryTextColor : textColor;
+
+	      var defaultHoverColor = (0, _colorManipulator.fade)(buttonFilterColor, 0.2);
+	      var defaultRippleColor = buttonFilterColor;
+	      var buttonHoverColor = hoverColor || defaultHoverColor;
+	      var buttonRippleColor = rippleColor || defaultRippleColor;
+	      var buttonBackgroundColor = backgroundColor || buttonColor;
+	      var hovered = (this.state.hovered || this.state.isKeyboardFocused) && !disabled;
+
+	      var mergedRootStyles = (0, _simpleAssign2.default)({}, {
+	        height: buttonHeight,
+	        lineHeight: buttonHeight + 'px',
+	        minWidth: buttonMinWidth,
+	        color: defaultTextColor,
+	        transition: _transitions2.default.easeOut(),
+	        borderRadius: 2,
+	        userSelect: 'none',
+	        position: 'relative',
+	        overflow: 'hidden',
+	        backgroundColor: hovered ? buttonHoverColor : buttonBackgroundColor,
+	        padding: 0,
+	        margin: 0,
+	        textAlign: 'center'
+	      }, style);
+
+	      var iconCloned = void 0;
+	      var labelStyleIcon = {};
+
+	      if (icon) {
+	        var iconStyles = (0, _simpleAssign2.default)({
+	          verticalAlign: 'middle',
+	          marginLeft: label && labelPosition !== 'before' ? 12 : 0,
+	          marginRight: label && labelPosition === 'before' ? 12 : 0
+	        }, icon.props.style);
+	        iconCloned = _react2.default.cloneElement(icon, {
+	          color: icon.props.color || mergedRootStyles.color,
+	          style: iconStyles
+	        });
+
+	        if (labelPosition === 'before') {
+	          labelStyleIcon.paddingRight = 8;
+	        } else {
+	          labelStyleIcon.paddingLeft = 8;
+	        }
+	      }
+
+	      var mergedLabelStyles = (0, _simpleAssign2.default)({
+	        letterSpacing: 0,
+	        textTransform: textTransform,
+	        fontWeight: fontWeight,
+	        fontSize: fontSize
+	      }, labelStyleIcon, labelStyle);
+
+	      var labelElement = label ? _react2.default.createElement(_FlatButtonLabel2.default, { label: label, style: mergedLabelStyles }) : undefined;
+
+	      // Place label before or after children.
+	      var childrenFragment = labelPosition === 'before' ? {
+	        labelElement: labelElement,
+	        iconCloned: iconCloned,
+	        children: children
+	      } : {
+	        children: children,
+	        iconCloned: iconCloned,
+	        labelElement: labelElement
+	      };
+
+	      var enhancedButtonChildren = (0, _childUtils.createChildFragment)(childrenFragment);
+
+	      return _react2.default.createElement(
+	        _EnhancedButton2.default,
+	        (0, _extends3.default)({}, other, {
+	          disabled: disabled,
+	          focusRippleColor: buttonRippleColor,
+	          focusRippleOpacity: 0.3,
+	          onKeyboardFocus: this.handleKeyboardFocus,
+	          onMouseLeave: this.handleMouseLeave,
+	          onMouseEnter: this.handleMouseEnter,
+	          onTouchStart: this.handleTouchStart,
+	          style: mergedRootStyles,
+	          touchRippleColor: buttonRippleColor,
+	          touchRippleOpacity: 0.3
+	        }),
+	        enhancedButtonChildren
+	      );
+	    }
+	  }]);
+	  return FlatButton;
+	}(_react.Component);
+
+	FlatButton.muiName = 'FlatButton';
+	FlatButton.defaultProps = {
+	  disabled: false,
+	  labelStyle: {},
+	  labelPosition: 'after',
+	  onKeyboardFocus: function onKeyboardFocus() {},
+	  onMouseEnter: function onMouseEnter() {},
+	  onMouseLeave: function onMouseLeave() {},
+	  onTouchStart: function onTouchStart() {},
+	  primary: false,
+	  secondary: false
+	};
+	FlatButton.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? FlatButton.propTypes = {
+	  /**
+	   * Color of button when mouse is not hovering over it.
+	   */
+	  backgroundColor: _react.PropTypes.string,
+	  /**
+	   * This is what will be displayed inside the button.
+	   * If a label is specified, the text within the label prop will
+	   * be displayed. Otherwise, the component will expect children
+	   * which will then be displayed. (In our example,
+	   * we are nesting an `<input type="file" />` and a `span`
+	   * that acts as our label to be displayed.) This only
+	   * applies to flat and raised buttons.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * Disables the button if set to true.
+	   */
+	  disabled: _react.PropTypes.bool,
+	  /**
+	   * Color of button when mouse hovers over.
+	   */
+	  hoverColor: _react.PropTypes.string,
+	  /**
+	   * The URL to link to when the button is clicked.
+	   */
+	  href: _react.PropTypes.string,
+	  /**
+	   * Use this property to display an icon.
+	   */
+	  icon: _react.PropTypes.node,
+	  /**
+	   * Label for the button.
+	   */
+	  label: validateLabel,
+	  /**
+	   * Place label before or after the passed children.
+	   */
+	  labelPosition: _react.PropTypes.oneOf(['before', 'after']),
+	  /**
+	   * Override the inline-styles of the button's label element.
+	   */
+	  labelStyle: _react.PropTypes.object,
+	  /**
+	   * Callback function fired when the element is focused or blurred by the keyboard.
+	   *
+	   * @param {object} event `focus` or `blur` event targeting the element.
+	   * @param {boolean} isKeyboardFocused Indicates whether the element is focused.
+	   */
+	  onKeyboardFocus: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseEnter: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseLeave: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchStart: _react.PropTypes.func,
+	  /**
+	   * If true, colors button according to
+	   * primaryTextColor from the Theme.
+	   */
+	  primary: _react.PropTypes.bool,
+	  /**
+	   * Color for the ripple after button is clicked.
+	   */
+	  rippleColor: _react.PropTypes.string,
+	  /**
+	   * If true, colors button according to secondaryTextColor from the theme.
+	   * The primary prop has precendent if set to true.
+	   */
+	  secondary: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = FlatButton;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 550 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _getPrototypeOf = __webpack_require__(252);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(257);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(258);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(262);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(297);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(305);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context) {
+	  var baseTheme = context.muiTheme.baseTheme;
+
+
+	  return {
+	    root: {
+	      position: 'relative',
+	      paddingLeft: baseTheme.spacing.desktopGutterLess,
+	      paddingRight: baseTheme.spacing.desktopGutterLess,
+	      verticalAlign: 'middle'
+	    }
+	  };
+	}
+
+	var FlatButtonLabel = function (_Component) {
+	  (0, _inherits3.default)(FlatButtonLabel, _Component);
+
+	  function FlatButtonLabel() {
+	    (0, _classCallCheck3.default)(this, FlatButtonLabel);
+	    return (0, _possibleConstructorReturn3.default)(this, (FlatButtonLabel.__proto__ || (0, _getPrototypeOf2.default)(FlatButtonLabel)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(FlatButtonLabel, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var label = _props.label;
+	      var style = _props.style;
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context);
+
+	      return _react2.default.createElement(
+	        'span',
+	        { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) },
+	        label
+	      );
+	    }
+	  }]);
+	  return FlatButtonLabel;
+	}(_react.Component);
+
+	FlatButtonLabel.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? FlatButtonLabel.propTypes = {
+	  label: _react.PropTypes.node,
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = FlatButtonLabel;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 551 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -53905,7 +54348,7 @@
 
 
 /***/ },
-/* 549 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -53922,7 +54365,7 @@
 
 
 /***/ },
-/* 550 */
+/* 553 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -54217,11 +54660,11 @@
 	var lightWhite = exports.lightWhite = 'rgba(255, 255, 255, 0.54)';
 
 /***/ },
-/* 551 */
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(552);
-	var defaultClickRejectionStrategy = __webpack_require__(553);
+	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(555);
+	var defaultClickRejectionStrategy = __webpack_require__(556);
 
 	var alreadyInjected = false;
 
@@ -54243,14 +54686,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(321).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(554)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(557)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 552 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -54305,7 +54748,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 553 */
+/* 556 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -54316,7 +54759,7 @@
 
 
 /***/ },
-/* 554 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -54344,10 +54787,10 @@
 	var EventPluginUtils = __webpack_require__(323);
 	var EventPropagators = __webpack_require__(320);
 	var SyntheticUIEvent = __webpack_require__(354);
-	var TouchEventUtils = __webpack_require__(555);
+	var TouchEventUtils = __webpack_require__(558);
 	var ViewportMetrics = __webpack_require__(355);
 
-	var keyOf = __webpack_require__(556);
+	var keyOf = __webpack_require__(559);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -54492,7 +54935,7 @@
 
 
 /***/ },
-/* 555 */
+/* 558 */
 /***/ function(module, exports) {
 
 	/**
@@ -54540,7 +54983,7 @@
 
 
 /***/ },
-/* 556 */
+/* 559 */
 /***/ function(module, exports) {
 
 	/**
@@ -54580,7 +55023,7 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 557 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -54611,7 +55054,7 @@
 
 	var _react = __webpack_require__(1);
 
-	var _getMuiTheme = __webpack_require__(558);
+	var _getMuiTheme = __webpack_require__(561);
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
@@ -54652,7 +55095,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 558 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -54667,41 +55110,41 @@
 
 	exports.default = getMuiTheme;
 
-	var _lodash = __webpack_require__(559);
+	var _lodash = __webpack_require__(562);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
 	var _colorManipulator = __webpack_require__(451);
 
-	var _lightBaseTheme = __webpack_require__(561);
+	var _lightBaseTheme = __webpack_require__(564);
 
 	var _lightBaseTheme2 = _interopRequireDefault(_lightBaseTheme);
 
-	var _zIndex = __webpack_require__(563);
+	var _zIndex = __webpack_require__(566);
 
 	var _zIndex2 = _interopRequireDefault(_zIndex);
 
-	var _autoprefixer = __webpack_require__(564);
+	var _autoprefixer = __webpack_require__(567);
 
 	var _autoprefixer2 = _interopRequireDefault(_autoprefixer);
 
-	var _callOnce = __webpack_require__(596);
+	var _callOnce = __webpack_require__(599);
 
 	var _callOnce2 = _interopRequireDefault(_callOnce);
 
-	var _rtl = __webpack_require__(597);
+	var _rtl = __webpack_require__(600);
 
 	var _rtl2 = _interopRequireDefault(_rtl);
 
-	var _compose = __webpack_require__(601);
+	var _compose = __webpack_require__(604);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
-	var _typography = __webpack_require__(602);
+	var _typography = __webpack_require__(605);
 
 	var _typography2 = _interopRequireDefault(_typography);
 
-	var _colors = __webpack_require__(550);
+	var _colors = __webpack_require__(553);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55035,7 +55478,7 @@
 	}
 
 /***/ },
-/* 559 */
+/* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -57246,10 +57689,10 @@
 
 	module.exports = merge;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(560)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(563)(module)))
 
 /***/ },
-/* 560 */
+/* 563 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -57265,7 +57708,7 @@
 
 
 /***/ },
-/* 561 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57274,11 +57717,11 @@
 	  value: true
 	});
 
-	var _colors = __webpack_require__(550);
+	var _colors = __webpack_require__(553);
 
 	var _colorManipulator = __webpack_require__(451);
 
-	var _spacing = __webpack_require__(562);
+	var _spacing = __webpack_require__(565);
 
 	var _spacing2 = _interopRequireDefault(_spacing);
 
@@ -57314,7 +57757,7 @@
 	    */
 
 /***/ },
-/* 562 */
+/* 565 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57338,7 +57781,7 @@
 	};
 
 /***/ },
-/* 563 */
+/* 566 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57360,7 +57803,7 @@
 	};
 
 /***/ },
-/* 564 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -57411,7 +57854,7 @@
 	  }
 	};
 
-	var _inlineStylePrefixer = __webpack_require__(565);
+	var _inlineStylePrefixer = __webpack_require__(568);
 
 	var _inlineStylePrefixer2 = _interopRequireDefault(_inlineStylePrefixer);
 
@@ -57425,7 +57868,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 565 */
+/* 568 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57438,59 +57881,59 @@
 	// special flexbox specifications
 
 
-	var _prefixAll2 = __webpack_require__(566);
+	var _prefixAll2 = __webpack_require__(569);
 
 	var _prefixAll3 = _interopRequireDefault(_prefixAll2);
 
-	var _getBrowserInformation = __webpack_require__(580);
+	var _getBrowserInformation = __webpack_require__(583);
 
 	var _getBrowserInformation2 = _interopRequireDefault(_getBrowserInformation);
 
-	var _getPrefixedKeyframes = __webpack_require__(583);
+	var _getPrefixedKeyframes = __webpack_require__(586);
 
 	var _getPrefixedKeyframes2 = _interopRequireDefault(_getPrefixedKeyframes);
 
-	var _capitalizeString = __webpack_require__(568);
+	var _capitalizeString = __webpack_require__(571);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _prefixProps = __webpack_require__(584);
+	var _prefixProps = __webpack_require__(587);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
-	var _calc = __webpack_require__(585);
+	var _calc = __webpack_require__(588);
 
 	var _calc2 = _interopRequireDefault(_calc);
 
-	var _zoomCursor = __webpack_require__(587);
+	var _zoomCursor = __webpack_require__(590);
 
 	var _zoomCursor2 = _interopRequireDefault(_zoomCursor);
 
-	var _grabCursor = __webpack_require__(588);
+	var _grabCursor = __webpack_require__(591);
 
 	var _grabCursor2 = _interopRequireDefault(_grabCursor);
 
-	var _flex = __webpack_require__(589);
+	var _flex = __webpack_require__(592);
 
 	var _flex2 = _interopRequireDefault(_flex);
 
-	var _sizing = __webpack_require__(590);
+	var _sizing = __webpack_require__(593);
 
 	var _sizing2 = _interopRequireDefault(_sizing);
 
-	var _gradient = __webpack_require__(591);
+	var _gradient = __webpack_require__(594);
 
 	var _gradient2 = _interopRequireDefault(_gradient);
 
-	var _transition = __webpack_require__(592);
+	var _transition = __webpack_require__(595);
 
 	var _transition2 = _interopRequireDefault(_transition);
 
-	var _flexboxIE = __webpack_require__(594);
+	var _flexboxIE = __webpack_require__(597);
 
 	var _flexboxIE2 = _interopRequireDefault(_flexboxIE);
 
-	var _flexboxOld = __webpack_require__(595);
+	var _flexboxOld = __webpack_require__(598);
 
 	var _flexboxOld2 = _interopRequireDefault(_flexboxOld);
 
@@ -57651,7 +58094,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 566 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57661,43 +58104,43 @@
 	});
 	exports.default = prefixAll;
 
-	var _prefixProps = __webpack_require__(567);
+	var _prefixProps = __webpack_require__(570);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
-	var _capitalizeString = __webpack_require__(568);
+	var _capitalizeString = __webpack_require__(571);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _calc = __webpack_require__(569);
+	var _calc = __webpack_require__(572);
 
 	var _calc2 = _interopRequireDefault(_calc);
 
-	var _cursor = __webpack_require__(572);
+	var _cursor = __webpack_require__(575);
 
 	var _cursor2 = _interopRequireDefault(_cursor);
 
-	var _flex = __webpack_require__(573);
+	var _flex = __webpack_require__(576);
 
 	var _flex2 = _interopRequireDefault(_flex);
 
-	var _sizing = __webpack_require__(574);
+	var _sizing = __webpack_require__(577);
 
 	var _sizing2 = _interopRequireDefault(_sizing);
 
-	var _gradient = __webpack_require__(575);
+	var _gradient = __webpack_require__(578);
 
 	var _gradient2 = _interopRequireDefault(_gradient);
 
-	var _transition = __webpack_require__(576);
+	var _transition = __webpack_require__(579);
 
 	var _transition2 = _interopRequireDefault(_transition);
 
-	var _flexboxIE = __webpack_require__(578);
+	var _flexboxIE = __webpack_require__(581);
 
 	var _flexboxIE2 = _interopRequireDefault(_flexboxIE);
 
-	var _flexboxOld = __webpack_require__(579);
+	var _flexboxOld = __webpack_require__(582);
 
 	var _flexboxOld2 = _interopRequireDefault(_flexboxOld);
 
@@ -57763,7 +58206,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 567 */
+/* 570 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57775,7 +58218,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 568 */
+/* 571 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57792,7 +58235,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 569 */
+/* 572 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57802,11 +58245,11 @@
 	});
 	exports.default = calc;
 
-	var _joinPrefixedValue = __webpack_require__(570);
+	var _joinPrefixedValue = __webpack_require__(573);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
-	var _isPrefixedValue = __webpack_require__(571);
+	var _isPrefixedValue = __webpack_require__(574);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
@@ -57822,7 +58265,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 570 */
+/* 573 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57847,7 +58290,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 571 */
+/* 574 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57865,7 +58308,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 572 */
+/* 575 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57875,7 +58318,7 @@
 	});
 	exports.default = cursor;
 
-	var _joinPrefixedValue = __webpack_require__(570);
+	var _joinPrefixedValue = __webpack_require__(573);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
@@ -57896,7 +58339,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 573 */
+/* 576 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57917,7 +58360,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 574 */
+/* 577 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57927,7 +58370,7 @@
 	});
 	exports.default = sizing;
 
-	var _joinPrefixedValue = __webpack_require__(570);
+	var _joinPrefixedValue = __webpack_require__(573);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
@@ -57958,7 +58401,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 575 */
+/* 578 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57968,11 +58411,11 @@
 	});
 	exports.default = gradient;
 
-	var _joinPrefixedValue = __webpack_require__(570);
+	var _joinPrefixedValue = __webpack_require__(573);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
-	var _isPrefixedValue = __webpack_require__(571);
+	var _isPrefixedValue = __webpack_require__(574);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
@@ -57988,7 +58431,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 576 */
+/* 579 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57998,19 +58441,19 @@
 	});
 	exports.default = transition;
 
-	var _hyphenateStyleName = __webpack_require__(577);
+	var _hyphenateStyleName = __webpack_require__(580);
 
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
-	var _capitalizeString = __webpack_require__(568);
+	var _capitalizeString = __webpack_require__(571);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _isPrefixedValue = __webpack_require__(571);
+	var _isPrefixedValue = __webpack_require__(574);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
-	var _prefixProps = __webpack_require__(567);
+	var _prefixProps = __webpack_require__(570);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
@@ -58075,7 +58518,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 577 */
+/* 580 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58094,7 +58537,7 @@
 
 
 /***/ },
-/* 578 */
+/* 581 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58131,7 +58574,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 579 */
+/* 582 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58172,7 +58615,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 580 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58181,7 +58624,7 @@
 	  value: true
 	});
 
-	var _bowser = __webpack_require__(581);
+	var _bowser = __webpack_require__(584);
 
 	var _bowser2 = _interopRequireDefault(_bowser);
 
@@ -58285,7 +58728,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 581 */
+/* 584 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -58296,7 +58739,7 @@
 
 	!function (name, definition) {
 	  if (typeof module != 'undefined' && module.exports) module.exports = definition()
-	  else if (true) __webpack_require__(582)(name, definition)
+	  else if (true) __webpack_require__(585)(name, definition)
 	  else this[name] = definition()
 	}('bowser', function () {
 	  /**
@@ -58867,14 +59310,14 @@
 
 
 /***/ },
-/* 582 */
+/* 585 */
 /***/ function(module, exports) {
 
 	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 583 */
+/* 586 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58899,7 +59342,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 584 */
+/* 587 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -58911,7 +59354,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 585 */
+/* 588 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58921,7 +59364,7 @@
 	});
 	exports.default = calc;
 
-	var _getPrefixedValue = __webpack_require__(586);
+	var _getPrefixedValue = __webpack_require__(589);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -58945,7 +59388,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 586 */
+/* 589 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -58961,7 +59404,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 587 */
+/* 590 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58971,7 +59414,7 @@
 	});
 	exports.default = zoomCursor;
 
-	var _getPrefixedValue = __webpack_require__(586);
+	var _getPrefixedValue = __webpack_require__(589);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -58997,7 +59440,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 588 */
+/* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59007,7 +59450,7 @@
 	});
 	exports.default = grabCursor;
 
-	var _getPrefixedValue = __webpack_require__(586);
+	var _getPrefixedValue = __webpack_require__(589);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59032,7 +59475,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 589 */
+/* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59042,7 +59485,7 @@
 	});
 	exports.default = flex;
 
-	var _getPrefixedValue = __webpack_require__(586);
+	var _getPrefixedValue = __webpack_require__(589);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59068,7 +59511,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 590 */
+/* 593 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59078,7 +59521,7 @@
 	});
 	exports.default = sizing;
 
-	var _getPrefixedValue = __webpack_require__(586);
+	var _getPrefixedValue = __webpack_require__(589);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59118,7 +59561,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 591 */
+/* 594 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59128,7 +59571,7 @@
 	});
 	exports.default = gradient;
 
-	var _getPrefixedValue = __webpack_require__(586);
+	var _getPrefixedValue = __webpack_require__(589);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59154,7 +59597,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 592 */
+/* 595 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59167,11 +59610,11 @@
 
 	exports.default = transition;
 
-	var _hyphenateStyleName = __webpack_require__(577);
+	var _hyphenateStyleName = __webpack_require__(580);
 
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
-	var _unprefixProperty = __webpack_require__(593);
+	var _unprefixProperty = __webpack_require__(596);
 
 	var _unprefixProperty2 = _interopRequireDefault(_unprefixProperty);
 
@@ -59220,7 +59663,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 593 */
+/* 596 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -59237,7 +59680,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 594 */
+/* 597 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59247,7 +59690,7 @@
 	});
 	exports.default = flexboxIE;
 
-	var _getPrefixedValue = __webpack_require__(586);
+	var _getPrefixedValue = __webpack_require__(589);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59301,7 +59744,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 595 */
+/* 598 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59311,7 +59754,7 @@
 	});
 	exports.default = flexboxOld;
 
-	var _getPrefixedValue = __webpack_require__(586);
+	var _getPrefixedValue = __webpack_require__(589);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59372,7 +59815,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 596 */
+/* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -59404,7 +59847,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 597 */
+/* 600 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59413,7 +59856,7 @@
 	  value: true
 	});
 
-	var _keys = __webpack_require__(598);
+	var _keys = __webpack_require__(601);
 
 	var _keys2 = _interopRequireDefault(_keys);
 
@@ -59506,20 +59949,20 @@
 	}
 
 /***/ },
-/* 598 */
+/* 601 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(599), __esModule: true };
+	module.exports = { "default": __webpack_require__(602), __esModule: true };
 
 /***/ },
-/* 599 */
+/* 602 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(600);
+	__webpack_require__(603);
 	module.exports = __webpack_require__(219).Object.keys;
 
 /***/ },
-/* 600 */
+/* 603 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.14 Object.keys(O)
@@ -59533,7 +59976,7 @@
 	});
 
 /***/ },
-/* 601 */
+/* 604 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -59567,7 +60010,7 @@
 	}
 
 /***/ },
-/* 602 */
+/* 605 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59580,7 +60023,7 @@
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-	var _colors = __webpack_require__(550);
+	var _colors = __webpack_require__(553);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
