@@ -5,14 +5,10 @@
   "main": "./index.js",
   "typings": "./index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "typings": "typings install",
+    "test": "tsc",
     "start": "webpack && mv ./demo/index.html ./ && node server.js",
-    "prepublish": "tsc && npm run prepublish:sed && npm run prepublish:dts",
-    "prepublish:sed": "npm run prepublish:sed:typings",
-    "prepublish:sed:typings": "sed -i '/\\/\\/\\/ <reference path=\".\\/..\\/typings\\/index.d.ts\" \\/>/d' ./index.js",
-    "prepublish:dts": "echo  \"import NumberInput from './NumberInput';\nexport * from './NumberInput';\nexport default NumberInput;\" > ./index.d.ts",
-    "postpublish": "rm ./index* ./NumberInput*"
+    "npm": "tsc -d -p . && mv ./src/*.js . && mv ./src/*.d.ts .",
+    "clean": "rm ./src/*.js"
   },
   "keywords": [
     "react",
@@ -31,28 +27,33 @@
     "url": "git+https://github.com/NoHomey/material-ui-number-input.git"
   },
   "peerDependencies": {
-    "material-ui": "^0.15.4",
-    "react": "^15.3.1",
-    "react-dom": "^15.3.1",
+    "material-ui": "^0.16.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
     "react-tap-event-plugin": "^1.0.0"
   },
   "devDependencies": {
-    "material-ui": "^0.15.4",
-    "react": "^15.3.1",
-    "react-dom": "^15.3.1",
+    "material-ui": "^0.16.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
     "react-tap-event-plugin": "^1.0.0",
     "express": "^4.14.0",
-    "html-webpack-plugin": "^2.22.0",
+    "html-webpack-plugin": "^2.24.0",
     "react-hot-loader": "^1.3.0",
-    "ts-loader": "^0.8.2",
-    "typescript": "^1.8.10",
-    "typings": "^1.3.1",
-    "webpack": "^1.13.1",
-    "webpack-dev-middleware": "^1.6.1",
-    "webpack-hot-middleware": "^2.12.2"
+    "ts-loader": "^0.9.5",
+    "typescript": "^2.0.3",
+    "webpack": "^1.13.2",
+    "webpack-dev-middleware": "^1.8.4",
+    "webpack-hot-middleware": "^2.13.0",
+    "@types/node": "^6.0.45",
+    "@types/react": "^0.14.41",
+    "@types/react-dom": "^0.14.18",
+    "@types/react-tap-event-plugin": "^0.0.30",
+    "@types/material-ui": "^0.15.37",
+    "@types/object-assign": "^4.0.29"
   },
   "dependencies": {
-    "bind-decorator": "^1.0.2",
+    "bind-decorator": "^1.0.10",
     "object-assign": "^4.1.0"
   }
 }

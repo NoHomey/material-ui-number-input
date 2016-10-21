@@ -1,25 +1,19 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "moduleResolution": "node",
         "target": "es5",
-        "jsx": "react",
         "noImplicitAny": true,
+        "strictNullChecks": true,
+        "noImplicitThis": true,
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
         "experimentalDecorators": true,
-        "declaration": true,
-        "outDir": "./"
+        "jsx": "react"
     },
-    "files": [
-        "src/index.tsx"
-    ],
-    "includes": [
-        "typings/index.d.ts",
-        "src/NumberInput.tsx",
-        "Dev/demo.tsx",
-        "Dev/index.tsx"
+    "include": [
+        "src/**/*"
     ],
     "exclude": [
         "node_modules"
     ]
 }
-

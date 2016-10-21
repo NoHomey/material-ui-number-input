@@ -6,7 +6,7 @@ import bind from 'bind-decorator';
 export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus'
     | 'singleFloatingPoint' | 'singleZero'| 'min' | 'max' | 'required' | 'clean';
 
-export type NumberInputChangeHandler = (event: React.FormEvent, value: string) => void;
+export type NumberInputChangeHandler = (event: React.FormEvent<{}>, value: string) => void;
 
 export type NumberInputValidHandler = (valid: number) => void;
 
@@ -46,13 +46,13 @@ export interface NumberInputProps {
     underlineDisabledStyle?: React.CSSProperties;
     underlineFocusStyle?: React.CSSProperties;
     underlineStyle?: React.CSSProperties;
-    onBlur?: React.FocusEventHandler;
+    onBlur?: React.FocusEventHandler<{}>;
     onChange?: NumberInputChangeHandler;
     onError?: NumberInputErrorHandler;
     onValid?: NumberInputValidHandler;
     onRequestValue?: NumberInputReqestValueHandller;
-    onFocus?: React.FocusEventHandler;
-    onKeyDown?: React.KeyboardEventHandler;
+    onFocus?: React.FocusEventHandler<{}>;
+    onKeyDown?: React.KeyboardEventHandler<{}>;
 }
 
 export type NumberInputErrorExtended = NumberInputError | 'limit' | 'allow';
@@ -89,6 +89,7 @@ namespace constants {
     export const dot: string = '.';
     export const zero: number = 0;
     export const one: number = 1;
+    export const text: string = 'text';
     export const minusOne: number = -1;
     export const boolTrue: boolean = true;
     export const boolFalse: boolean = false;
@@ -96,7 +97,7 @@ namespace constants {
 
 export class NumberInput extends React.Component<NumberInputProps, void> {
     private static getValidValue(value: string): string {
-        const match: RegExpMatchArray = value.match(NumberInput.allowed);
+        const match: RegExpMatchArray | null = value.match(NumberInput.allowed);
         return match !== null ? (match.index === constants.zero ? match[constants.zero] : match.join(constants.emptyString)) : constants.emptyString;
     }
 
@@ -166,7 +167,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     private requestedValue: string;
 
     private emitEvents(nextError: NumberInputErrorExtended, value: string, emitError: boolean, valid: boolean): void {
-        const { onError, onValid, strategy } = this.props;
+        const { onError, onValid } = this.props;
         if((this.error !== nextError) && emitError) {
             if(onError) {
                 onError(nextError as NumberInputError);
@@ -202,7 +203,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
                         const numberValue: number = Number(value);
                         const floatingPoint: number = value.indexOf(constants.dot);
                         const decimal: boolean = floatingPoint > constants.minusOne;
-                        const whole: number = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min;
+                        const whole: number = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min!;
                         switch(this.validateNumberValue(numberValue)) {
                             case constants.one: return errorNames.max;
                             case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue > constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
@@ -241,17 +242,17 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         }
     }
 
-    private emitValid(value: string, error: string, overridenError: string, valid: string): boolean {
+    private emitValid(error: string, overridenError: string): boolean {
         return (error === errorNames.none) && (overridenError !== errorNames.allow);
     }
 
     private takeActionForValue(value: string): void {
-        const { strategy, onRequestValue, min, max, value: propsValue } = this.props;
+        const { strategy, onRequestValue, value: propsValue } = this.props;
         const error: NumberInputErrorExtended = this.validateValue(value);
         const valid: string = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
         const overridenError: string = this.overrideError(error);
         const emitError: boolean = (this.requestedValue !== value) && (strategy != strategies.ignore);
-        const emitValid: boolean = this.emitValid(value, error, overridenError, valid);
+        const emitValid: boolean = this.emitValid(error, overridenError);
         this.emitEvents(overridenError as NumberInputErrorExtended, valid, emitError, emitValid);
         if((strategy != strategies.allow) && (valid !== value)) {
             this.requestedValue = valid;
@@ -269,25 +270,25 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     } 
 
     @bind
-    private onChange(event: React.FormEvent): void {
+    private onChange(event: React.FormEvent<{}>): void {
         const eventValue: EventValue = event;
         const { value } = eventValue.target;
         const { onChange } = this.props;
         if(onChange) {
-            onChange(event, value);
+            onChange(event, value!);
         }
         if(typeof this.props.value !== typeofs.stringType) {
-            this.takeActionForValue(value);
+            this.takeActionForValue(value!);
         }
     }
 
     @bind
-    private onBlur(event: React.FocusEvent): void {
+    private onBlur(event: React.FocusEvent<{}>): void {
         const eventValue: EventValue = event;
         const { strategy, onBlur } = this.props;
         const { value } = eventValue.target;
         if(strategy === strategies.warn) {
-            this.emitEvents(this.validateValue(value), value, constants.boolTrue, constants.boolFalse);
+            this.emitEvents(this.validateValue(value!), value!, constants.boolTrue, constants.boolFalse);
         }
         if(onBlur) {
             onBlur(event);
@@ -305,7 +306,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     public constructor(props: NumberInputProps) {
         super(props);
         this.constProps = {
-            type: 'text',
+            type: constants.text,
             onChange: this.onChange,
             onBlur: this.onBlur,
             ref: this.refTextField
@@ -314,13 +315,13 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
 
     public componentDidMount(): void {
         const { value } = this.props;
-        this.takeActionForValue(typeof value === typeofs.stringType ? value : this.getInputNode().value);
+        this.takeActionForValue(typeof value === typeofs.stringType ? value! : this.getInputNode().value);
     }
 
     public componentWillReceiveProps(props: NumberInputProps): void {
         const { value } = props;
         if(value !== this.props.value) {
-            this.takeActionForValue(value);
+            this.takeActionForValue(value!);
         }
     }
 
