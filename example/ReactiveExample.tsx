@@ -11,7 +11,7 @@ import { orange500, red500 } from 'material-ui/styles/colors';
 import { NumberInput, NumberInputError } from 'material-ui-number-input';
 import bind from 'bind-decorator';
 
-const allProps: Array<string> = ['value', 'onChange', 'errorText', 'onError', 'strategy', 'min', 'max', 'required']; 
+const allProps: Array<string> = ['value', 'onChange', 'onValid', 'errorText', 'onError', 'strategy', 'min', 'max', 'required']; 
 
 function serializeProp(prop: string, value: any): string {
     return value === true ? prop : `${prop}=${value[0] !== '"' ? `{${value}}` : value + '"'}`;
@@ -49,6 +49,10 @@ class Demo extends React.Component${types ? '<void, DemoState>' : ''} {
     @bind
     ${types ? 'private ' : ''}onChange(event${types ? ': React.FormEvent<{}>' : ''}, value${types ? ': string' : ''})${types ? ': void' : ''} {
         this.setState({ value: value });
+    }
+
+    ${types ? 'private ' : ''}onValid(valid${types ? ': number' : ''})${types ? ': void' : ''} {
+        alert(valid);
     }
 ${isStrategyNotIngore ? `
     @bind
@@ -94,6 +98,14 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         const { handlerCalled } = this.state;
         handlerCalled!.onChange = true;
         this.setState({ value: value, handlerCalled: handlerCalled });
+    }
+
+    @bind
+    private onValid(valid: number): void {
+        alert(valid);
+        const { handlerCalled } = this.state;
+        handlerCalled!.onValid = true;
+        this.setState({ handlerCalled: handlerCalled });
     }
 
     @bind
@@ -180,6 +192,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                 max: 30,
                 value: 'value',
                 onChange: 'this.onChange',
+                onValid: 'this.onValid',
                 errorText: 'errorText',
                 onError: 'this.onError',
                 strategy: '"' + allow,
@@ -212,6 +225,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                     min={props.min}
                     max={props.max}
                     onChange={this.onChange}
+                    onValid={this.onValid}
                     errorText={errorText}
                     onError={this.onError}
                     errorStyle={errorStyle} />

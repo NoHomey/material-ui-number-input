@@ -4260,7 +4260,7 @@
 	var colors_1 = __webpack_require__(550);
 	var material_ui_number_input_1 = __webpack_require__(537);
 	var bind_decorator_1 = __webpack_require__(534);
-	var allProps = ['value', 'onChange', 'errorText', 'onError', 'strategy', 'min', 'max', 'required'];
+	var allProps = ['value', 'onChange', 'onValid', 'errorText', 'onError', 'strategy', 'min', 'max', 'required'];
 	function serializeProp(prop, value) {
 	    return value === true ? prop : prop + "=" + (value[0] !== '"' ? "{" + value + "}" : value + '"');
 	}
@@ -4282,7 +4282,7 @@
 	    var isStrategyWarn = strategy === 'warn';
 	    var isStrategyNotIngore = isStrategyAllow || isStrategyWarn;
 	    return "import * as React from 'react';\nimport " + (types ? '{ NumberInput, NumberInputError }' : 'NumberInput') + " from 'material-ui-number-input';\nimport bind from 'bind-decorator';\n" + (types ?
-	        "\ninterface DemoState {\n    value?: string;\n    errorText?: string;\n}\n" : '') + "\nclass Demo extends React.Component" + (types ? '<void, DemoState>' : '') + " {\n    @bind\n    " + (types ? 'private ' : '') + "onChange(event" + (types ? ': React.FormEvent<{}>' : '') + ", value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ value: value });\n    }\n" + (isStrategyNotIngore ? "\n    @bind\n    " + (types ? 'private ' : '') + "onError(error" + (types ? ': NumberInputError' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ errorText: error !== 'none' ? '" + (isStrategyWarn ? 'Warning' : 'Error') + ": ' + error : '' });\n    }\n\n" : '') + "    " + (types ? 'public ' : '') + "constructor(props" + (types ? ': void' : '') + ") {\n        super(props);\n        this.state = { value: '', errorText: '' };\n    }\n\n    " + (types ? 'public ' : '') + "render()" + (types ? ': JSX.Element' : '') + " {\n        const { value, errorText } = this.state;\n        return (\n            <NumberInput\n" + reactiveProps(props) + "            />\n        );\n    }\n}";
+	        "\ninterface DemoState {\n    value?: string;\n    errorText?: string;\n}\n" : '') + "\nclass Demo extends React.Component" + (types ? '<void, DemoState>' : '') + " {\n    @bind\n    " + (types ? 'private ' : '') + "onChange(event" + (types ? ': React.FormEvent<{}>' : '') + ", value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ value: value });\n    }\n\n    @bind\n    " + (types ? 'private ' : '') + "onValid(valid" + (types ? ': number' : '') + ")" + (types ? ': void' : '') + " {\n        alert(valid);\n    }\n" + (isStrategyNotIngore ? "\n    @bind\n    " + (types ? 'private ' : '') + "onError(error" + (types ? ': NumberInputError' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ errorText: error !== 'none' ? '" + (isStrategyWarn ? 'Warning' : 'Error') + ": ' + error : '' });\n    }\n\n" : '') + "    " + (types ? 'public ' : '') + "constructor(props" + (types ? ': void' : '') + ") {\n        super(props);\n        this.state = { value: '', errorText: '' };\n    }\n\n    " + (types ? 'public ' : '') + "render()" + (types ? ': JSX.Element' : '') + " {\n        const { value, errorText } = this.state;\n        return (\n            <NumberInput\n" + reactiveProps(props) + "            />\n        );\n    }\n}";
 	}
 	var ReactiveExample = (function (_super) {
 	    __extends(ReactiveExample, _super);
@@ -4297,6 +4297,7 @@
 	                max: 30,
 	                value: 'value',
 	                onChange: 'this.onChange',
+	                onValid: 'this.onValid',
 	                errorText: 'errorText',
 	                onError: 'this.onError',
 	                strategy: '"' + StrategySelectField_1.allow,
@@ -4314,6 +4315,12 @@
 	        var handlerCalled = this.state.handlerCalled;
 	        handlerCalled.onChange = true;
 	        this.setState({ value: value, handlerCalled: handlerCalled });
+	    };
+	    ReactiveExample.prototype.onValid = function (valid) {
+	        alert(valid);
+	        var handlerCalled = this.state.handlerCalled;
+	        handlerCalled.onValid = true;
+	        this.setState({ handlerCalled: handlerCalled });
 	    };
 	    ReactiveExample.prototype.onError = function (error) {
 	        var handlerCalled = this.state.handlerCalled;
@@ -4380,7 +4387,7 @@
 	        var errorText = isError ? (isStrategyWarn ? 'Warning: ' : 'Error: ') + error : '';
 	        var errorStyle = { color: isStrategyWarn ? colors_1.orange500 : colors_1.red500 };
 	        return (React.createElement("div", null, 
-	            React.createElement(material_ui_number_input_1.NumberInput, {id: "reactive-number-input", value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
+	            React.createElement(material_ui_number_input_1.NumberInput, {id: "reactive-number-input", value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, onValid: this.onValid, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
 	            React.createElement(H1_1.default, {id: "react-ive-props", label: "React-ive Props"}), 
 	            React.createElement("div", null, 
 	                React.createElement(StrategySelectField_1.StrategySelectField, {strategy: strategy, onStrategyChange: this.onStrategyChange}), 
@@ -4403,6 +4410,9 @@
 	    __decorate([
 	        bind_decorator_1.default
 	    ], ReactiveExample.prototype, "onChange", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], ReactiveExample.prototype, "onValid", null);
 	    __decorate([
 	        bind_decorator_1.default
 	    ], ReactiveExample.prototype, "onError", null);
