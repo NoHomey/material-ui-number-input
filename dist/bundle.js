@@ -4295,7 +4295,7 @@
 	        props.strategy = '"' + strategy;
 	        this.setState({ strategy: strategy, props: props });
 	    };
-	    ReactiveExample.prototype.onRequiredChecked = function (required) {
+	    ReactiveExample.prototype.onRequiredCheck = function (required) {
 	        var props = this.state.props;
 	        if (required) {
 	            props.required = required;
@@ -4309,8 +4309,8 @@
 	        var _a = this.state, language = _a.language, strategy = _a.strategy, props = _a.props;
 	        return (React.createElement("div", null, 
 	            React.createElement("div", {style: { display: 'inline' }}, 
-	                React.createElement(RequiredCheckbox_1.default, {required: props.required, onRequiredChecked: this.onRequiredChecked}), 
-	                React.createElement(StrategySelectField_1.StrategySelectField, {strategy: strategy, onStrategyChange: this.onStrategyChange})), 
+	                React.createElement(StrategySelectField_1.StrategySelectField, {strategy: strategy, onStrategyChange: this.onStrategyChange}), 
+	                React.createElement(RequiredCheckbox_1.default, {required: props.required, onRequiredCheck: this.onRequiredCheck})), 
 	            React.createElement(SourceCode_1.SourceCode, {language: language, code: code(language, props), onLanguageChange: this.onLangaugeChange})));
 	    };
 	    __decorate([
@@ -4321,7 +4321,7 @@
 	    ], ReactiveExample.prototype, "onStrategyChange", null);
 	    __decorate([
 	        bind_decorator_1.default
-	    ], ReactiveExample.prototype, "onRequiredChecked", null);
+	    ], ReactiveExample.prototype, "onRequiredCheck", null);
 	    return ReactiveExample;
 	}(React.Component));
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -4332,8 +4332,6 @@
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path="./lowlight.d.ts" />
-	/// <reference path="./react-syntax-highlighter.d.ts" />
 	"use strict";
 	var __extends = (this && this.__extends) || function (d, b) {
 	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -52003,7 +52001,7 @@
 	        _super.call(this, props);
 	    }
 	    RequiredCheckbox.prototype.requiredCheckbox = function (event, Checkboxd) {
-	        this.props.onRequiredChecked(Checkboxd);
+	        this.props.onRequiredCheck(Checkboxd);
 	    };
 	    RequiredCheckbox.prototype.render = function () {
 	        return React.createElement(Checkbox_1.default, {label: "required", checked: this.props.required, onCheck: this.requiredCheckbox});

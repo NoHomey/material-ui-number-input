@@ -65,7 +65,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
     }
 
     @bind
-    private onRequiredChecked(required: boolean): void {
+    private onRequiredCheck(required: boolean): void {
         const { props } = this.state;
         if(required) {
             props.required = required
@@ -95,8 +95,8 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         return (
             <div>
                 <div style={{ display: 'inline' }}>
-                    <RequiredCheckbox required={props.required} onRequiredChecked={this.onRequiredChecked} />
                     <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
+                    <RequiredCheckbox required={props.required} onRequiredCheck={this.onRequiredCheck} />
                 </div>
                 <SourceCode
                     language={language!}

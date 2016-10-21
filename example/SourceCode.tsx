@@ -1,6 +1,3 @@
-/// <reference path="./lowlight.d.ts" />
-/// <reference path="./react-syntax-highlighter.d.ts" />
-
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import style from 'react-syntax-highlighter/dist/styles/tomorrow'; 
 import ts = require('highlight.js/lib/languages/typescript');
@@ -44,7 +41,8 @@ export class SourceCode extends React.Component<SourceCodeProps, void> {
     }
 
     public constructor(props: SourceCodeProps) {
-        super(props);    }
+        super(props);
+    }
 
     public render(): JSX.Element {
         const { language, code } = this.props;

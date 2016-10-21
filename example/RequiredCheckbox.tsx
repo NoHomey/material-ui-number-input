@@ -4,13 +4,13 @@ import bind from 'bind-decorator';
 
 interface RequiredCheckboxProps {
     required: boolean;
-    onRequiredChecked: (Checkboxd: boolean) => void;
+    onRequiredCheck: (Checkboxd: boolean) => void;
 }
 
 export class RequiredCheckbox extends React.Component<RequiredCheckboxProps, void> {
     @bind
     private requiredCheckbox(event: React.MouseEvent<{}>, Checkboxd: boolean): void {
-        this.props.onRequiredChecked(Checkboxd);
+        this.props.onRequiredCheck(Checkboxd);
     }
 
     public constructor(props: RequiredCheckboxProps, state: void) {
