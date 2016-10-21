@@ -6,7 +6,7 @@ import RequiredCheckbox from './RequiredCheckbox';
 import ColoredButton from './ColoredButton';
 import FlatButton from 'material-ui/FlatButton';
 import If from './If';
-import H1 from './H1';
+import H2 from './H2';
 import { orange500, red500 } from 'material-ui/styles/colors';
 import { NumberInput, NumberInputError } from 'material-ui-number-input';
 import bind from 'bind-decorator';
@@ -217,7 +217,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         const errorStyle: React.CSSProperties = { color: isStrategyWarn ? orange500 : red500 };
         return (
             <div>
-                <H1 id="react-ive-props" label="React-ive Props" />
+                <H2 id="react-ive-props" label="React-ive Props" />
                 <div>
                     <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
                     <br />
@@ -227,7 +227,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                     <br />
                     <RequiredCheckbox required={Boolean(props.required)} onRequiredCheck={this.onRequiredCheck} />
                 </div>
-                <H1 id="number-input" label="NumberInput" />
+                <H2 id="number-input" label="NumberInput" />
                 <NumberInput
                     id="reactive-number-input"
                     value={value}
@@ -240,7 +240,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                     errorText={errorText}
                     onError={this.onError}
                     errorStyle={errorStyle} />
-                <H1 id="called-handlers" label="Called Handlers" />
+                <H2 id="called-handlers" label="Called Handlers" />
                 <div>
                     <ColoredButton label="onChange" color="#9b59b6" colored={handlerCalled!.onChange} />
                     <If
@@ -250,7 +250,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                     <ColoredButton label="onRequestValue" color="#f39c12" colored={handlerCalled!.onRequestValue} />
                     <FlatButton label="Clear" primary onClick={this.onClear} />
                 </div>
-                <H1 id="source-code" label="Source code" />
+                <H2 id="source-code" label="Source code" />
                 <SourceCode
                     language={language!}
                     code={code(language!, props!, strategy!)}

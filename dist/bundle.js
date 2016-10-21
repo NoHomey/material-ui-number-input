@@ -4256,7 +4256,7 @@
 	var ColoredButton_1 = __webpack_require__(545);
 	var FlatButton_1 = __webpack_require__(548);
 	var If_1 = __webpack_require__(551);
-	var H1_1 = __webpack_require__(552);
+	var H2_1 = __webpack_require__(552);
 	var colors_1 = __webpack_require__(553);
 	var material_ui_number_input_1 = __webpack_require__(537);
 	var bind_decorator_1 = __webpack_require__(534);
@@ -4387,7 +4387,7 @@
 	        var errorText = isError ? (isStrategyWarn ? 'Warning: ' : 'Error: ') + error : '';
 	        var errorStyle = { color: isStrategyWarn ? colors_1.orange500 : colors_1.red500 };
 	        return (React.createElement("div", null, 
-	            React.createElement(H1_1.default, {id: "react-ive-props", label: "React-ive Props"}), 
+	            React.createElement(H2_1.default, {id: "react-ive-props", label: "React-ive Props"}), 
 	            React.createElement("div", null, 
 	                React.createElement(StrategySelectField_1.StrategySelectField, {strategy: strategy, onStrategyChange: this.onStrategyChange}), 
 	                React.createElement("br", null), 
@@ -4396,16 +4396,16 @@
 	                React.createElement(LimitInput_1.default, {limit: "max", onValidLimit: this.onValidMax, onInvalidLimit: this.onInValidMax}), 
 	                React.createElement("br", null), 
 	                React.createElement(RequiredCheckbox_1.default, {required: Boolean(props.required), onRequiredCheck: this.onRequiredCheck})), 
-	            React.createElement(H1_1.default, {id: "number-input", label: "NumberInput"}), 
+	            React.createElement(H2_1.default, {id: "number-input", label: "NumberInput"}), 
 	            React.createElement(material_ui_number_input_1.NumberInput, {id: "reactive-number-input", value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, onValid: this.onValid, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
-	            React.createElement(H1_1.default, {id: "called-handlers", label: "Called Handlers"}), 
+	            React.createElement(H2_1.default, {id: "called-handlers", label: "Called Handlers"}), 
 	            React.createElement("div", null, 
 	                React.createElement(ColoredButton_1.default, {label: "onChange", color: "#9b59b6", colored: handlerCalled.onChange}), 
 	                React.createElement(If_1.default, {condition: isStrategyNotIngore, then: React.createElement(ColoredButton_1.default, {label: "onError", color: "#ff5733", colored: handlerCalled.onError})}), 
 	                React.createElement(ColoredButton_1.default, {label: "onValid", color: "#2ecc71", colored: handlerCalled.onValid}), 
 	                React.createElement(ColoredButton_1.default, {label: "onRequestValue", color: "#f39c12", colored: handlerCalled.onRequestValue}), 
 	                React.createElement(FlatButton_1.default, {label: "Clear", primary: true, onClick: this.onClear})), 
-	            React.createElement(H1_1.default, {id: "source-code", label: "Source code"}), 
+	            React.createElement(H2_1.default, {id: "source-code", label: "Source code"}), 
 	            React.createElement(SourceCode_1.SourceCode, {language: language, code: code(language, props, strategy), onLanguageChange: this.onLangaugeChange})));
 	    };
 	    __decorate([
@@ -54353,15 +54353,15 @@
 
 	"use strict";
 	var React = __webpack_require__(1);
-	function H1(props) {
-	    return (React.createElement("h1", null, 
+	function H2(props) {
+	    return (React.createElement("h2", null, 
 	        React.createElement("a", {id: props.id, className: "anchor", href: "#" + props.id, "aria-hidden": "true"}, 
 	            React.createElement("span", {"aria-hidden": "true", className: "octicon octicon-link"})
 	        ), 
 	        props.label));
 	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = H1;
+	exports.default = H2;
 
 
 /***/ },
