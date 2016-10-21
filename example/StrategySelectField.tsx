@@ -6,7 +6,7 @@ import { TouchTapEvent } from 'material-ui';
 
 export const ignore: 'ignore' = 'ignore';
 export const warn: 'warn' = 'warn';
-export const allow: 'allow' = 'allow'
+export const allow: 'allow' = 'allow';
 
 export type Strategy = 'ignore' | 'warn' | 'allow';
 

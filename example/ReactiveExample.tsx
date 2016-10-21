@@ -1,16 +1,19 @@
 import * as React from 'react';
 import { SourceCode, javascript, typescript } from './SourceCode';
-import { StrategySelectField, Strategy,allow } from './StrategySelectField';
+import { StrategySelectField, Strategy, allow } from './StrategySelectField';
+import RequiredCheckbox from './RequiredCheckbox';
 import bind from 'bind-decorator';
 //import { NumberInput } from 'material-ui-number-input';
 
+function serializeProp(prop: string, value: any): string {
+    return value === true ? prop : `${prop}=${value[0] !== '"' ? `{${value}}` : value + '"'}`;
+}
+
 function reactiveProps(props: Object): string {
     let dynamicProps: string = '';
-    let value: any;
     for(let prop in props) {
         if(props.hasOwnProperty(prop)) {
-            value = (props as any)[prop];
-            dynamicProps += `                ${prop}=${value[0] !== '"' ? `{${value}}` : value + '"'}\n`;
+            dynamicProps += `                ${serializeProp(prop, (props as any)[prop])}\n`;
         }
     }
     return dynamicProps;
@@ -61,6 +64,17 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         this.setState({ strategy: strategy, props: props });
     }
 
+    @bind
+    private onRequiredChecked(required: boolean): void {
+        const { props } = this.state;
+        if(required) {
+            props.required = required
+        } else {
+            delete props.required;
+        }
+        this.setState({ props: props });
+    }
+
     public constructor(props: void) {
         super(props);
         this.state = {
@@ -70,7 +84,8 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                 min: 0,
                 max: 30,
                 value: 'value',
-                strategy: '"' + allow
+                strategy: '"' + allow,
+                required: true,
             }
         };
     }
@@ -79,7 +94,8 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         const { language, strategy, props } = this.state;
         return (
             <div>
-                <div>
+                <div style={{ display: 'inline' }}>
+                    <RequiredCheckbox required={props.required} onRequiredChecked={this.onRequiredChecked} />
                     <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
                 </div>
                 <SourceCode
