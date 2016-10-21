@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { SourceCode, javascript, typescript } from './SourceCode';
 import { StrategySelectField, Strategy, allow } from './StrategySelectField';
+import LimitInput from './LimitInput';
 import RequiredCheckbox from './RequiredCheckbox';
 import bind from 'bind-decorator';
-//import { NumberInput } from 'material-ui-number-input';
+
+const allProps: Array<string> = ['value', 'strategy', 'min', 'max', 'required']; 
 
 function serializeProp(prop: string, value: any): string {
     return value === true ? prop : `${prop}=${value[0] !== '"' ? `{${value}}` : value + '"'}`;
@@ -11,9 +13,11 @@ function serializeProp(prop: string, value: any): string {
 
 function reactiveProps(props: Object): string {
     let dynamicProps: string = '';
-    for(let prop in props) {
-        if(props.hasOwnProperty(prop)) {
-            dynamicProps += `                ${serializeProp(prop, (props as any)[prop])}\n`;
+    let value: any;
+    for(let prop of allProps) {
+        value = (props as any)[prop];
+        if(value !== null) {
+            dynamicProps += `                ${serializeProp(prop, value)}\n`;
         }
     }
     return dynamicProps;
@@ -70,8 +74,36 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         if(required) {
             props.required = required
         } else {
-            delete props.required;
+            props.required = null;
         }
+        this.setState({ props: props });
+    }
+
+    @bind
+    private onValidMin(min: number): void {
+        const { props } = this.state;
+        props.min = min;
+        this.setState({ props: props });
+    }
+
+    @bind
+    private onInValidMin(): void {
+        const { props } = this.state;
+        props.min = null;
+        this.setState({ props: props });
+    }
+
+    @bind
+    private onValidMax(max: number): void {
+        const { props } = this.state;
+        props.max = max;
+        this.setState({ props: props });
+    }
+
+    @bind
+    private onInValidMax(): void {
+        const { props } = this.state;
+        props.max = null;
         this.setState({ props: props });
     }
 
@@ -94,9 +126,14 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         const { language, strategy, props } = this.state;
         return (
             <div>
-                <div style={{ display: 'inline' }}>
+                <div>
                     <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
-                    <RequiredCheckbox required={props.required} onRequiredCheck={this.onRequiredCheck} />
+                    <br />
+                    <LimitInput limit="min" onValidLimit={this.onValidMin} onInvalidLimit={this.onInValidMin} />
+                    <br />
+                    <LimitInput limit="max" onValidLimit={this.onValidMax} onInvalidLimit={this.onInValidMax} />
+                    <br />
+                    <RequiredCheckbox required={Boolean(props.required)} onRequiredCheck={this.onRequiredCheck} />
                 </div>
                 <SourceCode
                     language={language!}

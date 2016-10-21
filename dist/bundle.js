@@ -48,8 +48,8 @@
 	var React = __webpack_require__(1);
 	var ReactiveExample_1 = __webpack_require__(34);
 	var react_dom_1 = __webpack_require__(312);
-	var injectTapEventPlugin = __webpack_require__(542);
-	var MuiThemeProvider_1 = __webpack_require__(548);
+	var injectTapEventPlugin = __webpack_require__(545);
+	var MuiThemeProvider_1 = __webpack_require__(551);
 	injectTapEventPlugin();
 	react_dom_1.render(React.createElement(MuiThemeProvider_1.default, null, 
 	    React.createElement(ReactiveExample_1.default, null)
@@ -4251,17 +4251,21 @@
 	var React = __webpack_require__(1);
 	var SourceCode_1 = __webpack_require__(35);
 	var StrategySelectField_1 = __webpack_require__(535);
-	var RequiredCheckbox_1 = __webpack_require__(536);
+	var LimitInput_1 = __webpack_require__(536);
+	var RequiredCheckbox_1 = __webpack_require__(539);
 	var bind_decorator_1 = __webpack_require__(534);
-	//import { NumberInput } from 'material-ui-number-input';
+	var allProps = ['value', 'strategy', 'min', 'max', 'required'];
 	function serializeProp(prop, value) {
 	    return value === true ? prop : prop + "=" + (value[0] !== '"' ? "{" + value + "}" : value + '"');
 	}
 	function reactiveProps(props) {
 	    var dynamicProps = '';
-	    for (var prop in props) {
-	        if (props.hasOwnProperty(prop)) {
-	            dynamicProps += "                " + serializeProp(prop, props[prop]) + "\n";
+	    var value;
+	    for (var _i = 0, allProps_1 = allProps; _i < allProps_1.length; _i++) {
+	        var prop = allProps_1[_i];
+	        value = props[prop];
+	        if (value !== null) {
+	            dynamicProps += "                " + serializeProp(prop, value) + "\n";
 	        }
 	    }
 	    return dynamicProps;
@@ -4301,16 +4305,41 @@
 	            props.required = required;
 	        }
 	        else {
-	            delete props.required;
+	            props.required = null;
 	        }
+	        this.setState({ props: props });
+	    };
+	    ReactiveExample.prototype.onValidMin = function (min) {
+	        var props = this.state.props;
+	        props.min = min;
+	        this.setState({ props: props });
+	    };
+	    ReactiveExample.prototype.onInValidMin = function () {
+	        var props = this.state.props;
+	        props.min = null;
+	        this.setState({ props: props });
+	    };
+	    ReactiveExample.prototype.onValidMax = function (max) {
+	        var props = this.state.props;
+	        props.max = max;
+	        this.setState({ props: props });
+	    };
+	    ReactiveExample.prototype.onInValidMax = function () {
+	        var props = this.state.props;
+	        props.max = null;
 	        this.setState({ props: props });
 	    };
 	    ReactiveExample.prototype.render = function () {
 	        var _a = this.state, language = _a.language, strategy = _a.strategy, props = _a.props;
 	        return (React.createElement("div", null, 
-	            React.createElement("div", {style: { display: 'inline' }}, 
+	            React.createElement("div", null, 
 	                React.createElement(StrategySelectField_1.StrategySelectField, {strategy: strategy, onStrategyChange: this.onStrategyChange}), 
-	                React.createElement(RequiredCheckbox_1.default, {required: props.required, onRequiredCheck: this.onRequiredCheck})), 
+	                React.createElement("br", null), 
+	                React.createElement(LimitInput_1.default, {limit: "min", onValidLimit: this.onValidMin, onInvalidLimit: this.onInValidMin}), 
+	                React.createElement("br", null), 
+	                React.createElement(LimitInput_1.default, {limit: "max", onValidLimit: this.onValidMax, onInvalidLimit: this.onInValidMax}), 
+	                React.createElement("br", null), 
+	                React.createElement(RequiredCheckbox_1.default, {required: Boolean(props.required), onRequiredCheck: this.onRequiredCheck})), 
 	            React.createElement(SourceCode_1.SourceCode, {language: language, code: code(language, props), onLanguageChange: this.onLangaugeChange})));
 	    };
 	    __decorate([
@@ -4322,6 +4351,18 @@
 	    __decorate([
 	        bind_decorator_1.default
 	    ], ReactiveExample.prototype, "onRequiredCheck", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], ReactiveExample.prototype, "onValidMin", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], ReactiveExample.prototype, "onInValidMin", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], ReactiveExample.prototype, "onValidMax", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], ReactiveExample.prototype, "onInValidMax", null);
 	    return ReactiveExample;
 	}(React.Component));
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -51993,7 +52034,401 @@
 	    return c > 3 && r && Object.defineProperty(target, key, r), r;
 	};
 	var React = __webpack_require__(1);
-	var Checkbox_1 = __webpack_require__(537);
+	var bind_decorator_1 = __webpack_require__(534);
+	var material_ui_number_input_1 = __webpack_require__(537);
+	var LimitInput = (function (_super) {
+	    __extends(LimitInput, _super);
+	    function LimitInput(props) {
+	        _super.call(this, props);
+	        this.state = { value: '' };
+	        this.lastValid = 0;
+	    }
+	    LimitInput.prototype.onValid = function (valid) {
+	        this.lastValid = valid;
+	        this.props.onValidLimit(valid);
+	    };
+	    LimitInput.prototype.onChange = function (event, value) {
+	        this.setState({ value: value });
+	        if (this.lastValid === Number(value)) {
+	            this.props.onValidLimit(this.lastValid);
+	        }
+	    };
+	    LimitInput.prototype.onError = function (error) {
+	        var errorText = '';
+	        switch (error) {
+	            case 'invalidSymbol':
+	                errorText = this.props.limit + " must be a valid number";
+	                break;
+	            case 'incompleteNumber':
+	                errorText = 'Number is incomplete';
+	                break;
+	            case 'singleMinus':
+	                errorText = 'Minus can be use only for negativity';
+	                break;
+	            case 'singleFloatingPoint':
+	                errorText = 'There is already a floating point';
+	                break;
+	            case 'singleZero':
+	                errorText = 'Floating point is expected';
+	                break;
+	        }
+	        this.setState({ errorText: errorText });
+	        if (error !== 'none') {
+	            this.props.onInvalidLimit();
+	        }
+	    };
+	    LimitInput.prototype.render = function () {
+	        var _a = this.state, value = _a.value, errorText = _a.errorText;
+	        var limit = this.props.limit;
+	        return (React.createElement(material_ui_number_input_1.NumberInput, {id: limit, floatingLabelText: limit, value: value, errorText: errorText, onError: this.onError, onValid: this.onValid, onChange: this.onChange}));
+	    };
+	    __decorate([
+	        bind_decorator_1.default
+	    ], LimitInput.prototype, "onValid", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], LimitInput.prototype, "onChange", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], LimitInput.prototype, "onError", null);
+	    return LimitInput;
+	}(React.Component));
+	exports.LimitInput = LimitInput;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = LimitInput;
+
+
+/***/ },
+/* 537 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	var NumberInput_1 = __webpack_require__(538);
+	__export(__webpack_require__(538));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = NumberInput_1.default;
+
+
+/***/ },
+/* 538 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var React = __webpack_require__(1);
+	var TextField_1 = __webpack_require__(310);
+	var ObjectAssign = __webpack_require__(4);
+	var bind_decorator_1 = __webpack_require__(534);
+	var errorNames;
+	(function (errorNames) {
+	    errorNames.none = 'none';
+	    errorNames.invalidSymbol = 'invalidSymbol';
+	    errorNames.incompleteNumber = 'incompleteNumber';
+	    errorNames.singleMinus = 'singleMinus';
+	    errorNames.singleFloatingPoint = 'singleFloatingPoint';
+	    errorNames.singleZero = 'singleZero';
+	    errorNames.min = 'min';
+	    errorNames.max = 'max';
+	    errorNames.required = 'required';
+	    errorNames.clean = 'clean';
+	    errorNames.allow = 'allow';
+	    errorNames.limit = 'limit';
+	})(errorNames || (errorNames = {}));
+	var strategies;
+	(function (strategies) {
+	    strategies.ignore = 'ignore';
+	    strategies.warn = 'warn';
+	    strategies.allow = 'allow';
+	})(strategies || (strategies = {}));
+	var typeofs;
+	(function (typeofs) {
+	    typeofs.stringType = 'string';
+	    typeofs.numberType = 'number';
+	})(typeofs || (typeofs = {}));
+	var constants;
+	(function (constants) {
+	    constants.emptyString = '';
+	    constants.dash = '-';
+	    constants.dot = '.';
+	    constants.zero = 0;
+	    constants.one = 1;
+	    constants.text = 'text';
+	    constants.minusOne = -1;
+	    constants.boolTrue = true;
+	    constants.boolFalse = false;
+	})(constants || (constants = {}));
+	var NumberInput = (function (_super) {
+	    __extends(NumberInput, _super);
+	    function NumberInput(props) {
+	        _super.call(this, props);
+	        this.constProps = {
+	            type: constants.text,
+	            onChange: this.onChange,
+	            onBlur: this.onBlur,
+	            ref: this.refTextField
+	        };
+	    }
+	    NumberInput.getValidValue = function (value) {
+	        var match = value.match(NumberInput.allowed);
+	        return match !== null ? (match.index === constants.zero ? match[constants.zero] : match.join(constants.emptyString)) : constants.emptyString;
+	    };
+	    NumberInput.deleteOwnProps = function (props) {
+	        var prop;
+	        for (var index = 0; index < NumberInput.deleteProps.length; ++index) {
+	            prop = NumberInput.deleteProps[index];
+	            if (props.hasOwnProperty(prop)) {
+	                delete props[prop];
+	            }
+	        }
+	    };
+	    NumberInput.prototype.emitEvents = function (nextError, value, emitError, valid) {
+	        var _a = this.props, onError = _a.onError, onValid = _a.onValid;
+	        if ((this.error !== nextError) && emitError) {
+	            if (onError) {
+	                onError(nextError);
+	            }
+	            this.error = nextError;
+	        }
+	        if (onValid && valid && (this.lastValid !== value)) {
+	            onValid(Number(value));
+	            this.lastValid = value;
+	        }
+	    };
+	    NumberInput.prototype.validateNumberValue = function (value) {
+	        var _a = this.props, max = _a.max, min = _a.min;
+	        if ((typeof max === typeofs.numberType) && (value > max)) {
+	            return constants.one;
+	        }
+	        if ((typeof min === typeofs.numberType) && (value < min)) {
+	            return constants.minusOne;
+	        }
+	        return constants.zero;
+	    };
+	    NumberInput.prototype.validateValue = function (value) {
+	        var props = this.props;
+	        var required = props.required, strategy = props.strategy, min = props.min;
+	        if (value === constants.emptyString) {
+	            return required ? errorNames.required : errorNames.clean;
+	        }
+	        else {
+	            if (value.match(NumberInput.validSymbols)) {
+	                if (value.match(NumberInput.stricAllowed)) {
+	                    if (value.match(NumberInput.validNumber)) {
+	                        var numberValue = Number(value);
+	                        var floatingPoint = value.indexOf(constants.dot);
+	                        var decimal = floatingPoint > constants.minusOne;
+	                        var whole = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min;
+	                        switch (this.validateNumberValue(numberValue)) {
+	                            case constants.one: return errorNames.max;
+	                            case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue > constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
+	                            default: return errorNames.none;
+	                        }
+	                    }
+	                    else {
+	                        return (strategy !== strategies.allow) && (value === constants.dash) && (min >= constants.zero) ? errorNames.limit : errorNames.incompleteNumber;
+	                    }
+	                }
+	                else {
+	                    switch (value[value.length - constants.one]) {
+	                        case constants.dash: return errorNames.singleMinus;
+	                        case constants.dot: return errorNames.singleFloatingPoint;
+	                        default: return errorNames.singleZero;
+	                    }
+	                }
+	            }
+	            else {
+	                return errorNames.invalidSymbol;
+	            }
+	        }
+	    };
+	    NumberInput.prototype.overrideRequestedValue = function (error, value) {
+	        var props = this.props;
+	        switch (error) {
+	            case errorNames.min: return String(props.min);
+	            case errorNames.max: return String(props.max);
+	            default: return props.strategy !== strategies.allow && value === constants.dash ? constants.emptyString : value;
+	        }
+	    };
+	    NumberInput.prototype.overrideError = function (error) {
+	        switch (error) {
+	            case errorNames.allow: return errorNames.none;
+	            case errorNames.limit: return this.props.required ? errorNames.required : errorNames.clean;
+	            default: return error;
+	        }
+	    };
+	    NumberInput.prototype.emitValid = function (error, overridenError) {
+	        return (error === errorNames.none) && (overridenError !== errorNames.allow);
+	    };
+	    NumberInput.prototype.takeActionForValue = function (value) {
+	        var _a = this.props, strategy = _a.strategy, onRequestValue = _a.onRequestValue, propsValue = _a.value;
+	        var error = this.validateValue(value);
+	        var valid = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
+	        var overridenError = this.overrideError(error);
+	        var emitError = (this.requestedValue !== value) && (strategy != strategies.ignore);
+	        var emitValid = this.emitValid(error, overridenError);
+	        this.emitEvents(overridenError, valid, emitError, emitValid);
+	        if ((strategy != strategies.allow) && (valid !== value)) {
+	            this.requestedValue = valid;
+	            if (typeof propsValue !== typeofs.stringType) {
+	                this.getInputNode().value = valid;
+	            }
+	            else if (onRequestValue) {
+	                onRequestValue(valid);
+	            }
+	        }
+	    };
+	    NumberInput.prototype.refTextField = function (textField) {
+	        this.textField = textField;
+	    };
+	    NumberInput.prototype.onChange = function (event) {
+	        var eventValue = event;
+	        var value = eventValue.target.value;
+	        var onChange = this.props.onChange;
+	        if (onChange) {
+	            onChange(event, value);
+	        }
+	        if (typeof this.props.value !== typeofs.stringType) {
+	            this.takeActionForValue(value);
+	        }
+	    };
+	    NumberInput.prototype.onBlur = function (event) {
+	        var eventValue = event;
+	        var _a = this.props, strategy = _a.strategy, onBlur = _a.onBlur;
+	        var value = eventValue.target.value;
+	        if (strategy === strategies.warn) {
+	            this.emitEvents(this.validateValue(value), value, constants.boolTrue, constants.boolFalse);
+	        }
+	        if (onBlur) {
+	            onBlur(event);
+	        }
+	    };
+	    NumberInput.prototype.getInputNode = function () {
+	        return this.textField.getInputNode();
+	    };
+	    NumberInput.prototype.getTextField = function () {
+	        return this.textField;
+	    };
+	    NumberInput.prototype.componentDidMount = function () {
+	        var value = this.props.value;
+	        this.takeActionForValue(typeof value === typeofs.stringType ? value : this.getInputNode().value);
+	    };
+	    NumberInput.prototype.componentWillReceiveProps = function (props) {
+	        var value = props.value;
+	        if (value !== this.props.value) {
+	            this.takeActionForValue(value);
+	        }
+	    };
+	    NumberInput.prototype.render = function () {
+	        var _a = this, props = _a.props, constProps = _a.constProps;
+	        var value = props.value, defaultValue = props.defaultValue;
+	        var inputProps = ObjectAssign({}, props, constProps, {
+	            defaultValue: typeof defaultValue === typeofs.numberType ? String(defaultValue) : undefined,
+	            value: value,
+	        });
+	        if (typeof inputProps.value !== typeofs.stringType) {
+	            delete inputProps.value;
+	        }
+	        if (inputProps.defaultValue === undefined) {
+	            delete inputProps.defaultValue;
+	        }
+	        NumberInput.deleteOwnProps(inputProps);
+	        return React.createElement(TextField_1.default, inputProps);
+	    };
+	    NumberInput.validSymbols = /(\-|\.|\d)+/;
+	    NumberInput.stricAllowed = /^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/;
+	    NumberInput.validNumber = /^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/;
+	    NumberInput.allowed = /-?((0|([1-9]\d{0,}))(\.\d{0,})?)?/;
+	    NumberInput.deleteProps = ['strategy', 'onError', 'onValid', 'onRequestValue'];
+	    NumberInput.propTypes = {
+	        children: React.PropTypes.node,
+	        className: React.PropTypes.string,
+	        disabled: React.PropTypes.bool,
+	        errorStyle: React.PropTypes.object,
+	        errorText: React.PropTypes.node,
+	        floatingLabelFixed: React.PropTypes.bool,
+	        floatingLabelFocusStyle: React.PropTypes.object,
+	        floatingLabelStyle: React.PropTypes.object,
+	        floatingLabelText: React.PropTypes.node,
+	        fullWidth: React.PropTypes.bool,
+	        hintStyle: React.PropTypes.object,
+	        hintText: React.PropTypes.node,
+	        id: React.PropTypes.string,
+	        inputStyle: React.PropTypes.object,
+	        name: React.PropTypes.string,
+	        onBlur: React.PropTypes.func,
+	        onChange: React.PropTypes.func,
+	        onFocus: React.PropTypes.func,
+	        onValid: React.PropTypes.func,
+	        onError: React.PropTypes.func,
+	        onRequestValue: React.PropTypes.func,
+	        onKeyDown: React.PropTypes.func,
+	        style: React.PropTypes.object,
+	        underlineDisabledStyle: React.PropTypes.object,
+	        underlineFocusStyle: React.PropTypes.object,
+	        underlineShow: React.PropTypes.bool,
+	        underlineStyle: React.PropTypes.object,
+	        defaultValue: React.PropTypes.number,
+	        min: React.PropTypes.number,
+	        max: React.PropTypes.number,
+	        required: React.PropTypes.bool,
+	        strategy: React.PropTypes.oneOf([
+	            strategies.ignore,
+	            strategies.warn,
+	            strategies.allow
+	        ]),
+	        value: React.PropTypes.string
+	    };
+	    NumberInput.defaultProps = {
+	        required: constants.boolFalse,
+	        strategy: strategies.allow
+	    };
+	    __decorate([
+	        bind_decorator_1.default
+	    ], NumberInput.prototype, "refTextField", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], NumberInput.prototype, "onChange", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], NumberInput.prototype, "onBlur", null);
+	    return NumberInput;
+	}(React.Component));
+	exports.NumberInput = NumberInput;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = NumberInput;
+
+
+/***/ },
+/* 539 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var React = __webpack_require__(1);
+	var Checkbox_1 = __webpack_require__(540);
 	var bind_decorator_1 = __webpack_require__(534);
 	var RequiredCheckbox = (function (_super) {
 	    __extends(RequiredCheckbox, _super);
@@ -52017,7 +52452,7 @@
 
 
 /***/ },
-/* 537 */
+/* 540 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52027,7 +52462,7 @@
 	});
 	exports.default = undefined;
 
-	var _Checkbox = __webpack_require__(538);
+	var _Checkbox = __webpack_require__(541);
 
 	var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
@@ -52036,7 +52471,7 @@
 	exports.default = _Checkbox2.default;
 
 /***/ },
-/* 538 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -52081,7 +52516,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _EnhancedSwitch = __webpack_require__(539);
+	var _EnhancedSwitch = __webpack_require__(542);
 
 	var _EnhancedSwitch2 = _interopRequireDefault(_EnhancedSwitch);
 
@@ -52089,11 +52524,11 @@
 
 	var _transitions2 = _interopRequireDefault(_transitions);
 
-	var _checkBoxOutlineBlank = __webpack_require__(540);
+	var _checkBoxOutlineBlank = __webpack_require__(543);
 
 	var _checkBoxOutlineBlank2 = _interopRequireDefault(_checkBoxOutlineBlank);
 
-	var _checkBox = __webpack_require__(541);
+	var _checkBox = __webpack_require__(544);
 
 	var _checkBox2 = _interopRequireDefault(_checkBox);
 
@@ -52334,7 +52769,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 539 */
+/* 542 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -52791,7 +53226,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 540 */
+/* 543 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52828,7 +53263,7 @@
 	exports.default = ToggleCheckBoxOutlineBlank;
 
 /***/ },
-/* 541 */
+/* 544 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52865,11 +53300,11 @@
 	exports.default = ToggleCheckBox;
 
 /***/ },
-/* 542 */
+/* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(543);
-	var defaultClickRejectionStrategy = __webpack_require__(544);
+	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(546);
+	var defaultClickRejectionStrategy = __webpack_require__(547);
 
 	var alreadyInjected = false;
 
@@ -52891,14 +53326,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(321).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(545)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(548)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 543 */
+/* 546 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -52953,7 +53388,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 544 */
+/* 547 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -52964,7 +53399,7 @@
 
 
 /***/ },
-/* 545 */
+/* 548 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -52992,10 +53427,10 @@
 	var EventPluginUtils = __webpack_require__(323);
 	var EventPropagators = __webpack_require__(320);
 	var SyntheticUIEvent = __webpack_require__(354);
-	var TouchEventUtils = __webpack_require__(546);
+	var TouchEventUtils = __webpack_require__(549);
 	var ViewportMetrics = __webpack_require__(355);
 
-	var keyOf = __webpack_require__(547);
+	var keyOf = __webpack_require__(550);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -53140,7 +53575,7 @@
 
 
 /***/ },
-/* 546 */
+/* 549 */
 /***/ function(module, exports) {
 
 	/**
@@ -53188,7 +53623,7 @@
 
 
 /***/ },
-/* 547 */
+/* 550 */
 /***/ function(module, exports) {
 
 	/**
@@ -53228,7 +53663,7 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 548 */
+/* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -53259,7 +53694,7 @@
 
 	var _react = __webpack_require__(1);
 
-	var _getMuiTheme = __webpack_require__(549);
+	var _getMuiTheme = __webpack_require__(552);
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
@@ -53300,7 +53735,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 549 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53315,41 +53750,41 @@
 
 	exports.default = getMuiTheme;
 
-	var _lodash = __webpack_require__(550);
+	var _lodash = __webpack_require__(553);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
 	var _colorManipulator = __webpack_require__(451);
 
-	var _lightBaseTheme = __webpack_require__(552);
+	var _lightBaseTheme = __webpack_require__(555);
 
 	var _lightBaseTheme2 = _interopRequireDefault(_lightBaseTheme);
 
-	var _zIndex = __webpack_require__(555);
+	var _zIndex = __webpack_require__(558);
 
 	var _zIndex2 = _interopRequireDefault(_zIndex);
 
-	var _autoprefixer = __webpack_require__(556);
+	var _autoprefixer = __webpack_require__(559);
 
 	var _autoprefixer2 = _interopRequireDefault(_autoprefixer);
 
-	var _callOnce = __webpack_require__(588);
+	var _callOnce = __webpack_require__(591);
 
 	var _callOnce2 = _interopRequireDefault(_callOnce);
 
-	var _rtl = __webpack_require__(589);
+	var _rtl = __webpack_require__(592);
 
 	var _rtl2 = _interopRequireDefault(_rtl);
 
-	var _compose = __webpack_require__(593);
+	var _compose = __webpack_require__(596);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
-	var _typography = __webpack_require__(594);
+	var _typography = __webpack_require__(597);
 
 	var _typography2 = _interopRequireDefault(_typography);
 
-	var _colors = __webpack_require__(553);
+	var _colors = __webpack_require__(556);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53683,7 +54118,7 @@
 	}
 
 /***/ },
-/* 550 */
+/* 553 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -55894,10 +56329,10 @@
 
 	module.exports = merge;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(551)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(554)(module)))
 
 /***/ },
-/* 551 */
+/* 554 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -55913,7 +56348,7 @@
 
 
 /***/ },
-/* 552 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55922,11 +56357,11 @@
 	  value: true
 	});
 
-	var _colors = __webpack_require__(553);
+	var _colors = __webpack_require__(556);
 
 	var _colorManipulator = __webpack_require__(451);
 
-	var _spacing = __webpack_require__(554);
+	var _spacing = __webpack_require__(557);
 
 	var _spacing2 = _interopRequireDefault(_spacing);
 
@@ -55962,7 +56397,7 @@
 	    */
 
 /***/ },
-/* 553 */
+/* 556 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -56257,7 +56692,7 @@
 	var lightWhite = exports.lightWhite = 'rgba(255, 255, 255, 0.54)';
 
 /***/ },
-/* 554 */
+/* 557 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -56281,7 +56716,7 @@
 	};
 
 /***/ },
-/* 555 */
+/* 558 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -56303,7 +56738,7 @@
 	};
 
 /***/ },
-/* 556 */
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -56354,7 +56789,7 @@
 	  }
 	};
 
-	var _inlineStylePrefixer = __webpack_require__(557);
+	var _inlineStylePrefixer = __webpack_require__(560);
 
 	var _inlineStylePrefixer2 = _interopRequireDefault(_inlineStylePrefixer);
 
@@ -56368,7 +56803,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 557 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56381,59 +56816,59 @@
 	// special flexbox specifications
 
 
-	var _prefixAll2 = __webpack_require__(558);
+	var _prefixAll2 = __webpack_require__(561);
 
 	var _prefixAll3 = _interopRequireDefault(_prefixAll2);
 
-	var _getBrowserInformation = __webpack_require__(572);
+	var _getBrowserInformation = __webpack_require__(575);
 
 	var _getBrowserInformation2 = _interopRequireDefault(_getBrowserInformation);
 
-	var _getPrefixedKeyframes = __webpack_require__(575);
+	var _getPrefixedKeyframes = __webpack_require__(578);
 
 	var _getPrefixedKeyframes2 = _interopRequireDefault(_getPrefixedKeyframes);
 
-	var _capitalizeString = __webpack_require__(560);
+	var _capitalizeString = __webpack_require__(563);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _prefixProps = __webpack_require__(576);
+	var _prefixProps = __webpack_require__(579);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
-	var _calc = __webpack_require__(577);
+	var _calc = __webpack_require__(580);
 
 	var _calc2 = _interopRequireDefault(_calc);
 
-	var _zoomCursor = __webpack_require__(579);
+	var _zoomCursor = __webpack_require__(582);
 
 	var _zoomCursor2 = _interopRequireDefault(_zoomCursor);
 
-	var _grabCursor = __webpack_require__(580);
+	var _grabCursor = __webpack_require__(583);
 
 	var _grabCursor2 = _interopRequireDefault(_grabCursor);
 
-	var _flex = __webpack_require__(581);
+	var _flex = __webpack_require__(584);
 
 	var _flex2 = _interopRequireDefault(_flex);
 
-	var _sizing = __webpack_require__(582);
+	var _sizing = __webpack_require__(585);
 
 	var _sizing2 = _interopRequireDefault(_sizing);
 
-	var _gradient = __webpack_require__(583);
+	var _gradient = __webpack_require__(586);
 
 	var _gradient2 = _interopRequireDefault(_gradient);
 
-	var _transition = __webpack_require__(584);
+	var _transition = __webpack_require__(587);
 
 	var _transition2 = _interopRequireDefault(_transition);
 
-	var _flexboxIE = __webpack_require__(586);
+	var _flexboxIE = __webpack_require__(589);
 
 	var _flexboxIE2 = _interopRequireDefault(_flexboxIE);
 
-	var _flexboxOld = __webpack_require__(587);
+	var _flexboxOld = __webpack_require__(590);
 
 	var _flexboxOld2 = _interopRequireDefault(_flexboxOld);
 
@@ -56594,7 +57029,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 558 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56604,43 +57039,43 @@
 	});
 	exports.default = prefixAll;
 
-	var _prefixProps = __webpack_require__(559);
+	var _prefixProps = __webpack_require__(562);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
-	var _capitalizeString = __webpack_require__(560);
+	var _capitalizeString = __webpack_require__(563);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _calc = __webpack_require__(561);
+	var _calc = __webpack_require__(564);
 
 	var _calc2 = _interopRequireDefault(_calc);
 
-	var _cursor = __webpack_require__(564);
+	var _cursor = __webpack_require__(567);
 
 	var _cursor2 = _interopRequireDefault(_cursor);
 
-	var _flex = __webpack_require__(565);
+	var _flex = __webpack_require__(568);
 
 	var _flex2 = _interopRequireDefault(_flex);
 
-	var _sizing = __webpack_require__(566);
+	var _sizing = __webpack_require__(569);
 
 	var _sizing2 = _interopRequireDefault(_sizing);
 
-	var _gradient = __webpack_require__(567);
+	var _gradient = __webpack_require__(570);
 
 	var _gradient2 = _interopRequireDefault(_gradient);
 
-	var _transition = __webpack_require__(568);
+	var _transition = __webpack_require__(571);
 
 	var _transition2 = _interopRequireDefault(_transition);
 
-	var _flexboxIE = __webpack_require__(570);
+	var _flexboxIE = __webpack_require__(573);
 
 	var _flexboxIE2 = _interopRequireDefault(_flexboxIE);
 
-	var _flexboxOld = __webpack_require__(571);
+	var _flexboxOld = __webpack_require__(574);
 
 	var _flexboxOld2 = _interopRequireDefault(_flexboxOld);
 
@@ -56706,7 +57141,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 559 */
+/* 562 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -56718,7 +57153,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 560 */
+/* 563 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -56735,7 +57170,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 561 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56745,11 +57180,11 @@
 	});
 	exports.default = calc;
 
-	var _joinPrefixedValue = __webpack_require__(562);
+	var _joinPrefixedValue = __webpack_require__(565);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
-	var _isPrefixedValue = __webpack_require__(563);
+	var _isPrefixedValue = __webpack_require__(566);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
@@ -56765,7 +57200,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 562 */
+/* 565 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -56790,7 +57225,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 563 */
+/* 566 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -56808,7 +57243,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 564 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56818,7 +57253,7 @@
 	});
 	exports.default = cursor;
 
-	var _joinPrefixedValue = __webpack_require__(562);
+	var _joinPrefixedValue = __webpack_require__(565);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
@@ -56839,7 +57274,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 565 */
+/* 568 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -56860,7 +57295,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 566 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56870,7 +57305,7 @@
 	});
 	exports.default = sizing;
 
-	var _joinPrefixedValue = __webpack_require__(562);
+	var _joinPrefixedValue = __webpack_require__(565);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
@@ -56901,7 +57336,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 567 */
+/* 570 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56911,11 +57346,11 @@
 	});
 	exports.default = gradient;
 
-	var _joinPrefixedValue = __webpack_require__(562);
+	var _joinPrefixedValue = __webpack_require__(565);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
-	var _isPrefixedValue = __webpack_require__(563);
+	var _isPrefixedValue = __webpack_require__(566);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
@@ -56931,7 +57366,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 568 */
+/* 571 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56941,19 +57376,19 @@
 	});
 	exports.default = transition;
 
-	var _hyphenateStyleName = __webpack_require__(569);
+	var _hyphenateStyleName = __webpack_require__(572);
 
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
-	var _capitalizeString = __webpack_require__(560);
+	var _capitalizeString = __webpack_require__(563);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _isPrefixedValue = __webpack_require__(563);
+	var _isPrefixedValue = __webpack_require__(566);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
-	var _prefixProps = __webpack_require__(559);
+	var _prefixProps = __webpack_require__(562);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
@@ -57018,7 +57453,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 569 */
+/* 572 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57037,7 +57472,7 @@
 
 
 /***/ },
-/* 570 */
+/* 573 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57074,7 +57509,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 571 */
+/* 574 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57115,7 +57550,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 572 */
+/* 575 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57124,7 +57559,7 @@
 	  value: true
 	});
 
-	var _bowser = __webpack_require__(573);
+	var _bowser = __webpack_require__(576);
 
 	var _bowser2 = _interopRequireDefault(_bowser);
 
@@ -57228,7 +57663,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 573 */
+/* 576 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -57239,7 +57674,7 @@
 
 	!function (name, definition) {
 	  if (typeof module != 'undefined' && module.exports) module.exports = definition()
-	  else if (true) __webpack_require__(574)(name, definition)
+	  else if (true) __webpack_require__(577)(name, definition)
 	  else this[name] = definition()
 	}('bowser', function () {
 	  /**
@@ -57810,14 +58245,14 @@
 
 
 /***/ },
-/* 574 */
+/* 577 */
 /***/ function(module, exports) {
 
 	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 575 */
+/* 578 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57842,7 +58277,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 576 */
+/* 579 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57854,7 +58289,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 577 */
+/* 580 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57864,7 +58299,7 @@
 	});
 	exports.default = calc;
 
-	var _getPrefixedValue = __webpack_require__(578);
+	var _getPrefixedValue = __webpack_require__(581);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -57888,7 +58323,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 578 */
+/* 581 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57904,7 +58339,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 579 */
+/* 582 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57914,7 +58349,7 @@
 	});
 	exports.default = zoomCursor;
 
-	var _getPrefixedValue = __webpack_require__(578);
+	var _getPrefixedValue = __webpack_require__(581);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -57940,7 +58375,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 580 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57950,7 +58385,7 @@
 	});
 	exports.default = grabCursor;
 
-	var _getPrefixedValue = __webpack_require__(578);
+	var _getPrefixedValue = __webpack_require__(581);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -57975,7 +58410,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 581 */
+/* 584 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57985,7 +58420,7 @@
 	});
 	exports.default = flex;
 
-	var _getPrefixedValue = __webpack_require__(578);
+	var _getPrefixedValue = __webpack_require__(581);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -58011,7 +58446,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 582 */
+/* 585 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58021,7 +58456,7 @@
 	});
 	exports.default = sizing;
 
-	var _getPrefixedValue = __webpack_require__(578);
+	var _getPrefixedValue = __webpack_require__(581);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -58061,7 +58496,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 583 */
+/* 586 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58071,7 +58506,7 @@
 	});
 	exports.default = gradient;
 
-	var _getPrefixedValue = __webpack_require__(578);
+	var _getPrefixedValue = __webpack_require__(581);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -58097,7 +58532,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 584 */
+/* 587 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58110,11 +58545,11 @@
 
 	exports.default = transition;
 
-	var _hyphenateStyleName = __webpack_require__(569);
+	var _hyphenateStyleName = __webpack_require__(572);
 
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
-	var _unprefixProperty = __webpack_require__(585);
+	var _unprefixProperty = __webpack_require__(588);
 
 	var _unprefixProperty2 = _interopRequireDefault(_unprefixProperty);
 
@@ -58163,7 +58598,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 585 */
+/* 588 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58180,7 +58615,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 586 */
+/* 589 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58190,7 +58625,7 @@
 	});
 	exports.default = flexboxIE;
 
-	var _getPrefixedValue = __webpack_require__(578);
+	var _getPrefixedValue = __webpack_require__(581);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -58244,7 +58679,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 587 */
+/* 590 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58254,7 +58689,7 @@
 	});
 	exports.default = flexboxOld;
 
-	var _getPrefixedValue = __webpack_require__(578);
+	var _getPrefixedValue = __webpack_require__(581);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -58315,7 +58750,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 588 */
+/* 591 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -58347,7 +58782,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 589 */
+/* 592 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58356,7 +58791,7 @@
 	  value: true
 	});
 
-	var _keys = __webpack_require__(590);
+	var _keys = __webpack_require__(593);
 
 	var _keys2 = _interopRequireDefault(_keys);
 
@@ -58449,20 +58884,20 @@
 	}
 
 /***/ },
-/* 590 */
+/* 593 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(591), __esModule: true };
+	module.exports = { "default": __webpack_require__(594), __esModule: true };
 
 /***/ },
-/* 591 */
+/* 594 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(592);
+	__webpack_require__(595);
 	module.exports = __webpack_require__(219).Object.keys;
 
 /***/ },
-/* 592 */
+/* 595 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.14 Object.keys(O)
@@ -58476,7 +58911,7 @@
 	});
 
 /***/ },
-/* 593 */
+/* 596 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -58510,7 +58945,7 @@
 	}
 
 /***/ },
-/* 594 */
+/* 597 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58523,7 +58958,7 @@
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-	var _colors = __webpack_require__(553);
+	var _colors = __webpack_require__(556);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
