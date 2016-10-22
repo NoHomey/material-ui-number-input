@@ -185,3 +185,10 @@
 ### Bug fixes
 
 - Fixing the bug that should have been fixed with `v5.0.12` and the one introduced with `v5.0.12` which caused events to be one state behind actual input.
+
+## [v5.0.14](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.14)
+
+### Bug fixes
+
+- Fixing a bug which caused `onError` to be called based on old `props`.
+- Fixing the [bug](https://github.com/NoHomey/material-ui-number-input/blob/master/CHANGELOG.md#bug-fixes-9) that should be fixed with `5.0.12` 
