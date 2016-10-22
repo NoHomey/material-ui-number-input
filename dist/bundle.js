@@ -52259,6 +52259,7 @@
 	    constants.zero = 0;
 	    constants.one = 1;
 	    constants.text = 'text';
+	    constants.zeroString = '0';
 	    constants.minusOne = -1;
 	    constants.boolTrue = true;
 	    constants.boolFalse = false;
@@ -52338,7 +52339,8 @@
 	                    switch (value[value.length - constants.one]) {
 	                        case constants.dash: return errorNames.singleMinus;
 	                        case constants.dot: return errorNames.singleFloatingPoint;
-	                        default: return errorNames.singleZero;
+	                        case constants.zeroString: return errorNames.singleZero;
+	                        default: return errorNames.invalidSymbol;
 	                    }
 	                }
 	            }
