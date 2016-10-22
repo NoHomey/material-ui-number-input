@@ -4260,7 +4260,7 @@
 	var colors_1 = __webpack_require__(553);
 	var material_ui_number_input_1 = __webpack_require__(537);
 	var bind_decorator_1 = __webpack_require__(534);
-	var allProps = ['value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required'];
+	var allProps = ['floatingLabelText', 'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required'];
 	function serializeProp(prop, value) {
 	    return value === true ? prop : prop + "=" + (value[0] !== '"' ? "{" + value + "}" : value + '"');
 	}
@@ -4271,7 +4271,7 @@
 	        var prop = allProps_1[_i];
 	        value = props[prop];
 	        if (value !== null) {
-	            dynamicProps += "                " + serializeProp(prop, value) + "\n";
+	            dynamicProps += "                    " + serializeProp(prop, value) + "\n";
 	        }
 	    }
 	    return dynamicProps;
@@ -4283,7 +4283,7 @@
 	    var isStrategyNotIngore = isStrategyAllow || isStrategyWarn;
 	    var importOrangeColorIfWarn = isStrategyWarn ? '\nimport { orange500 } from \'material-ui/styles/colors\';' : '';
 	    return "import * as React from 'react';\nimport " + (types ? '{ NumberInput, NumberInputError }' : 'NumberInput') + " from 'material-ui-number-input';" + importOrangeColorIfWarn + "\nimport bind from 'bind-decorator';\n" + (types ?
-	        "\ninterface DemoState {\n    value?: string;\n    errorText?: string;\n}\n" : '') + "\nclass Demo extends React.Component" + (types ? '<void, DemoState>' : '') + " {\n    " + (types ? 'private ' : '') + "setValue(value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ value: value });\n    }\n\n    @bind\n    " + (types ? 'private ' : '') + "onChange(event" + (types ? ': React.FormEvent<{}>' : '') + ", value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setValue(value);\n    }\n\n    " + (types ? 'private ' : '') + "onValid(valid" + (types ? ': number' : '') + ")" + (types ? ': void' : '') + " {\n        alert(valid);\n    }" + (isStrategyAllow ? '' : '\n') + (!isStrategyAllow ? "\n    @bind\n    " + (types ? 'private ' : '') + "onRequestValue(value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setValue(value);\n    }" + (!isStrategyNotIngore ? '\n' : '') : '') + "\n" + (isStrategyNotIngore ? "\n    @bind\n    " + (types ? 'private ' : '') + "onError(error" + (types ? ': NumberInputError' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ errorText: error !== 'none' ? '" + (isStrategyWarn ? 'Warning' : 'Error') + ": ' + error : '' });\n    }\n\n" : '') + "    " + (types ? 'public ' : '') + "constructor(props" + (types ? ': void' : '') + ") {\n        super(props);\n        this.state = { value: ''" + (isStrategyNotIngore ? ", errorText: ''" : '') + " };\n    }\n\n    " + (types ? 'public ' : '') + "render()" + (types ? ': JSX.Element' : '') + " {\n        const { value, errorText } = this.state;\n        return (\n            <NumberInput\n" + reactiveProps(props) + "            />\n        );\n    }\n}";
+	        "\ninterface DemoState {\n    value?: string;\n    valid?: number;\n    errorText?: string;\n}\n" : '') + "\nclass Demo extends React.Component" + (types ? '<void, DemoState>' : '') + " {\n    " + (types ? 'private ' : '') + "setValue(value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ value: value });\n    }\n\n    @bind\n    " + (types ? 'private ' : '') + "onChange(event" + (types ? ': React.FormEvent<{}>' : '') + ", value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setValue(value);\n    }\n\n    @bind\n    " + (types ? 'private ' : '') + "onValid(valid" + (types ? ': number' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ valid: valid });\n    }" + (isStrategyAllow ? '' : '\n') + (!isStrategyAllow ? "\n    @bind\n    " + (types ? 'private ' : '') + "onRequestValue(value" + (types ? ': string' : '') + ")" + (types ? ': void' : '') + " {\n        this.setValue(value);\n    }" + (!isStrategyNotIngore ? '\n' : '') : '') + "\n" + (isStrategyNotIngore ? "\n    @bind\n    " + (types ? 'private ' : '') + "onError(error" + (types ? ': NumberInputError' : '') + ")" + (types ? ': void' : '') + " {\n        this.setState({ errorText: error !== 'none' ? '" + (isStrategyWarn ? 'Warning' : 'Error') + ": ' + error : '' });\n    }\n\n" : '') + "    " + (types ? 'public ' : '') + "constructor(props" + (types ? ': void' : '') + ") {\n        super(props);\n        this.state = { value: '', valid: 0" + (isStrategyNotIngore ? ", errorText: ''" : '') + " };\n    }\n\n    " + (types ? 'public ' : '') + "render()" + (types ? ': JSX.Element' : '') + " {\n        const { value, valid, errorText } = this.state;\n        return (\n            <div>\n                <NumberInput\n" + reactiveProps(props) + "                />\n                <NumberInput value={String(valid)} floatingLabelText=\"Valid number\" />\n            </div>\n        );\n    }\n}";
 	}
 	var ReactiveExample = (function (_super) {
 	    __extends(ReactiveExample, _super);
@@ -4291,9 +4291,11 @@
 	        _super.call(this, props);
 	        this.state = {
 	            value: '',
+	            valid: 0,
 	            language: SourceCode_1.javascript,
 	            strategy: StrategySelectField_1.allow,
 	            props: {
+	                floatingLabelText: '"NumberInput',
 	                min: 0,
 	                max: 30,
 	                value: 'value',
@@ -4320,10 +4322,9 @@
 	        this.setState({ value: value, handlerCalled: handlerCalled });
 	    };
 	    ReactiveExample.prototype.onValid = function (valid) {
-	        alert(valid);
 	        var handlerCalled = this.state.handlerCalled;
 	        handlerCalled.onValid = true;
-	        this.setState({ handlerCalled: handlerCalled });
+	        this.setState({ valid: valid, handlerCalled: handlerCalled });
 	    };
 	    ReactiveExample.prototype.onRequestValue = function (value) {
 	        var handlerCalled = this.state.handlerCalled;
@@ -4391,7 +4392,7 @@
 	        });
 	    };
 	    ReactiveExample.prototype.render = function () {
-	        var _a = this.state, value = _a.value, error = _a.error, language = _a.language, strategy = _a.strategy, props = _a.props, handlerCalled = _a.handlerCalled;
+	        var _a = this.state, value = _a.value, error = _a.error, valid = _a.valid, language = _a.language, strategy = _a.strategy, props = _a.props, handlerCalled = _a.handlerCalled;
 	        var isStrategyAllow = strategy === 'allow';
 	        var isStrategyWarn = strategy === 'warn';
 	        var isStrategyNotIngore = isStrategyAllow || isStrategyWarn;
@@ -4408,8 +4409,10 @@
 	                React.createElement(LimitInput_1.default, {limit: "max", onValidLimit: this.onValidMax, onInvalidLimit: this.onInValidMax}), 
 	                React.createElement("br", null), 
 	                React.createElement(RequiredCheckbox_1.default, {required: Boolean(props.required), onRequiredCheck: this.onRequiredCheck})), 
-	            React.createElement(H2_1.default, {id: "number-input", label: "NumberInput"}), 
-	            React.createElement(material_ui_number_input_1.NumberInput, {id: "reactive-number-input", value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, onValid: this.onValid, onRequestValue: this.onRequestValue, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
+	            React.createElement(H2_1.default, {id: "number-input-demo", label: "NumberInput Demo"}), 
+	            React.createElement("div", null, 
+	                React.createElement(material_ui_number_input_1.NumberInput, {id: "reactive-number-input", floatingLabelText: "NumberInput", value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, onValid: this.onValid, onRequestValue: this.onRequestValue, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
+	                React.createElement(material_ui_number_input_1.NumberInput, {id: "valid-number-input", floatingLabelText: "Valid number", value: String(valid)})), 
 	            React.createElement(H2_1.default, {id: "called-handlers", label: "Called Handlers"}), 
 	            React.createElement("div", null, 
 	                React.createElement(ColoredButton_1.default, {label: "onChange", color: "#9b59b6", colored: handlerCalled.onChange}), 

@@ -11,7 +11,7 @@ import { orange500, red500 } from 'material-ui/styles/colors';
 import { NumberInput, NumberInputError } from 'material-ui-number-input';
 import bind from 'bind-decorator';
 
-const allProps: Array<string> = ['value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required']; 
+const allProps: Array<string> = ['floatingLabelText' ,'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required']; 
 
 function serializeProp(prop: string, value: any): string {
     return value === true ? prop : `${prop}=${value[0] !== '"' ? `{${value}}` : value + '"'}`;
@@ -23,7 +23,7 @@ function reactiveProps(props: Object): string {
     for(let prop of allProps) {
         value = (props as any)[prop];
         if(value !== null) {
-            dynamicProps += `                ${serializeProp(prop, value)}\n`;
+            dynamicProps += `                    ${serializeProp(prop, value)}\n`;
         }
     }
     return dynamicProps;
@@ -42,6 +42,7 @@ ${types ?
 `
 interface DemoState {
     value?: string;
+    valid?: number;
     errorText?: string;
 }
 ` : ''
@@ -56,8 +57,9 @@ class Demo extends React.Component${types ? '<void, DemoState>' : ''} {
         this.setValue(value);
     }
 
+    @bind
     ${types ? 'private ' : ''}onValid(valid${types ? ': number' : ''})${types ? ': void' : ''} {
-        alert(valid);
+        this.setState({ valid: valid });
     }${isStrategyAllow ? '' : '\n'}${!isStrategyAllow? `
     @bind
     ${types ? 'private ' : ''}onRequestValue(value${types ? ': string' : ''})${types ? ': void' : ''} {
@@ -73,14 +75,17 @@ ${isStrategyNotIngore ? `
 `: ''
 }    ${types ? 'public ' : ''}constructor(props${types ? ': void' : ''}) {
         super(props);
-        this.state = { value: ''${isStrategyNotIngore ? `, errorText: ''` : ''} };
+        this.state = { value: '', valid: 0${isStrategyNotIngore ? `, errorText: ''` : ''} };
     }
 
     ${types ? 'public ' : ''}render()${types ? ': JSX.Element' : ''} {
-        const { value, errorText } = this.state;
+        const { value, valid, errorText } = this.state;
         return (
-            <NumberInput
-${reactiveProps(props)}            />
+            <div>
+                <NumberInput
+${reactiveProps(props)}                />
+                <NumberInput value={String(valid)} floatingLabelText="Valid number" />
+            </div>
         );
     }
 }`;
@@ -96,6 +101,7 @@ interface HandlerCalled {
 interface ReactiveExampleState {
     value?: string;
     error?: NumberInputError;
+    valid?: number;
     language?: string;
     strategy?: Strategy;
     props?: any;
@@ -112,10 +118,9 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
 
     @bind
     private onValid(valid: number): void {
-        alert(valid);
         const { handlerCalled } = this.state;
         handlerCalled!.onValid = true;
-        this.setState({ handlerCalled: handlerCalled });
+        this.setState({ valid: valid, handlerCalled: handlerCalled });
     }
 
     @bind
@@ -206,9 +211,11 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         super(props);
         this.state = {
             value: '',
+            valid: 0,
             language: javascript,
             strategy: allow,
             props: {
+                floatingLabelText: '"NumberInput',
                 min: 0,
                 max: 30,
                 value: 'value',
@@ -231,7 +238,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
     }
 
     public render(): JSX.Element {
-        const { value, error, language, strategy, props, handlerCalled } = this.state;
+        const { value, error, valid, language, strategy, props, handlerCalled } = this.state;
         const isStrategyAllow: boolean = strategy === 'allow';
         const isStrategyWarn: boolean = strategy === 'warn';
         const isStrategyNotIngore: boolean = isStrategyAllow || isStrategyWarn;
@@ -250,20 +257,24 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                     <br />
                     <RequiredCheckbox required={Boolean(props.required)} onRequiredCheck={this.onRequiredCheck} />
                 </div>
-                <H2 id="number-input" label="NumberInput" />
-                <NumberInput
-                    id="reactive-number-input"
-                    value={value}
-                    strategy={strategy}
-                    required={props.required}
-                    min={props.min}
-                    max={props.max}
-                    onChange={this.onChange}
-                    onValid={this.onValid}
-                    onRequestValue={this.onRequestValue}
-                    errorText={errorText}
-                    onError={this.onError}
-                    errorStyle={errorStyle} />
+                <H2 id="number-input-demo" label="NumberInput Demo" />
+                <div>
+                    <NumberInput
+                        id="reactive-number-input"
+                        floatingLabelText="NumberInput"
+                        value={value}
+                        strategy={strategy}
+                        required={props.required}
+                        min={props.min}
+                        max={props.max}
+                        onChange={this.onChange}
+                        onValid={this.onValid}
+                        onRequestValue={this.onRequestValue}
+                        errorText={errorText}
+                        onError={this.onError}
+                        errorStyle={errorStyle} />
+                    <NumberInput id="valid-number-input" floatingLabelText="Valid number" value={String(valid)} />
+                </div>
                 <H2 id="called-handlers" label="Called Handlers" />
                 <div>
                     <ColoredButton label="onChange" color="#9b59b6" colored={handlerCalled!.onChange} />
