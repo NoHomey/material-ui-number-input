@@ -40,8 +40,8 @@ namespace constProps {
     export const NumberInput: string = 'NumberInput';
     export const validNumberInput: string = 'valid-number-input';
     export const ValidNumber: string = 'Valid number';
-    export const calledHandlers: string = 'called-handlers';
-    export const CalledHandlers: string = 'Called Handlers';
+    export const calledHandlers: string = 'called-handlers-history';
+    export const CalledHandlers: string = 'Called Handlers history';
     export const Clear: string = 'Clear';
     export const sourceCode: string = 'source-code';
     export const SourceCode: string = 'Source code';

@@ -4287,8 +4287,8 @@
 	    constProps.NumberInput = 'NumberInput';
 	    constProps.validNumberInput = 'valid-number-input';
 	    constProps.ValidNumber = 'Valid number';
-	    constProps.calledHandlers = 'called-handlers';
-	    constProps.CalledHandlers = 'Called Handlers';
+	    constProps.calledHandlers = 'called-handlers-history';
+	    constProps.CalledHandlers = 'Called Handlers history';
 	    constProps.Clear = 'Clear';
 	    constProps.sourceCode = 'source-code';
 	    constProps.SourceCode = 'Source code';
