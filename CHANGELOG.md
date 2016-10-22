@@ -192,3 +192,9 @@
 
 - Fixing a bug which caused `onError` to be called based on old `props`.
 - Fixing the [bug](https://github.com/NoHomey/material-ui-number-input/blob/master/CHANGELOG.md#bug-fixes-9) that should be fixed with `5.0.12` 
+
+## [v5.0.15](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.15)
+
+### Bug fixes
+
+- Fixing `Cannot resolve module 'material-ui-number-input'` due to `$ npm run npm` command has not been ran before releasing previos version.
