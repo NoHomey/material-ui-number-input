@@ -257,15 +257,15 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         return (min !== props.min) || (max !== props.max) || (required !== props.required) || (strategy !== props.strategy);
     }
 
-    private takeActionForValue(value: string): void {
+    private takeActionForValue(value: string, ignoreRequested: boolean = false): void {
         const { strategy, onRequestValue, value: propsValue } = this.props;
         const error: NumberInputErrorExtended = this.validateValue(value);
         const valid: string = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
         const overridenError: NumberInputError = this.overrideError(error);
-        const emitError: boolean = (this.requestedValue !== value) && (strategy !== strategies.ignore);
+        const emitError: boolean = ((this.requestedValue !== value) || ignoreRequested) && (strategy !== strategies.ignore);
         const emitValid: boolean = this.emitValid(error, overridenError);
         this.emitEvents(overridenError, valid, emitError, emitValid);
-        if((strategy != strategies.allow) && (valid !== value)) {
+        if((strategy !== strategies.allow) && (valid !== value)) {
             this.requestedValue = valid;
             if(typeof propsValue !== typeofs.stringType) {
                 this.getInputNode().value = valid;
@@ -330,8 +330,9 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
 
     public componentWillReceiveProps(props: NumberInputProps): void {
         const { value } = this.props;
-        if((value !== props.value) || this.shouldTakeActionForValue(props)) {
-            this.takeActionForValue(value!);
+        const shouldTakeActionForValue = this.shouldTakeActionForValue(props);
+        if((value !== props.value) || shouldTakeActionForValue) {
+            this.takeActionForValue(value!, shouldTakeActionForValue);
         }
     }
 

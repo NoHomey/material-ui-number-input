@@ -179,3 +179,9 @@
 ### Bug fixes
 
 - Fixing, in addition of `value` the following `props` are checked for changes: `min`, `max`,`required` and `strategy` before take decision to call `onError`, `onValid` and `onRequestValue` accordingly when `componentWillReceiveProps`.
+
+## [v5.0.13](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.13)
+
+### Bug fixes
+
+- Fixing the bug that should have been fixed with `v5.0.12` and the one introduced with `v5.0.12` which caused events to be one state behind actual input.
