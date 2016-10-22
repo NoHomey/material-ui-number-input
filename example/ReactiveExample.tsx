@@ -145,7 +145,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         props.onError = isStrategyIgnore ? null : 'this.onError';
         props.onRequestValue = isStrategyAllow ? null : 'this.onRequestValue';
         props.errorStyle = isStrategyWarn ? '{ color: orange500 }' : null;
-        this.setState({ strategy: strategy, props: props, calledHandlersStack: [] });
+        this.setState({ strategy: strategy, props: props, calledHandlersStack: [], valid: 0 });
     }
 
     @bind

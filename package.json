@@ -11,7 +11,7 @@
     "@types/react-tap-event-plugin": "0.0.30",
     "bind-decorator": "^1.0.10",
     "material-ui": "^0.16.1",
-    "material-ui-number-input": "^5.0.10",
+    "material-ui-number-input": "^5.0.15",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-syntax-highlighter": "^2.10.0",

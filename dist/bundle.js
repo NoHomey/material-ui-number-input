@@ -4344,7 +4344,7 @@
 	        props.onError = isStrategyIgnore ? null : 'this.onError';
 	        props.onRequestValue = isStrategyAllow ? null : 'this.onRequestValue';
 	        props.errorStyle = isStrategyWarn ? '{ color: orange500 }' : null;
-	        this.setState({ strategy: strategy, props: props, calledHandlersStack: [] });
+	        this.setState({ strategy: strategy, props: props, calledHandlersStack: [], valid: 0 });
 	    };
 	    ReactiveExample.prototype.onRequiredCheck = function (required) {
 	        var props = this.state.props;
@@ -52907,21 +52907,8 @@
 	            }
 	        }
 	    };
-	    NumberInput.prototype.emitEvents = function (nextError, value, emitError, valid) {
-	        var _a = this.props, onError = _a.onError, onValid = _a.onValid;
-	        if ((this.error !== nextError) && emitError) {
-	            if (onError) {
-	                onError(nextError);
-	            }
-	            this.error = nextError;
-	        }
-	        if (onValid && valid && (this.lastValid !== value)) {
-	            onValid(Number(value));
-	            this.lastValid = value;
-	        }
-	    };
-	    NumberInput.prototype.validateNumberValue = function (value) {
-	        var _a = this.props, max = _a.max, min = _a.min;
+	    NumberInput.validateNumberValue = function (value, props) {
+	        var max = props.max, min = props.min;
 	        if ((typeof max === typeofs.numberType) && (value > max)) {
 	            return constants.one;
 	        }
@@ -52930,8 +52917,7 @@
 	        }
 	        return constants.zero;
 	    };
-	    NumberInput.prototype.validateValue = function (value) {
-	        var props = this.props;
+	    NumberInput.validateValue = function (value, props) {
 	        var required = props.required, strategy = props.strategy, min = props.min;
 	        if (value === constants.emptyString) {
 	            return required ? errorNames.required : errorNames.clean;
@@ -52944,7 +52930,7 @@
 	                        var floatingPoint = value.indexOf(constants.dot);
 	                        var decimal = floatingPoint > constants.minusOne;
 	                        var whole = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min;
-	                        switch (this.validateNumberValue(numberValue)) {
+	                        switch (NumberInput.validateNumberValue(numberValue, props)) {
 	                            case constants.one: return errorNames.max;
 	                            case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue > constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
 	                            default: return errorNames.none;
@@ -52968,34 +52954,47 @@
 	            }
 	        }
 	    };
-	    NumberInput.prototype.overrideRequestedValue = function (error, value) {
-	        var props = this.props;
+	    NumberInput.overrideRequestedValue = function (error, value, props) {
 	        switch (error) {
 	            case errorNames.min: return String(props.min);
 	            case errorNames.max: return String(props.max);
 	            default: return props.strategy !== strategies.allow && value === constants.dash ? constants.emptyString : value;
 	        }
 	    };
-	    NumberInput.prototype.overrideError = function (error) {
+	    NumberInput.overrideError = function (error, props) {
 	        switch (error) {
 	            case errorNames.allow: return errorNames.none;
-	            case errorNames.limit: return this.props.required ? errorNames.required : errorNames.clean;
+	            case errorNames.limit: return props.required ? errorNames.required : errorNames.clean;
 	            default: return error;
 	        }
 	    };
-	    NumberInput.prototype.emitValid = function (error, overridenError) {
-	        return (error === errorNames.none) && (overridenError !== errorNames.allow);
+	    NumberInput.revertAllowToMin = function (error) {
+	        return error === errorNames.allow ? errorNames.min : error;
 	    };
-	    NumberInput.prototype.takeActionForValue = function (value) {
-	        var _a = this.props, strategy = _a.strategy, onRequestValue = _a.onRequestValue, propsValue = _a.value;
-	        var error = this.validateValue(value);
-	        var valid = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
-	        var overridenError = this.overrideError(error);
-	        var emitError = (this.requestedValue !== value) && (strategy != strategies.ignore);
-	        var emitValid = this.emitValid(error, overridenError);
-	        this.emitEvents(overridenError, valid, emitError, emitValid);
-	        if ((strategy != strategies.allow) && (valid !== value)) {
-	            this.requestedValue = valid;
+	    NumberInput.emitValid = function (error, overridenError) {
+	        return (error !== errorNames.allow) && (overridenError === errorNames.none);
+	    };
+	    NumberInput.prototype.emitEvents = function (nextError, value, valid, props) {
+	        var onError = props.onError, onValid = props.onValid;
+	        if ((this.error !== nextError) && (props.strategy !== strategies.ignore)) {
+	            if (onError) {
+	                onError(nextError);
+	            }
+	            this.error = nextError;
+	        }
+	        if (onValid && valid && (this.lastValid !== value)) {
+	            onValid(Number(value));
+	            this.lastValid = value;
+	        }
+	    };
+	    NumberInput.prototype.takeActionForValue = function (value, props) {
+	        var strategy = props.strategy, onRequestValue = props.onRequestValue, propsValue = props.value;
+	        var error = NumberInput.validateValue(value, props);
+	        var valid = NumberInput.overrideRequestedValue(error, NumberInput.getValidValue(value), props);
+	        var overridenError = NumberInput.overrideError(error, props);
+	        var emitValid = NumberInput.emitValid(error, overridenError);
+	        this.emitEvents(overridenError, valid, emitValid, props);
+	        if ((strategy !== strategies.allow) && (valid !== value)) {
 	            if (typeof propsValue !== typeofs.stringType) {
 	                this.getInputNode().value = valid;
 	            }
@@ -53003,6 +53002,10 @@
 	                onRequestValue(valid);
 	            }
 	        }
+	    };
+	    NumberInput.prototype.shouldTakeActionForValue = function (props) {
+	        var _a = this.props, min = _a.min, max = _a.max, required = _a.required, strategy = _a.strategy;
+	        return (min !== props.min) || (max !== props.max) || (required !== props.required) || (strategy !== props.strategy);
 	    };
 	    NumberInput.prototype.refTextField = function (textField) {
 	        this.textField = textField;
@@ -53015,16 +53018,16 @@
 	            onChange(event, value);
 	        }
 	        if (typeof this.props.value !== typeofs.stringType) {
-	            this.takeActionForValue(value);
+	            this.takeActionForValue(value, this.props);
 	        }
 	    };
 	    NumberInput.prototype.onBlur = function (event) {
 	        var eventValue = event;
-	        var _a = this.props, strategy = _a.strategy, onBlur = _a.onBlur;
+	        var props = this.props;
+	        var onBlur = props.onBlur;
 	        var value = eventValue.target.value;
-	        if (strategy === strategies.warn) {
-	            this.emitEvents(this.validateValue(value), value, constants.boolTrue, constants.boolFalse);
-	        }
+	        var error = NumberInput.overrideError(NumberInput.revertAllowToMin(NumberInput.validateValue(value, props)), props);
+	        this.emitEvents(error, value, constants.boolFalse, props);
 	        if (onBlur) {
 	            onBlur(event);
 	        }
@@ -53036,13 +53039,14 @@
 	        return this.textField;
 	    };
 	    NumberInput.prototype.componentDidMount = function () {
-	        var value = this.props.value;
-	        this.takeActionForValue(typeof value === typeofs.stringType ? value : this.getInputNode().value);
+	        var props = this.props;
+	        var value = props.value;
+	        this.takeActionForValue(typeof value === typeofs.stringType ? value : this.getInputNode().value, props);
 	    };
 	    NumberInput.prototype.componentWillReceiveProps = function (props) {
 	        var value = props.value;
-	        if (value !== this.props.value) {
-	            this.takeActionForValue(value);
+	        if ((value !== this.props.value) || this.shouldTakeActionForValue(props)) {
+	            this.takeActionForValue(value, props);
 	        }
 	    };
 	    NumberInput.prototype.render = function () {
