@@ -48,8 +48,8 @@
 	var React = __webpack_require__(1);
 	var ReactiveExample_1 = __webpack_require__(34);
 	var react_dom_1 = __webpack_require__(312);
-	var injectTapEventPlugin = __webpack_require__(554);
-	var MuiThemeProvider_1 = __webpack_require__(560);
+	var injectTapEventPlugin = __webpack_require__(559);
+	var MuiThemeProvider_1 = __webpack_require__(565);
 	injectTapEventPlugin();
 	react_dom_1.render(React.createElement(MuiThemeProvider_1.default, null, 
 	    React.createElement(ReactiveExample_1.default, null)
@@ -4251,14 +4251,13 @@
 	var React = __webpack_require__(1);
 	var SourceCode_1 = __webpack_require__(35);
 	var StrategySelectField_1 = __webpack_require__(535);
-	var LimitInput_1 = __webpack_require__(536);
-	var RequiredCheckbox_1 = __webpack_require__(539);
-	var ColoredButton_1 = __webpack_require__(545);
-	var FlatButton_1 = __webpack_require__(548);
-	var If_1 = __webpack_require__(551);
-	var H2_1 = __webpack_require__(552);
-	var colors_1 = __webpack_require__(553);
-	var material_ui_number_input_1 = __webpack_require__(537);
+	var CalledHandlers_1 = __webpack_require__(536);
+	var LimitInput_1 = __webpack_require__(545);
+	var RequiredCheckbox_1 = __webpack_require__(548);
+	var FlatButton_1 = __webpack_require__(554);
+	var H2_1 = __webpack_require__(557);
+	var colors_1 = __webpack_require__(558);
+	var material_ui_number_input_1 = __webpack_require__(546);
 	var bind_decorator_1 = __webpack_require__(534);
 	var allProps = ['floatingLabelText', 'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required'];
 	function serializeProp(prop, value) {
@@ -4308,33 +4307,29 @@
 	                strategy: '"' + StrategySelectField_1.allow,
 	                required: true,
 	            },
-	            handlerCalled: {
-	                onChange: false,
-	                onError: false,
-	                onValid: false,
-	                onRequestValue: false
-	            }
+	            calledHandlersStack: []
 	        };
 	    }
 	    ReactiveExample.prototype.onChange = function (event, value) {
-	        var handlerCalled = this.state.handlerCalled;
-	        handlerCalled.onChange = true;
-	        this.setState({ value: value, handlerCalled: handlerCalled });
+	        var calledHandlersStack = this.state.calledHandlersStack;
+	        calledHandlersStack.push({ handler: CalledHandlers_1.handlers.onChange, argument: value });
+	        this.setState({ value: value, calledHandlersStack: calledHandlersStack });
 	    };
 	    ReactiveExample.prototype.onValid = function (valid) {
-	        var handlerCalled = this.state.handlerCalled;
-	        handlerCalled.onValid = true;
-	        this.setState({ valid: valid, handlerCalled: handlerCalled });
+	        var calledHandlersStack = this.state.calledHandlersStack;
+	        calledHandlersStack.push({ handler: CalledHandlers_1.handlers.onValid, argument: String(valid) });
+	        ;
+	        this.setState({ valid: valid, calledHandlersStack: calledHandlersStack });
 	    };
 	    ReactiveExample.prototype.onRequestValue = function (value) {
-	        var handlerCalled = this.state.handlerCalled;
-	        handlerCalled.onRequestValue = true;
-	        this.setState({ value: value, handlerCalled: handlerCalled });
+	        var calledHandlersStack = this.state.calledHandlersStack;
+	        calledHandlersStack.push({ handler: CalledHandlers_1.handlers.onRequestValue, argument: value });
+	        this.setState({ value: value, calledHandlersStack: calledHandlersStack });
 	    };
 	    ReactiveExample.prototype.onError = function (error) {
-	        var handlerCalled = this.state.handlerCalled;
-	        handlerCalled.onError = true;
-	        this.setState({ error: error, handlerCalled: handlerCalled });
+	        var calledHandlersStack = this.state.calledHandlersStack;
+	        calledHandlersStack.push({ handler: CalledHandlers_1.handlers.onError, argument: error });
+	        this.setState({ error: error, calledHandlersStack: calledHandlersStack });
 	    };
 	    ReactiveExample.prototype.onLangaugeChange = function (language) {
 	        this.setState({ language: language });
@@ -4349,7 +4344,7 @@
 	        props.onError = isStrategyIgnore ? null : 'this.onError';
 	        props.onRequestValue = isStrategyAllow ? null : 'this.onRequestValue';
 	        props.errorStyle = isStrategyWarn ? '{ color: orange500 }' : null;
-	        this.setState({ strategy: strategy, props: props });
+	        this.setState({ strategy: strategy, props: props, calledHandlersStack: [] });
 	    };
 	    ReactiveExample.prototype.onRequiredCheck = function (required) {
 	        var props = this.state.props;
@@ -4382,17 +4377,10 @@
 	        this.setState({ props: props });
 	    };
 	    ReactiveExample.prototype.onClear = function () {
-	        this.setState({
-	            handlerCalled: {
-	                onChange: false,
-	                onError: false,
-	                onValid: false,
-	                onRequestValue: false
-	            }
-	        });
+	        this.setState({ calledHandlersStack: [] });
 	    };
 	    ReactiveExample.prototype.render = function () {
-	        var _a = this.state, value = _a.value, error = _a.error, valid = _a.valid, language = _a.language, strategy = _a.strategy, props = _a.props, handlerCalled = _a.handlerCalled;
+	        var _a = this.state, value = _a.value, error = _a.error, valid = _a.valid, language = _a.language, strategy = _a.strategy, props = _a.props, calledHandlersStack = _a.calledHandlersStack;
 	        var isStrategyAllow = strategy === 'allow';
 	        var isStrategyWarn = strategy === 'warn';
 	        var isStrategyNotIngore = isStrategyAllow || isStrategyWarn;
@@ -4415,10 +4403,7 @@
 	                React.createElement(material_ui_number_input_1.NumberInput, {id: "valid-number-input", floatingLabelText: "Valid number", value: String(valid)})), 
 	            React.createElement(H2_1.default, {id: "called-handlers", label: "Called Handlers"}), 
 	            React.createElement("div", null, 
-	                React.createElement(ColoredButton_1.default, {label: "onChange", color: "#9b59b6", colored: handlerCalled.onChange}), 
-	                React.createElement(If_1.default, {condition: isStrategyNotIngore, then: React.createElement(ColoredButton_1.default, {label: "onError", color: "#ff5733", colored: handlerCalled.onError})}), 
-	                React.createElement(ColoredButton_1.default, {label: "onValid", color: "#2ecc71", colored: handlerCalled.onValid}), 
-	                React.createElement(If_1.default, {condition: !isStrategyAllow, then: React.createElement(ColoredButton_1.default, {label: "onRequestValue", color: "#f39c12", colored: handlerCalled.onRequestValue})}), 
+	                React.createElement(CalledHandlers_1.CalledHandlers, {calledHandlers: calledHandlersStack}), 
 	                React.createElement(FlatButton_1.default, {label: "Clear", primary: true, onClick: this.onClear})), 
 	            React.createElement(H2_1.default, {id: "source-code", label: "Source code"}), 
 	            React.createElement(SourceCode_1.SourceCode, {language: language, code: code(language, props, strategy), onLanguageChange: this.onLangaugeChange})));
@@ -52118,80 +52103,21 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
 	var React = __webpack_require__(1);
-	var bind_decorator_1 = __webpack_require__(534);
-	var material_ui_number_input_1 = __webpack_require__(537);
-	var LimitInput = (function (_super) {
-	    __extends(LimitInput, _super);
-	    function LimitInput(props) {
-	        _super.call(this, props);
-	        this.state = { value: '' };
-	        this.lastValid = 0;
-	    }
-	    LimitInput.prototype.onValid = function (valid) {
-	        this.lastValid = valid;
-	        this.props.onValidLimit(valid);
-	    };
-	    LimitInput.prototype.onChange = function (event, value) {
-	        this.setState({ value: value });
-	        if (this.lastValid === Number(value)) {
-	            this.props.onValidLimit(this.lastValid);
-	        }
-	    };
-	    LimitInput.prototype.onError = function (error) {
-	        var errorText = '';
-	        switch (error) {
-	            case 'invalidSymbol':
-	                errorText = this.props.limit + " must be a valid number";
-	                break;
-	            case 'incompleteNumber':
-	                errorText = 'Number is incomplete';
-	                break;
-	            case 'singleMinus':
-	                errorText = 'Minus can be use only for negativity';
-	                break;
-	            case 'singleFloatingPoint':
-	                errorText = 'There is already a floating point';
-	                break;
-	            case 'singleZero':
-	                errorText = 'Floating point is expected';
-	                break;
-	        }
-	        this.setState({ errorText: errorText });
-	        if (error !== 'none') {
-	            this.props.onInvalidLimit();
-	        }
-	    };
-	    LimitInput.prototype.render = function () {
-	        var _a = this.state, value = _a.value, errorText = _a.errorText;
-	        var limit = this.props.limit;
-	        return (React.createElement(material_ui_number_input_1.NumberInput, {id: limit, floatingLabelText: limit, value: value, errorText: errorText, onError: this.onError, onValid: this.onValid, onChange: this.onChange}));
-	    };
-	    __decorate([
-	        bind_decorator_1.default
-	    ], LimitInput.prototype, "onValid", null);
-	    __decorate([
-	        bind_decorator_1.default
-	    ], LimitInput.prototype, "onChange", null);
-	    __decorate([
-	        bind_decorator_1.default
-	    ], LimitInput.prototype, "onError", null);
-	    return LimitInput;
-	}(React.Component));
-	exports.LimitInput = LimitInput;
+	var CalledHandler_1 = __webpack_require__(537);
+	exports.handlers = CalledHandler_1.handlers;
+	function renderCalledHandler(props, index) {
+	    var handler = props.handler, argument = props.argument;
+	    return (React.createElement("div", {key: handler + argument + index}, 
+	        React.createElement(CalledHandler_1.CalledHandler, {handler: handler, argument: argument})
+	    ));
+	}
+	function CalledHandlers(props) {
+	    return React.createElement("div", null, props.calledHandlers.map(renderCalledHandler));
+	}
+	exports.CalledHandlers = CalledHandlers;
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = LimitInput;
+	exports.default = CalledHandlers;
 
 
 /***/ },
@@ -52199,13 +52125,30 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	var React = __webpack_require__(1);
+	var OnError_1 = __webpack_require__(538);
+	var OnChange_1 = __webpack_require__(542);
+	var OnValid_1 = __webpack_require__(543);
+	var OnRequestValue_1 = __webpack_require__(544);
+	var handlers;
+	(function (handlers) {
+	    handlers.onError = 'onError';
+	    handlers.onChange = 'onChange';
+	    handlers.onValid = 'onValid';
+	    handlers.onRequestValue = 'onRequestValue';
+	})(handlers = exports.handlers || (exports.handlers = {}));
+	function CalledHandler(props) {
+	    var handler = props.handler, argument = props.argument;
+	    switch (handler) {
+	        case handlers.onError: return React.createElement(OnError_1.default, {argument: argument});
+	        case handlers.onChange: return React.createElement(OnChange_1.default, {argument: argument});
+	        case handlers.onValid: return React.createElement(OnValid_1.default, {argument: argument});
+	        case handlers.onRequestValue: return React.createElement(OnRequestValue_1.default, {argument: argument});
+	    }
 	}
-	var NumberInput_1 = __webpack_require__(538);
-	__export(__webpack_require__(538));
+	exports.CalledHandler = CalledHandler;
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = NumberInput_1.default;
+	exports.default = CalledHandler;
 
 
 /***/ },
@@ -52213,300 +52156,15 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
 	var React = __webpack_require__(1);
-	var TextField_1 = __webpack_require__(310);
-	var ObjectAssign = __webpack_require__(4);
-	var bind_decorator_1 = __webpack_require__(534);
-	var errorNames;
-	(function (errorNames) {
-	    errorNames.none = 'none';
-	    errorNames.invalidSymbol = 'invalidSymbol';
-	    errorNames.incompleteNumber = 'incompleteNumber';
-	    errorNames.singleMinus = 'singleMinus';
-	    errorNames.singleFloatingPoint = 'singleFloatingPoint';
-	    errorNames.singleZero = 'singleZero';
-	    errorNames.min = 'min';
-	    errorNames.max = 'max';
-	    errorNames.required = 'required';
-	    errorNames.clean = 'clean';
-	    errorNames.allow = 'allow';
-	    errorNames.limit = 'limit';
-	})(errorNames || (errorNames = {}));
-	var strategies;
-	(function (strategies) {
-	    strategies.ignore = 'ignore';
-	    strategies.warn = 'warn';
-	    strategies.allow = 'allow';
-	})(strategies || (strategies = {}));
-	var typeofs;
-	(function (typeofs) {
-	    typeofs.stringType = 'string';
-	    typeofs.numberType = 'number';
-	})(typeofs || (typeofs = {}));
-	var constants;
-	(function (constants) {
-	    constants.emptyString = '';
-	    constants.dash = '-';
-	    constants.dot = '.';
-	    constants.zero = 0;
-	    constants.one = 1;
-	    constants.text = 'text';
-	    constants.zeroString = '0';
-	    constants.minusOne = -1;
-	    constants.boolTrue = true;
-	    constants.boolFalse = false;
-	})(constants || (constants = {}));
-	var NumberInput = (function (_super) {
-	    __extends(NumberInput, _super);
-	    function NumberInput(props) {
-	        _super.call(this, props);
-	        this.constProps = {
-	            type: constants.text,
-	            onChange: this.onChange,
-	            onBlur: this.onBlur,
-	            ref: this.refTextField
-	        };
-	    }
-	    NumberInput.getValidValue = function (value) {
-	        var match = value.match(NumberInput.allowed);
-	        return match !== null ? (match.index === constants.zero ? match[constants.zero] : match.join(constants.emptyString)) : constants.emptyString;
-	    };
-	    NumberInput.deleteOwnProps = function (props) {
-	        var prop;
-	        for (var index = 0; index < NumberInput.deleteProps.length; ++index) {
-	            prop = NumberInput.deleteProps[index];
-	            if (props.hasOwnProperty(prop)) {
-	                delete props[prop];
-	            }
-	        }
-	    };
-	    NumberInput.prototype.emitEvents = function (nextError, value, emitError, valid) {
-	        var _a = this.props, onError = _a.onError, onValid = _a.onValid;
-	        if ((this.error !== nextError) && emitError) {
-	            if (onError) {
-	                onError(nextError);
-	            }
-	            this.error = nextError;
-	        }
-	        if (onValid && valid && (this.lastValid !== value)) {
-	            onValid(Number(value));
-	            this.lastValid = value;
-	        }
-	    };
-	    NumberInput.prototype.validateNumberValue = function (value) {
-	        var _a = this.props, max = _a.max, min = _a.min;
-	        if ((typeof max === typeofs.numberType) && (value > max)) {
-	            return constants.one;
-	        }
-	        if ((typeof min === typeofs.numberType) && (value < min)) {
-	            return constants.minusOne;
-	        }
-	        return constants.zero;
-	    };
-	    NumberInput.prototype.validateValue = function (value) {
-	        var props = this.props;
-	        var required = props.required, strategy = props.strategy, min = props.min;
-	        if (value === constants.emptyString) {
-	            return required ? errorNames.required : errorNames.clean;
-	        }
-	        else {
-	            if (value.match(NumberInput.validSymbols)) {
-	                if (value.match(NumberInput.stricAllowed)) {
-	                    if (value.match(NumberInput.validNumber)) {
-	                        var numberValue = Number(value);
-	                        var floatingPoint = value.indexOf(constants.dot);
-	                        var decimal = floatingPoint > constants.minusOne;
-	                        var whole = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min;
-	                        switch (this.validateNumberValue(numberValue)) {
-	                            case constants.one: return errorNames.max;
-	                            case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue > constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
-	                            default: return errorNames.none;
-	                        }
-	                    }
-	                    else {
-	                        return (strategy !== strategies.allow) && (value === constants.dash) && (min >= constants.zero) ? errorNames.limit : errorNames.incompleteNumber;
-	                    }
-	                }
-	                else {
-	                    switch (value[value.length - constants.one]) {
-	                        case constants.dash: return errorNames.singleMinus;
-	                        case constants.dot: return errorNames.singleFloatingPoint;
-	                        case constants.zeroString: return errorNames.singleZero;
-	                        default: return errorNames.invalidSymbol;
-	                    }
-	                }
-	            }
-	            else {
-	                return errorNames.invalidSymbol;
-	            }
-	        }
-	    };
-	    NumberInput.prototype.overrideRequestedValue = function (error, value) {
-	        var props = this.props;
-	        switch (error) {
-	            case errorNames.min: return String(props.min);
-	            case errorNames.max: return String(props.max);
-	            default: return props.strategy !== strategies.allow && value === constants.dash ? constants.emptyString : value;
-	        }
-	    };
-	    NumberInput.prototype.overrideError = function (error) {
-	        switch (error) {
-	            case errorNames.allow: return errorNames.none;
-	            case errorNames.limit: return this.props.required ? errorNames.required : errorNames.clean;
-	            default: return error;
-	        }
-	    };
-	    NumberInput.prototype.emitValid = function (error, overridenError) {
-	        return (error === errorNames.none) && (overridenError !== errorNames.allow);
-	    };
-	    NumberInput.prototype.takeActionForValue = function (value) {
-	        var _a = this.props, strategy = _a.strategy, onRequestValue = _a.onRequestValue, propsValue = _a.value;
-	        var error = this.validateValue(value);
-	        var valid = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
-	        var overridenError = this.overrideError(error);
-	        var emitError = (this.requestedValue !== value) && (strategy != strategies.ignore);
-	        var emitValid = this.emitValid(error, overridenError);
-	        this.emitEvents(overridenError, valid, emitError, emitValid);
-	        if ((strategy != strategies.allow) && (valid !== value)) {
-	            this.requestedValue = valid;
-	            if (typeof propsValue !== typeofs.stringType) {
-	                this.getInputNode().value = valid;
-	            }
-	            else if (onRequestValue) {
-	                onRequestValue(valid);
-	            }
-	        }
-	    };
-	    NumberInput.prototype.refTextField = function (textField) {
-	        this.textField = textField;
-	    };
-	    NumberInput.prototype.onChange = function (event) {
-	        var eventValue = event;
-	        var value = eventValue.target.value;
-	        var onChange = this.props.onChange;
-	        if (onChange) {
-	            onChange(event, value);
-	        }
-	        if (typeof this.props.value !== typeofs.stringType) {
-	            this.takeActionForValue(value);
-	        }
-	    };
-	    NumberInput.prototype.onBlur = function (event) {
-	        var eventValue = event;
-	        var _a = this.props, strategy = _a.strategy, onBlur = _a.onBlur;
-	        var value = eventValue.target.value;
-	        if (strategy === strategies.warn) {
-	            this.emitEvents(this.validateValue(value), value, constants.boolTrue, constants.boolFalse);
-	        }
-	        if (onBlur) {
-	            onBlur(event);
-	        }
-	    };
-	    NumberInput.prototype.getInputNode = function () {
-	        return this.textField.getInputNode();
-	    };
-	    NumberInput.prototype.getTextField = function () {
-	        return this.textField;
-	    };
-	    NumberInput.prototype.componentDidMount = function () {
-	        var value = this.props.value;
-	        this.takeActionForValue(typeof value === typeofs.stringType ? value : this.getInputNode().value);
-	    };
-	    NumberInput.prototype.componentWillReceiveProps = function (props) {
-	        var value = props.value;
-	        if (value !== this.props.value) {
-	            this.takeActionForValue(value);
-	        }
-	    };
-	    NumberInput.prototype.render = function () {
-	        var _a = this, props = _a.props, constProps = _a.constProps;
-	        var value = props.value, defaultValue = props.defaultValue;
-	        var inputProps = ObjectAssign({}, props, constProps, {
-	            defaultValue: typeof defaultValue === typeofs.numberType ? String(defaultValue) : undefined,
-	            value: value,
-	        });
-	        if (typeof inputProps.value !== typeofs.stringType) {
-	            delete inputProps.value;
-	        }
-	        if (inputProps.defaultValue === undefined) {
-	            delete inputProps.defaultValue;
-	        }
-	        NumberInput.deleteOwnProps(inputProps);
-	        return React.createElement(TextField_1.default, inputProps);
-	    };
-	    NumberInput.validSymbols = /(\-|\.|\d)+/;
-	    NumberInput.stricAllowed = /^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/;
-	    NumberInput.validNumber = /^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/;
-	    NumberInput.allowed = /-?((0|([1-9]\d{0,}))(\.\d{0,})?)?/;
-	    NumberInput.deleteProps = ['strategy', 'onError', 'onValid', 'onRequestValue'];
-	    NumberInput.propTypes = {
-	        children: React.PropTypes.node,
-	        className: React.PropTypes.string,
-	        disabled: React.PropTypes.bool,
-	        errorStyle: React.PropTypes.object,
-	        errorText: React.PropTypes.node,
-	        floatingLabelFixed: React.PropTypes.bool,
-	        floatingLabelFocusStyle: React.PropTypes.object,
-	        floatingLabelStyle: React.PropTypes.object,
-	        floatingLabelText: React.PropTypes.node,
-	        fullWidth: React.PropTypes.bool,
-	        hintStyle: React.PropTypes.object,
-	        hintText: React.PropTypes.node,
-	        id: React.PropTypes.string,
-	        inputStyle: React.PropTypes.object,
-	        name: React.PropTypes.string,
-	        onBlur: React.PropTypes.func,
-	        onChange: React.PropTypes.func,
-	        onFocus: React.PropTypes.func,
-	        onValid: React.PropTypes.func,
-	        onError: React.PropTypes.func,
-	        onRequestValue: React.PropTypes.func,
-	        onKeyDown: React.PropTypes.func,
-	        style: React.PropTypes.object,
-	        underlineDisabledStyle: React.PropTypes.object,
-	        underlineFocusStyle: React.PropTypes.object,
-	        underlineShow: React.PropTypes.bool,
-	        underlineStyle: React.PropTypes.object,
-	        defaultValue: React.PropTypes.number,
-	        min: React.PropTypes.number,
-	        max: React.PropTypes.number,
-	        required: React.PropTypes.bool,
-	        strategy: React.PropTypes.oneOf([
-	            strategies.ignore,
-	            strategies.warn,
-	            strategies.allow
-	        ]),
-	        value: React.PropTypes.string
-	    };
-	    NumberInput.defaultProps = {
-	        required: constants.boolFalse,
-	        strategy: strategies.allow
-	    };
-	    __decorate([
-	        bind_decorator_1.default
-	    ], NumberInput.prototype, "refTextField", null);
-	    __decorate([
-	        bind_decorator_1.default
-	    ], NumberInput.prototype, "onChange", null);
-	    __decorate([
-	        bind_decorator_1.default
-	    ], NumberInput.prototype, "onBlur", null);
-	    return NumberInput;
-	}(React.Component));
-	exports.NumberInput = NumberInput;
+	var ColoredButton_1 = __webpack_require__(539);
+	var handler = 'onError ';
+	var color = '#ff5733';
+	function OnError(props) {
+	    return React.createElement(ColoredButton_1.default, {label: handler + props.argument, color: color});
+	}
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = NumberInput;
+	exports.default = OnError;
 
 
 /***/ },
@@ -52514,39 +52172,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
 	var React = __webpack_require__(1);
-	var Checkbox_1 = __webpack_require__(540);
-	var bind_decorator_1 = __webpack_require__(534);
-	var RequiredCheckbox = (function (_super) {
-	    __extends(RequiredCheckbox, _super);
-	    function RequiredCheckbox(props, state) {
-	        _super.call(this, props);
-	    }
-	    RequiredCheckbox.prototype.requiredCheckbox = function (event, Checkboxd) {
-	        this.props.onRequiredCheck(Checkboxd);
-	    };
-	    RequiredCheckbox.prototype.render = function () {
-	        return React.createElement(Checkbox_1.default, {label: "required", checked: this.props.required, onCheck: this.requiredCheckbox});
-	    };
-	    __decorate([
-	        bind_decorator_1.default
-	    ], RequiredCheckbox.prototype, "requiredCheckbox", null);
-	    return RequiredCheckbox;
-	}(React.Component));
-	exports.RequiredCheckbox = RequiredCheckbox;
+	var RaisedButton_1 = __webpack_require__(540);
+	function ColoredButton(props) {
+	    return React.createElement(RaisedButton_1.default, {label: props.label, disabled: true, disabledBackgroundColor: props.color});
+	}
+	exports.ColoredButton = ColoredButton;
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = RequiredCheckbox;
+	exports.default = ColoredButton;
 
 
 /***/ },
@@ -52560,872 +52193,7 @@
 	});
 	exports.default = undefined;
 
-	var _Checkbox = __webpack_require__(541);
-
-	var _Checkbox2 = _interopRequireDefault(_Checkbox);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = _Checkbox2.default;
-
-/***/ },
-/* 541 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends2 = __webpack_require__(213);
-
-	var _extends3 = _interopRequireDefault(_extends2);
-
-	var _objectWithoutProperties2 = __webpack_require__(251);
-
-	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-	var _getPrototypeOf = __webpack_require__(252);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(257);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(258);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(262);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(297);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _simpleAssign = __webpack_require__(305);
-
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _EnhancedSwitch = __webpack_require__(542);
-
-	var _EnhancedSwitch2 = _interopRequireDefault(_EnhancedSwitch);
-
-	var _transitions = __webpack_require__(307);
-
-	var _transitions2 = _interopRequireDefault(_transitions);
-
-	var _checkBoxOutlineBlank = __webpack_require__(543);
-
-	var _checkBoxOutlineBlank2 = _interopRequireDefault(_checkBoxOutlineBlank);
-
-	var _checkBox = __webpack_require__(544);
-
-	var _checkBox2 = _interopRequireDefault(_checkBox);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function getStyles(props, context) {
-	  var checkbox = context.muiTheme.checkbox;
-
-	  var checkboxSize = 24;
-
-	  return {
-	    icon: {
-	      height: checkboxSize,
-	      width: checkboxSize
-	    },
-	    check: {
-	      position: 'absolute',
-	      opacity: 0,
-	      transform: 'scale(0)',
-	      transitionOrigin: '50% 50%',
-	      transition: _transitions2.default.easeOut('450ms', 'opacity', '0ms') + ', ' + _transitions2.default.easeOut('0ms', 'transform', '450ms'),
-	      fill: checkbox.checkedColor
-	    },
-	    checkWhenSwitched: {
-	      opacity: 1,
-	      transform: 'scale(1)',
-	      transition: _transitions2.default.easeOut('0ms', 'opacity', '0ms') + ', ' + _transitions2.default.easeOut('800ms', 'transform', '0ms')
-	    },
-	    checkWhenDisabled: {
-	      fill: checkbox.disabledColor,
-	      cursor: 'not-allowed'
-	    },
-	    box: {
-	      position: 'absolute',
-	      opacity: 1,
-	      fill: checkbox.boxColor,
-	      transition: _transitions2.default.easeOut('1000ms', 'opacity', '200ms')
-	    },
-	    boxWhenSwitched: {
-	      opacity: 0,
-	      transition: _transitions2.default.easeOut('650ms', 'opacity', '150ms'),
-	      fill: checkbox.checkedColor
-	    },
-	    boxWhenDisabled: {
-	      fill: props.checked ? 'transparent' : checkbox.disabledColor,
-	      cursor: 'not-allowed'
-	    },
-	    label: {
-	      color: props.disabled ? checkbox.labelDisabledColor : checkbox.labelColor
-	    }
-	  };
-	}
-
-	var Checkbox = function (_Component) {
-	  (0, _inherits3.default)(Checkbox, _Component);
-
-	  function Checkbox() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, Checkbox);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Checkbox.__proto__ || (0, _getPrototypeOf2.default)(Checkbox)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      switched: false
-	    }, _this.handleStateChange = function (newSwitched) {
-	      _this.setState({
-	        switched: newSwitched
-	      });
-	    }, _this.handleCheck = function (event, isInputChecked) {
-	      if (_this.props.onCheck) {
-	        _this.props.onCheck(event, isInputChecked);
-	      }
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(Checkbox, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      var _props = this.props;
-	      var checked = _props.checked;
-	      var defaultChecked = _props.defaultChecked;
-	      var valueLink = _props.valueLink;
-
-
-	      if (checked || defaultChecked || valueLink && valueLink.value) {
-	        this.setState({
-	          switched: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      if (this.props.checked !== nextProps.checked) {
-	        this.setState({
-	          switched: nextProps.checked
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'isChecked',
-	    value: function isChecked() {
-	      return this.refs.enhancedSwitch.isSwitched();
-	    }
-	  }, {
-	    key: 'setChecked',
-	    value: function setChecked(newCheckedValue) {
-	      this.refs.enhancedSwitch.setSwitched(newCheckedValue);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _props2 = this.props;
-	      var iconStyle = _props2.iconStyle;
-	      var onCheck = _props2.onCheck;
-	      var checkedIcon = _props2.checkedIcon;
-	      var uncheckedIcon = _props2.uncheckedIcon;
-	      var other = (0, _objectWithoutProperties3.default)(_props2, ['iconStyle', 'onCheck', 'checkedIcon', 'uncheckedIcon']);
-
-	      var styles = getStyles(this.props, this.context);
-	      var boxStyles = (0, _simpleAssign2.default)(styles.box, this.state.switched && styles.boxWhenSwitched, iconStyle, this.props.disabled && styles.boxWhenDisabled);
-	      var checkStyles = (0, _simpleAssign2.default)(styles.check, this.state.switched && styles.checkWhenSwitched, iconStyle, this.props.disabled && styles.checkWhenDisabled);
-
-	      var checkedElement = checkedIcon ? _react2.default.cloneElement(checkedIcon, {
-	        style: (0, _simpleAssign2.default)(checkStyles, checkedIcon.props.style)
-	      }) : _react2.default.createElement(_checkBox2.default, {
-	        style: checkStyles
-	      });
-
-	      var unCheckedElement = uncheckedIcon ? _react2.default.cloneElement(uncheckedIcon, {
-	        style: (0, _simpleAssign2.default)(boxStyles, uncheckedIcon.props.style)
-	      }) : _react2.default.createElement(_checkBoxOutlineBlank2.default, {
-	        style: boxStyles
-	      });
-
-	      var checkboxElement = _react2.default.createElement(
-	        'div',
-	        null,
-	        unCheckedElement,
-	        checkedElement
-	      );
-
-	      var rippleColor = this.state.switched ? checkStyles.fill : boxStyles.fill;
-	      var mergedIconStyle = (0, _simpleAssign2.default)(styles.icon, iconStyle);
-
-	      var labelStyle = (0, _simpleAssign2.default)(styles.label, this.props.labelStyle);
-
-	      var enhancedSwitchProps = {
-	        ref: 'enhancedSwitch',
-	        inputType: 'checkbox',
-	        switched: this.state.switched,
-	        switchElement: checkboxElement,
-	        rippleColor: rippleColor,
-	        iconStyle: mergedIconStyle,
-	        onSwitch: this.handleCheck,
-	        labelStyle: labelStyle,
-	        onParentShouldUpdate: this.handleStateChange,
-	        labelPosition: this.props.labelPosition
-	      };
-
-	      return _react2.default.createElement(_EnhancedSwitch2.default, (0, _extends3.default)({}, other, enhancedSwitchProps));
-	    }
-	  }]);
-	  return Checkbox;
-	}(_react.Component);
-
-	Checkbox.defaultProps = {
-	  labelPosition: 'right',
-	  disabled: false
-	};
-	Checkbox.contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	process.env.NODE_ENV !== "production" ? Checkbox.propTypes = {
-	  /**
-	   * Checkbox is checked if true.
-	   */
-	  checked: _react.PropTypes.bool,
-	  /**
-	   * The SvgIcon to use for the checked state.
-	   * This is useful to create icon toggles.
-	   */
-	  checkedIcon: _react.PropTypes.element,
-	  /**
-	   * The default state of our checkbox component.
-	   * **Warning:** This cannot be used in conjunction with `checked`.
-	   * Decide between using a controlled or uncontrolled input element and remove one of these props.
-	   * More info: https://fb.me/react-controlled-components
-	   */
-	  defaultChecked: _react.PropTypes.bool,
-	  /**
-	   * Disabled if true.
-	   */
-	  disabled: _react.PropTypes.bool,
-	  /**
-	   * Overrides the inline-styles of the icon element.
-	   */
-	  iconStyle: _react.PropTypes.object,
-	  /**
-	   * Overrides the inline-styles of the input element.
-	   */
-	  inputStyle: _react.PropTypes.object,
-	  /**
-	   * Where the label will be placed next to the checkbox.
-	   */
-	  labelPosition: _react.PropTypes.oneOf(['left', 'right']),
-	  /**
-	   * Overrides the inline-styles of the Checkbox element label.
-	   */
-	  labelStyle: _react.PropTypes.object,
-	  /**
-	   * Callback function that is fired when the checkbox is checked.
-	   *
-	   * @param {object} event `change` event targeting the underlying checkbox `input`.
-	   * @param {boolean} isInputChecked The `checked` value of the underlying checkbox `input`.
-	   */
-	  onCheck: _react.PropTypes.func,
-	  /**
-	   * Override the inline-styles of the root element.
-	   */
-	  style: _react.PropTypes.object,
-	  /**
-	   * The SvgIcon to use for the unchecked state.
-	   * This is useful to create icon toggles.
-	   */
-	  uncheckedIcon: _react.PropTypes.element,
-	  /**
-	   * ValueLink for when using controlled checkbox.
-	   */
-	  valueLink: _react.PropTypes.object
-	} : void 0;
-	exports.default = Checkbox;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ },
-/* 542 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends2 = __webpack_require__(213);
-
-	var _extends3 = _interopRequireDefault(_extends2);
-
-	var _objectWithoutProperties2 = __webpack_require__(251);
-
-	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-	var _getPrototypeOf = __webpack_require__(252);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(257);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(258);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(262);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(297);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _simpleAssign = __webpack_require__(305);
-
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactEventListener = __webpack_require__(453);
-
-	var _reactEventListener2 = _interopRequireDefault(_reactEventListener);
-
-	var _keycode = __webpack_require__(489);
-
-	var _keycode2 = _interopRequireDefault(_keycode);
-
-	var _transitions = __webpack_require__(307);
-
-	var _transitions2 = _interopRequireDefault(_transitions);
-
-	var _FocusRipple = __webpack_require__(509);
-
-	var _FocusRipple2 = _interopRequireDefault(_FocusRipple);
-
-	var _TouchRipple = __webpack_require__(516);
-
-	var _TouchRipple2 = _interopRequireDefault(_TouchRipple);
-
-	var _Paper = __webpack_require__(211);
-
-	var _Paper2 = _interopRequireDefault(_Paper);
-
-	var _warning = __webpack_require__(456);
-
-	var _warning2 = _interopRequireDefault(_warning);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function getStyles(props, context) {
-	  var baseTheme = context.muiTheme.baseTheme;
-
-
-	  return {
-	    root: {
-	      position: 'relative',
-	      cursor: props.disabled ? 'default' : 'pointer',
-	      overflow: 'visible',
-	      display: 'table',
-	      height: 'auto',
-	      width: '100%'
-	    },
-	    input: {
-	      position: 'absolute',
-	      cursor: props.disabled ? 'default' : 'pointer',
-	      pointerEvents: 'all',
-	      opacity: 0,
-	      width: '100%',
-	      height: '100%',
-	      zIndex: 2,
-	      left: 0,
-	      boxSizing: 'border-box',
-	      padding: 0,
-	      margin: 0
-	    },
-	    controls: {
-	      display: 'flex',
-	      width: '100%',
-	      height: '100%'
-	    },
-	    label: {
-	      float: 'left',
-	      position: 'relative',
-	      display: 'block',
-	      width: 'calc(100% - 60px)',
-	      lineHeight: '24px',
-	      color: baseTheme.palette.textColor,
-	      fontFamily: baseTheme.fontFamily
-	    },
-	    wrap: {
-	      transition: _transitions2.default.easeOut(),
-	      float: 'left',
-	      position: 'relative',
-	      display: 'block',
-	      flexShrink: 0,
-	      width: 60 - baseTheme.spacing.desktopGutterLess,
-	      marginRight: props.labelPosition === 'right' ? baseTheme.spacing.desktopGutterLess : 0,
-	      marginLeft: props.labelPosition === 'left' ? baseTheme.spacing.desktopGutterLess : 0
-	    },
-	    ripple: {
-	      color: props.rippleColor || baseTheme.palette.primary1Color,
-	      height: '200%',
-	      width: '200%',
-	      top: -12,
-	      left: -12
-	    }
-	  };
-	}
-
-	var EnhancedSwitch = function (_Component) {
-	  (0, _inherits3.default)(EnhancedSwitch, _Component);
-
-	  function EnhancedSwitch() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, EnhancedSwitch);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = EnhancedSwitch.__proto__ || (0, _getPrototypeOf2.default)(EnhancedSwitch)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      isKeyboardFocused: false
-	    }, _this.handleChange = function (event) {
-	      _this.tabPressed = false;
-	      _this.setState({
-	        isKeyboardFocused: false
-	      });
-
-	      var isInputChecked = _this.refs.checkbox.checked;
-
-	      if (!_this.props.hasOwnProperty('checked') && _this.props.onParentShouldUpdate) {
-	        _this.props.onParentShouldUpdate(isInputChecked);
-	      }
-
-	      if (_this.props.onSwitch) {
-	        _this.props.onSwitch(event, isInputChecked);
-	      }
-	    }, _this.handleKeyDown = function (event) {
-	      var code = (0, _keycode2.default)(event);
-
-	      if (code === 'tab') {
-	        _this.tabPressed = true;
-	      }
-	      if (_this.state.isKeyboardFocused && code === 'space') {
-	        _this.handleChange(event);
-	      }
-	    }, _this.handleKeyUp = function (event) {
-	      if (_this.state.isKeyboardFocused && (0, _keycode2.default)(event) === 'space') {
-	        _this.handleChange(event);
-	      }
-	    }, _this.handleMouseDown = function (event) {
-	      // only listen to left clicks
-	      if (event.button === 0) {
-	        _this.refs.touchRipple.start(event);
-	      }
-	    }, _this.handleMouseUp = function () {
-	      _this.refs.touchRipple.end();
-	    }, _this.handleMouseLeave = function () {
-	      _this.refs.touchRipple.end();
-	    }, _this.handleTouchStart = function (event) {
-	      _this.refs.touchRipple.start(event);
-	    }, _this.handleTouchEnd = function () {
-	      _this.refs.touchRipple.end();
-	    }, _this.handleBlur = function (event) {
-	      _this.setState({
-	        isKeyboardFocused: false
-	      });
-
-	      if (_this.props.onBlur) {
-	        _this.props.onBlur(event);
-	      }
-	    }, _this.handleFocus = function (event) {
-	      // setTimeout is needed becuase the focus event fires first
-	      // Wait so that we can capture if this was a keyboard focus
-	      // or touch focus
-	      setTimeout(function () {
-	        if (_this.tabPressed) {
-	          _this.setState({
-	            isKeyboardFocused: true
-	          });
-	        }
-	      }, 150);
-
-	      if (_this.props.onFocus) {
-	        _this.props.onFocus(event);
-	      }
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(EnhancedSwitch, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var inputNode = this.refs.checkbox;
-	      if ((!this.props.switched || inputNode.checked !== this.props.switched) && this.props.onParentShouldUpdate) {
-	        this.props.onParentShouldUpdate(inputNode.checked);
-	      }
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var hasCheckedProp = nextProps.hasOwnProperty('checked');
-	      var hasToggledProp = nextProps.hasOwnProperty('toggled');
-	      var hasNewDefaultProp = nextProps.hasOwnProperty('defaultChecked') && nextProps.defaultChecked !== this.props.defaultChecked;
-
-	      if (hasCheckedProp || hasToggledProp || hasNewDefaultProp) {
-	        var switched = nextProps.checked || nextProps.toggled || nextProps.defaultChecked || false;
-
-	        this.setState({
-	          switched: switched
-	        });
-
-	        if (this.props.onParentShouldUpdate && switched !== this.props.switched) {
-	          this.props.onParentShouldUpdate(switched);
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'isSwitched',
-	    value: function isSwitched() {
-	      return this.refs.checkbox.checked;
-	    }
-
-	    // no callback here because there is no event
-
-	  }, {
-	    key: 'setSwitched',
-	    value: function setSwitched(newSwitchedValue) {
-	      if (!this.props.hasOwnProperty('checked') || this.props.checked === false) {
-	        if (this.props.onParentShouldUpdate) {
-	          this.props.onParentShouldUpdate(newSwitchedValue);
-	        }
-	        this.refs.checkbox.checked = newSwitchedValue;
-	      } else {
-	        process.env.NODE_ENV !== "production" ? (0, _warning2.default)(false, 'Cannot call set method while checked is defined as a property.') : void 0;
-	      }
-	    }
-	  }, {
-	    key: 'getValue',
-	    value: function getValue() {
-	      return this.refs.checkbox.value;
-	    }
-
-	    // Checkbox inputs only use SPACE to change their state. Using ENTER will
-	    // update the ui but not the input.
-
-
-	    /**
-	     * Because both the ripples and the checkbox input cannot share pointer
-	     * events, the checkbox input takes control of pointer events and calls
-	     * ripple animations manually.
-	     */
-
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var name = _props.name;
-	      var value = _props.value;
-	      var iconStyle = _props.iconStyle;
-	      var inputStyle = _props.inputStyle;
-	      var inputType = _props.inputType;
-	      var label = _props.label;
-	      var labelStyle = _props.labelStyle;
-	      var labelPosition = _props.labelPosition;
-	      var onSwitch = _props.onSwitch;
-	      var onBlur = _props.onBlur;
-	      var onFocus = _props.onFocus;
-	      var onMouseUp = _props.onMouseUp;
-	      var onMouseDown = _props.onMouseDown;
-	      var onMouseLeave = _props.onMouseLeave;
-	      var onTouchStart = _props.onTouchStart;
-	      var onTouchEnd = _props.onTouchEnd;
-	      var onParentShouldUpdate = _props.onParentShouldUpdate;
-	      var disabled = _props.disabled;
-	      var disableTouchRipple = _props.disableTouchRipple;
-	      var disableFocusRipple = _props.disableFocusRipple;
-	      var className = _props.className;
-	      var rippleColor = _props.rippleColor;
-	      var rippleStyle = _props.rippleStyle;
-	      var style = _props.style;
-	      var switched = _props.switched;
-	      var switchElement = _props.switchElement;
-	      var thumbStyle = _props.thumbStyle;
-	      var trackStyle = _props.trackStyle;
-	      var other = (0, _objectWithoutProperties3.default)(_props, ['name', 'value', 'iconStyle', 'inputStyle', 'inputType', 'label', 'labelStyle', 'labelPosition', 'onSwitch', 'onBlur', 'onFocus', 'onMouseUp', 'onMouseDown', 'onMouseLeave', 'onTouchStart', 'onTouchEnd', 'onParentShouldUpdate', 'disabled', 'disableTouchRipple', 'disableFocusRipple', 'className', 'rippleColor', 'rippleStyle', 'style', 'switched', 'switchElement', 'thumbStyle', 'trackStyle']);
-	      var prepareStyles = this.context.muiTheme.prepareStyles;
-
-	      var styles = getStyles(this.props, this.context);
-	      var wrapStyles = (0, _simpleAssign2.default)(styles.wrap, iconStyle);
-	      var mergedRippleStyle = (0, _simpleAssign2.default)(styles.ripple, rippleStyle);
-
-	      if (thumbStyle) {
-	        wrapStyles.marginLeft /= 2;
-	        wrapStyles.marginRight /= 2;
-	      }
-
-	      var labelElement = label && _react2.default.createElement(
-	        'label',
-	        { style: prepareStyles((0, _simpleAssign2.default)(styles.label, labelStyle)) },
-	        label
-	      );
-
-	      var showTouchRipple = !disabled && !disableTouchRipple;
-	      var showFocusRipple = !disabled && !disableFocusRipple;
-
-	      var touchRipple = _react2.default.createElement(_TouchRipple2.default, {
-	        ref: 'touchRipple',
-	        key: 'touchRipple',
-	        style: mergedRippleStyle,
-	        color: mergedRippleStyle.color,
-	        muiTheme: this.context.muiTheme,
-	        centerRipple: true
-	      });
-
-	      var focusRipple = _react2.default.createElement(_FocusRipple2.default, {
-	        key: 'focusRipple',
-	        innerStyle: mergedRippleStyle,
-	        color: mergedRippleStyle.color,
-	        muiTheme: this.context.muiTheme,
-	        show: this.state.isKeyboardFocused
-	      });
-
-	      var ripples = [showTouchRipple ? touchRipple : null, showFocusRipple ? focusRipple : null];
-
-	      var inputElement = _react2.default.createElement('input', (0, _extends3.default)({}, other, {
-	        ref: 'checkbox',
-	        type: inputType,
-	        style: prepareStyles((0, _simpleAssign2.default)(styles.input, inputStyle)),
-	        name: name,
-	        value: value,
-	        disabled: disabled,
-	        onBlur: this.handleBlur,
-	        onFocus: this.handleFocus,
-	        onChange: this.handleChange,
-	        onMouseUp: showTouchRipple && this.handleMouseUp,
-	        onMouseDown: showTouchRipple && this.handleMouseDown,
-	        onMouseLeave: showTouchRipple && this.handleMouseLeave,
-	        onTouchStart: showTouchRipple && this.handleTouchStart,
-	        onTouchEnd: showTouchRipple && this.handleTouchEnd
-	      }));
-
-	      // If toggle component (indicated by whether the style includes thumb) manually lay out
-	      // elements in order to nest ripple elements
-	      var switchOrThumbElement = !thumbStyle ? _react2.default.createElement(
-	        'div',
-	        { style: prepareStyles(wrapStyles) },
-	        switchElement,
-	        ripples
-	      ) : _react2.default.createElement(
-	        'div',
-	        { style: prepareStyles(wrapStyles) },
-	        _react2.default.createElement('div', { style: prepareStyles((0, _simpleAssign2.default)({}, trackStyle)) }),
-	        _react2.default.createElement(
-	          _Paper2.default,
-	          { style: thumbStyle, zDepth: 1, circle: true },
-	          ' ',
-	          ripples,
-	          ' '
-	        )
-	      );
-
-	      var elementsInOrder = labelPosition === 'right' ? _react2.default.createElement(
-	        'div',
-	        { style: styles.controls },
-	        switchOrThumbElement,
-	        labelElement
-	      ) : _react2.default.createElement(
-	        'div',
-	        { style: styles.controls },
-	        labelElement,
-	        switchOrThumbElement
-	      );
-
-	      return _react2.default.createElement(
-	        'div',
-	        { ref: 'root', className: className, style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) },
-	        _react2.default.createElement(_reactEventListener2.default, {
-	          target: 'window',
-	          onKeyDown: this.handleKeyDown,
-	          onKeyUp: this.handleKeyUp
-	        }),
-	        inputElement,
-	        elementsInOrder
-	      );
-	    }
-	  }]);
-	  return EnhancedSwitch;
-	}(_react.Component);
-
-	EnhancedSwitch.contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	process.env.NODE_ENV !== "production" ? EnhancedSwitch.propTypes = {
-	  checked: _react.PropTypes.bool,
-	  className: _react.PropTypes.string,
-	  defaultChecked: _react.PropTypes.bool,
-	  disableFocusRipple: _react.PropTypes.bool,
-	  disableTouchRipple: _react.PropTypes.bool,
-	  disabled: _react.PropTypes.bool,
-	  iconStyle: _react.PropTypes.object,
-	  inputStyle: _react.PropTypes.object,
-	  inputType: _react.PropTypes.string.isRequired,
-	  label: _react.PropTypes.node,
-	  labelPosition: _react.PropTypes.oneOf(['left', 'right']),
-	  labelStyle: _react.PropTypes.object,
-	  name: _react.PropTypes.string,
-	  onBlur: _react.PropTypes.func,
-	  onFocus: _react.PropTypes.func,
-	  onMouseDown: _react.PropTypes.func,
-	  onMouseLeave: _react.PropTypes.func,
-	  onMouseUp: _react.PropTypes.func,
-	  onParentShouldUpdate: _react.PropTypes.func,
-	  onSwitch: _react.PropTypes.func,
-	  onTouchEnd: _react.PropTypes.func,
-	  onTouchStart: _react.PropTypes.func,
-	  rippleColor: _react.PropTypes.string,
-	  rippleStyle: _react.PropTypes.object,
-	  style: _react.PropTypes.object,
-	  switchElement: _react.PropTypes.element.isRequired,
-	  switched: _react.PropTypes.bool.isRequired,
-	  thumbStyle: _react.PropTypes.object,
-	  trackStyle: _react.PropTypes.object,
-	  value: _react.PropTypes.any
-	} : void 0;
-	exports.default = EnhancedSwitch;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ },
-/* 543 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _pure = __webpack_require__(465);
-
-	var _pure2 = _interopRequireDefault(_pure);
-
-	var _SvgIcon = __webpack_require__(474);
-
-	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var ToggleCheckBoxOutlineBlank = function ToggleCheckBoxOutlineBlank(props) {
-	  return _react2.default.createElement(
-	    _SvgIcon2.default,
-	    props,
-	    _react2.default.createElement('path', { d: 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z' })
-	  );
-	};
-	ToggleCheckBoxOutlineBlank = (0, _pure2.default)(ToggleCheckBoxOutlineBlank);
-	ToggleCheckBoxOutlineBlank.displayName = 'ToggleCheckBoxOutlineBlank';
-	ToggleCheckBoxOutlineBlank.muiName = 'SvgIcon';
-
-	exports.default = ToggleCheckBoxOutlineBlank;
-
-/***/ },
-/* 544 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _pure = __webpack_require__(465);
-
-	var _pure2 = _interopRequireDefault(_pure);
-
-	var _SvgIcon = __webpack_require__(474);
-
-	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var ToggleCheckBox = function ToggleCheckBox(props) {
-	  return _react2.default.createElement(
-	    _SvgIcon2.default,
-	    props,
-	    _react2.default.createElement('path', { d: 'M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' })
-	  );
-	};
-	ToggleCheckBox = (0, _pure2.default)(ToggleCheckBox);
-	ToggleCheckBox.displayName = 'ToggleCheckBox';
-	ToggleCheckBox.muiName = 'SvgIcon';
-
-	exports.default = ToggleCheckBox;
-
-/***/ },
-/* 545 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var React = __webpack_require__(1);
-	var RaisedButton_1 = __webpack_require__(546);
-	var noColor = "#ffffff";
-	function ColoredButton(props) {
-	    var label = props.label, colored = props.colored, color = props.color;
-	    return (React.createElement(RaisedButton_1.default, {label: label, disabled: true, disabledBackgroundColor: colored ? color : noColor}));
-	}
-	exports.ColoredButton = ColoredButton;
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = ColoredButton;
-
-
-/***/ },
-/* 546 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _RaisedButton = __webpack_require__(547);
+	var _RaisedButton = __webpack_require__(541);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
@@ -53434,7 +52202,7 @@
 	exports.default = _RaisedButton2.default;
 
 /***/ },
-/* 547 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -53914,7 +52682,491 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
+/* 542 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(1);
+	var ColoredButton_1 = __webpack_require__(539);
+	var handler = 'onChange ';
+	var color = '#9b59b6';
+	function OnChange(props) {
+	    return React.createElement(ColoredButton_1.default, {label: handler + props.argument, color: color});
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = OnChange;
+
+
+/***/ },
+/* 543 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(1);
+	var ColoredButton_1 = __webpack_require__(539);
+	var handler = 'onValid ';
+	var color = '#2ecc71';
+	function OnValid(props) {
+	    return React.createElement(ColoredButton_1.default, {label: handler + props.argument, color: color});
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = OnValid;
+
+
+/***/ },
+/* 544 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(1);
+	var ColoredButton_1 = __webpack_require__(539);
+	var handler = 'onRequestValue ';
+	var color = '#f39c12';
+	function OnRequestValue(props) {
+	    return React.createElement(ColoredButton_1.default, {label: handler + props.argument, color: color});
+	}
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = OnRequestValue;
+
+
+/***/ },
+/* 545 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var React = __webpack_require__(1);
+	var bind_decorator_1 = __webpack_require__(534);
+	var material_ui_number_input_1 = __webpack_require__(546);
+	var LimitInput = (function (_super) {
+	    __extends(LimitInput, _super);
+	    function LimitInput(props) {
+	        _super.call(this, props);
+	        this.state = { value: '' };
+	        this.lastValid = 0;
+	    }
+	    LimitInput.prototype.onValid = function (valid) {
+	        this.lastValid = valid;
+	        this.props.onValidLimit(valid);
+	    };
+	    LimitInput.prototype.onChange = function (event, value) {
+	        this.setState({ value: value });
+	        if (this.lastValid === Number(value)) {
+	            this.props.onValidLimit(this.lastValid);
+	        }
+	    };
+	    LimitInput.prototype.onError = function (error) {
+	        var errorText = '';
+	        switch (error) {
+	            case 'invalidSymbol':
+	                errorText = this.props.limit + " must be a valid number";
+	                break;
+	            case 'incompleteNumber':
+	                errorText = 'Number is incomplete';
+	                break;
+	            case 'singleMinus':
+	                errorText = 'Minus can be use only for negativity';
+	                break;
+	            case 'singleFloatingPoint':
+	                errorText = 'There is already a floating point';
+	                break;
+	            case 'singleZero':
+	                errorText = 'Floating point is expected';
+	                break;
+	        }
+	        this.setState({ errorText: errorText });
+	        if (error !== 'none') {
+	            this.props.onInvalidLimit();
+	        }
+	    };
+	    LimitInput.prototype.render = function () {
+	        var _a = this.state, value = _a.value, errorText = _a.errorText;
+	        var limit = this.props.limit;
+	        return (React.createElement(material_ui_number_input_1.NumberInput, {id: limit, floatingLabelText: limit, value: value, errorText: errorText, onError: this.onError, onValid: this.onValid, onChange: this.onChange}));
+	    };
+	    __decorate([
+	        bind_decorator_1.default
+	    ], LimitInput.prototype, "onValid", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], LimitInput.prototype, "onChange", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], LimitInput.prototype, "onError", null);
+	    return LimitInput;
+	}(React.Component));
+	exports.LimitInput = LimitInput;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = LimitInput;
+
+
+/***/ },
+/* 546 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	var NumberInput_1 = __webpack_require__(547);
+	__export(__webpack_require__(547));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = NumberInput_1.default;
+
+
+/***/ },
+/* 547 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var React = __webpack_require__(1);
+	var TextField_1 = __webpack_require__(310);
+	var ObjectAssign = __webpack_require__(4);
+	var bind_decorator_1 = __webpack_require__(534);
+	var errorNames;
+	(function (errorNames) {
+	    errorNames.none = 'none';
+	    errorNames.invalidSymbol = 'invalidSymbol';
+	    errorNames.incompleteNumber = 'incompleteNumber';
+	    errorNames.singleMinus = 'singleMinus';
+	    errorNames.singleFloatingPoint = 'singleFloatingPoint';
+	    errorNames.singleZero = 'singleZero';
+	    errorNames.min = 'min';
+	    errorNames.max = 'max';
+	    errorNames.required = 'required';
+	    errorNames.clean = 'clean';
+	    errorNames.allow = 'allow';
+	    errorNames.limit = 'limit';
+	})(errorNames || (errorNames = {}));
+	var strategies;
+	(function (strategies) {
+	    strategies.ignore = 'ignore';
+	    strategies.warn = 'warn';
+	    strategies.allow = 'allow';
+	})(strategies || (strategies = {}));
+	var typeofs;
+	(function (typeofs) {
+	    typeofs.stringType = 'string';
+	    typeofs.numberType = 'number';
+	})(typeofs || (typeofs = {}));
+	var constants;
+	(function (constants) {
+	    constants.emptyString = '';
+	    constants.dash = '-';
+	    constants.dot = '.';
+	    constants.zero = 0;
+	    constants.one = 1;
+	    constants.text = 'text';
+	    constants.zeroString = '0';
+	    constants.minusOne = -1;
+	    constants.boolTrue = true;
+	    constants.boolFalse = false;
+	})(constants || (constants = {}));
+	var NumberInput = (function (_super) {
+	    __extends(NumberInput, _super);
+	    function NumberInput(props) {
+	        _super.call(this, props);
+	        this.constProps = {
+	            type: constants.text,
+	            onChange: this.onChange,
+	            onBlur: this.onBlur,
+	            ref: this.refTextField
+	        };
+	    }
+	    NumberInput.getValidValue = function (value) {
+	        var match = value.match(NumberInput.allowed);
+	        return match !== null ? (match.index === constants.zero ? match[constants.zero] : match.join(constants.emptyString)) : constants.emptyString;
+	    };
+	    NumberInput.deleteOwnProps = function (props) {
+	        var prop;
+	        for (var index = 0; index < NumberInput.deleteProps.length; ++index) {
+	            prop = NumberInput.deleteProps[index];
+	            if (props.hasOwnProperty(prop)) {
+	                delete props[prop];
+	            }
+	        }
+	    };
+	    NumberInput.prototype.emitEvents = function (nextError, value, emitError, valid) {
+	        var _a = this.props, onError = _a.onError, onValid = _a.onValid;
+	        if ((this.error !== nextError) && emitError) {
+	            if (onError) {
+	                onError(nextError);
+	            }
+	            this.error = nextError;
+	        }
+	        if (onValid && valid && (this.lastValid !== value)) {
+	            onValid(Number(value));
+	            this.lastValid = value;
+	        }
+	    };
+	    NumberInput.prototype.validateNumberValue = function (value) {
+	        var _a = this.props, max = _a.max, min = _a.min;
+	        if ((typeof max === typeofs.numberType) && (value > max)) {
+	            return constants.one;
+	        }
+	        if ((typeof min === typeofs.numberType) && (value < min)) {
+	            return constants.minusOne;
+	        }
+	        return constants.zero;
+	    };
+	    NumberInput.prototype.validateValue = function (value) {
+	        var props = this.props;
+	        var required = props.required, strategy = props.strategy, min = props.min;
+	        if (value === constants.emptyString) {
+	            return required ? errorNames.required : errorNames.clean;
+	        }
+	        else {
+	            if (value.match(NumberInput.validSymbols)) {
+	                if (value.match(NumberInput.stricAllowed)) {
+	                    if (value.match(NumberInput.validNumber)) {
+	                        var numberValue = Number(value);
+	                        var floatingPoint = value.indexOf(constants.dot);
+	                        var decimal = floatingPoint > constants.minusOne;
+	                        var whole = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min;
+	                        switch (this.validateNumberValue(numberValue)) {
+	                            case constants.one: return errorNames.max;
+	                            case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue > constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
+	                            default: return errorNames.none;
+	                        }
+	                    }
+	                    else {
+	                        return (strategy !== strategies.allow) && (value === constants.dash) && (min >= constants.zero) ? errorNames.limit : errorNames.incompleteNumber;
+	                    }
+	                }
+	                else {
+	                    switch (value[value.length - constants.one]) {
+	                        case constants.dash: return errorNames.singleMinus;
+	                        case constants.dot: return errorNames.singleFloatingPoint;
+	                        case constants.zeroString: return errorNames.singleZero;
+	                        default: return errorNames.invalidSymbol;
+	                    }
+	                }
+	            }
+	            else {
+	                return errorNames.invalidSymbol;
+	            }
+	        }
+	    };
+	    NumberInput.prototype.overrideRequestedValue = function (error, value) {
+	        var props = this.props;
+	        switch (error) {
+	            case errorNames.min: return String(props.min);
+	            case errorNames.max: return String(props.max);
+	            default: return props.strategy !== strategies.allow && value === constants.dash ? constants.emptyString : value;
+	        }
+	    };
+	    NumberInput.prototype.overrideError = function (error) {
+	        switch (error) {
+	            case errorNames.allow: return errorNames.none;
+	            case errorNames.limit: return this.props.required ? errorNames.required : errorNames.clean;
+	            default: return error;
+	        }
+	    };
+	    NumberInput.prototype.emitValid = function (error, overridenError) {
+	        return (error === errorNames.none) && (overridenError !== errorNames.allow);
+	    };
+	    NumberInput.prototype.takeActionForValue = function (value) {
+	        var _a = this.props, strategy = _a.strategy, onRequestValue = _a.onRequestValue, propsValue = _a.value;
+	        var error = this.validateValue(value);
+	        var valid = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
+	        var overridenError = this.overrideError(error);
+	        var emitError = (this.requestedValue !== value) && (strategy != strategies.ignore);
+	        var emitValid = this.emitValid(error, overridenError);
+	        this.emitEvents(overridenError, valid, emitError, emitValid);
+	        if ((strategy != strategies.allow) && (valid !== value)) {
+	            this.requestedValue = valid;
+	            if (typeof propsValue !== typeofs.stringType) {
+	                this.getInputNode().value = valid;
+	            }
+	            else if (onRequestValue) {
+	                onRequestValue(valid);
+	            }
+	        }
+	    };
+	    NumberInput.prototype.refTextField = function (textField) {
+	        this.textField = textField;
+	    };
+	    NumberInput.prototype.onChange = function (event) {
+	        var eventValue = event;
+	        var value = eventValue.target.value;
+	        var onChange = this.props.onChange;
+	        if (onChange) {
+	            onChange(event, value);
+	        }
+	        if (typeof this.props.value !== typeofs.stringType) {
+	            this.takeActionForValue(value);
+	        }
+	    };
+	    NumberInput.prototype.onBlur = function (event) {
+	        var eventValue = event;
+	        var _a = this.props, strategy = _a.strategy, onBlur = _a.onBlur;
+	        var value = eventValue.target.value;
+	        if (strategy === strategies.warn) {
+	            this.emitEvents(this.validateValue(value), value, constants.boolTrue, constants.boolFalse);
+	        }
+	        if (onBlur) {
+	            onBlur(event);
+	        }
+	    };
+	    NumberInput.prototype.getInputNode = function () {
+	        return this.textField.getInputNode();
+	    };
+	    NumberInput.prototype.getTextField = function () {
+	        return this.textField;
+	    };
+	    NumberInput.prototype.componentDidMount = function () {
+	        var value = this.props.value;
+	        this.takeActionForValue(typeof value === typeofs.stringType ? value : this.getInputNode().value);
+	    };
+	    NumberInput.prototype.componentWillReceiveProps = function (props) {
+	        var value = props.value;
+	        if (value !== this.props.value) {
+	            this.takeActionForValue(value);
+	        }
+	    };
+	    NumberInput.prototype.render = function () {
+	        var _a = this, props = _a.props, constProps = _a.constProps;
+	        var value = props.value, defaultValue = props.defaultValue;
+	        var inputProps = ObjectAssign({}, props, constProps, {
+	            defaultValue: typeof defaultValue === typeofs.numberType ? String(defaultValue) : undefined,
+	            value: value,
+	        });
+	        if (typeof inputProps.value !== typeofs.stringType) {
+	            delete inputProps.value;
+	        }
+	        if (inputProps.defaultValue === undefined) {
+	            delete inputProps.defaultValue;
+	        }
+	        NumberInput.deleteOwnProps(inputProps);
+	        return React.createElement(TextField_1.default, inputProps);
+	    };
+	    NumberInput.validSymbols = /(\-|\.|\d)+/;
+	    NumberInput.stricAllowed = /^-?((0|([1-9]\d{0,}))(\.\d{0,})?)?$/;
+	    NumberInput.validNumber = /^-?((0(\.\d+)?)|([1-9]\d{0,}(\.\d+)?))$/;
+	    NumberInput.allowed = /-?((0|([1-9]\d{0,}))(\.\d{0,})?)?/;
+	    NumberInput.deleteProps = ['strategy', 'onError', 'onValid', 'onRequestValue'];
+	    NumberInput.propTypes = {
+	        children: React.PropTypes.node,
+	        className: React.PropTypes.string,
+	        disabled: React.PropTypes.bool,
+	        errorStyle: React.PropTypes.object,
+	        errorText: React.PropTypes.node,
+	        floatingLabelFixed: React.PropTypes.bool,
+	        floatingLabelFocusStyle: React.PropTypes.object,
+	        floatingLabelStyle: React.PropTypes.object,
+	        floatingLabelText: React.PropTypes.node,
+	        fullWidth: React.PropTypes.bool,
+	        hintStyle: React.PropTypes.object,
+	        hintText: React.PropTypes.node,
+	        id: React.PropTypes.string,
+	        inputStyle: React.PropTypes.object,
+	        name: React.PropTypes.string,
+	        onBlur: React.PropTypes.func,
+	        onChange: React.PropTypes.func,
+	        onFocus: React.PropTypes.func,
+	        onValid: React.PropTypes.func,
+	        onError: React.PropTypes.func,
+	        onRequestValue: React.PropTypes.func,
+	        onKeyDown: React.PropTypes.func,
+	        style: React.PropTypes.object,
+	        underlineDisabledStyle: React.PropTypes.object,
+	        underlineFocusStyle: React.PropTypes.object,
+	        underlineShow: React.PropTypes.bool,
+	        underlineStyle: React.PropTypes.object,
+	        defaultValue: React.PropTypes.number,
+	        min: React.PropTypes.number,
+	        max: React.PropTypes.number,
+	        required: React.PropTypes.bool,
+	        strategy: React.PropTypes.oneOf([
+	            strategies.ignore,
+	            strategies.warn,
+	            strategies.allow
+	        ]),
+	        value: React.PropTypes.string
+	    };
+	    NumberInput.defaultProps = {
+	        required: constants.boolFalse,
+	        strategy: strategies.allow
+	    };
+	    __decorate([
+	        bind_decorator_1.default
+	    ], NumberInput.prototype, "refTextField", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], NumberInput.prototype, "onChange", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], NumberInput.prototype, "onBlur", null);
+	    return NumberInput;
+	}(React.Component));
+	exports.NumberInput = NumberInput;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = NumberInput;
+
+
+/***/ },
 /* 548 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var React = __webpack_require__(1);
+	var Checkbox_1 = __webpack_require__(549);
+	var bind_decorator_1 = __webpack_require__(534);
+	var RequiredCheckbox = (function (_super) {
+	    __extends(RequiredCheckbox, _super);
+	    function RequiredCheckbox(props, state) {
+	        _super.call(this, props);
+	    }
+	    RequiredCheckbox.prototype.requiredCheckbox = function (event, Checkboxd) {
+	        this.props.onRequiredCheck(Checkboxd);
+	    };
+	    RequiredCheckbox.prototype.render = function () {
+	        return React.createElement(Checkbox_1.default, {label: "required", checked: this.props.required, onCheck: this.requiredCheckbox});
+	    };
+	    __decorate([
+	        bind_decorator_1.default
+	    ], RequiredCheckbox.prototype, "requiredCheckbox", null);
+	    return RequiredCheckbox;
+	}(React.Component));
+	exports.RequiredCheckbox = RequiredCheckbox;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = RequiredCheckbox;
+
+
+/***/ },
+/* 549 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53924,7 +53176,855 @@
 	});
 	exports.default = undefined;
 
-	var _FlatButton = __webpack_require__(549);
+	var _Checkbox = __webpack_require__(550);
+
+	var _Checkbox2 = _interopRequireDefault(_Checkbox);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _Checkbox2.default;
+
+/***/ },
+/* 550 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(213);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(251);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(252);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(257);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(258);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(262);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(297);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(305);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _EnhancedSwitch = __webpack_require__(551);
+
+	var _EnhancedSwitch2 = _interopRequireDefault(_EnhancedSwitch);
+
+	var _transitions = __webpack_require__(307);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _checkBoxOutlineBlank = __webpack_require__(552);
+
+	var _checkBoxOutlineBlank2 = _interopRequireDefault(_checkBoxOutlineBlank);
+
+	var _checkBox = __webpack_require__(553);
+
+	var _checkBox2 = _interopRequireDefault(_checkBox);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context) {
+	  var checkbox = context.muiTheme.checkbox;
+
+	  var checkboxSize = 24;
+
+	  return {
+	    icon: {
+	      height: checkboxSize,
+	      width: checkboxSize
+	    },
+	    check: {
+	      position: 'absolute',
+	      opacity: 0,
+	      transform: 'scale(0)',
+	      transitionOrigin: '50% 50%',
+	      transition: _transitions2.default.easeOut('450ms', 'opacity', '0ms') + ', ' + _transitions2.default.easeOut('0ms', 'transform', '450ms'),
+	      fill: checkbox.checkedColor
+	    },
+	    checkWhenSwitched: {
+	      opacity: 1,
+	      transform: 'scale(1)',
+	      transition: _transitions2.default.easeOut('0ms', 'opacity', '0ms') + ', ' + _transitions2.default.easeOut('800ms', 'transform', '0ms')
+	    },
+	    checkWhenDisabled: {
+	      fill: checkbox.disabledColor,
+	      cursor: 'not-allowed'
+	    },
+	    box: {
+	      position: 'absolute',
+	      opacity: 1,
+	      fill: checkbox.boxColor,
+	      transition: _transitions2.default.easeOut('1000ms', 'opacity', '200ms')
+	    },
+	    boxWhenSwitched: {
+	      opacity: 0,
+	      transition: _transitions2.default.easeOut('650ms', 'opacity', '150ms'),
+	      fill: checkbox.checkedColor
+	    },
+	    boxWhenDisabled: {
+	      fill: props.checked ? 'transparent' : checkbox.disabledColor,
+	      cursor: 'not-allowed'
+	    },
+	    label: {
+	      color: props.disabled ? checkbox.labelDisabledColor : checkbox.labelColor
+	    }
+	  };
+	}
+
+	var Checkbox = function (_Component) {
+	  (0, _inherits3.default)(Checkbox, _Component);
+
+	  function Checkbox() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Checkbox);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Checkbox.__proto__ || (0, _getPrototypeOf2.default)(Checkbox)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      switched: false
+	    }, _this.handleStateChange = function (newSwitched) {
+	      _this.setState({
+	        switched: newSwitched
+	      });
+	    }, _this.handleCheck = function (event, isInputChecked) {
+	      if (_this.props.onCheck) {
+	        _this.props.onCheck(event, isInputChecked);
+	      }
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Checkbox, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _props = this.props;
+	      var checked = _props.checked;
+	      var defaultChecked = _props.defaultChecked;
+	      var valueLink = _props.valueLink;
+
+
+	      if (checked || defaultChecked || valueLink && valueLink.value) {
+	        this.setState({
+	          switched: true
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      if (this.props.checked !== nextProps.checked) {
+	        this.setState({
+	          switched: nextProps.checked
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'isChecked',
+	    value: function isChecked() {
+	      return this.refs.enhancedSwitch.isSwitched();
+	    }
+	  }, {
+	    key: 'setChecked',
+	    value: function setChecked(newCheckedValue) {
+	      this.refs.enhancedSwitch.setSwitched(newCheckedValue);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props2 = this.props;
+	      var iconStyle = _props2.iconStyle;
+	      var onCheck = _props2.onCheck;
+	      var checkedIcon = _props2.checkedIcon;
+	      var uncheckedIcon = _props2.uncheckedIcon;
+	      var other = (0, _objectWithoutProperties3.default)(_props2, ['iconStyle', 'onCheck', 'checkedIcon', 'uncheckedIcon']);
+
+	      var styles = getStyles(this.props, this.context);
+	      var boxStyles = (0, _simpleAssign2.default)(styles.box, this.state.switched && styles.boxWhenSwitched, iconStyle, this.props.disabled && styles.boxWhenDisabled);
+	      var checkStyles = (0, _simpleAssign2.default)(styles.check, this.state.switched && styles.checkWhenSwitched, iconStyle, this.props.disabled && styles.checkWhenDisabled);
+
+	      var checkedElement = checkedIcon ? _react2.default.cloneElement(checkedIcon, {
+	        style: (0, _simpleAssign2.default)(checkStyles, checkedIcon.props.style)
+	      }) : _react2.default.createElement(_checkBox2.default, {
+	        style: checkStyles
+	      });
+
+	      var unCheckedElement = uncheckedIcon ? _react2.default.cloneElement(uncheckedIcon, {
+	        style: (0, _simpleAssign2.default)(boxStyles, uncheckedIcon.props.style)
+	      }) : _react2.default.createElement(_checkBoxOutlineBlank2.default, {
+	        style: boxStyles
+	      });
+
+	      var checkboxElement = _react2.default.createElement(
+	        'div',
+	        null,
+	        unCheckedElement,
+	        checkedElement
+	      );
+
+	      var rippleColor = this.state.switched ? checkStyles.fill : boxStyles.fill;
+	      var mergedIconStyle = (0, _simpleAssign2.default)(styles.icon, iconStyle);
+
+	      var labelStyle = (0, _simpleAssign2.default)(styles.label, this.props.labelStyle);
+
+	      var enhancedSwitchProps = {
+	        ref: 'enhancedSwitch',
+	        inputType: 'checkbox',
+	        switched: this.state.switched,
+	        switchElement: checkboxElement,
+	        rippleColor: rippleColor,
+	        iconStyle: mergedIconStyle,
+	        onSwitch: this.handleCheck,
+	        labelStyle: labelStyle,
+	        onParentShouldUpdate: this.handleStateChange,
+	        labelPosition: this.props.labelPosition
+	      };
+
+	      return _react2.default.createElement(_EnhancedSwitch2.default, (0, _extends3.default)({}, other, enhancedSwitchProps));
+	    }
+	  }]);
+	  return Checkbox;
+	}(_react.Component);
+
+	Checkbox.defaultProps = {
+	  labelPosition: 'right',
+	  disabled: false
+	};
+	Checkbox.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? Checkbox.propTypes = {
+	  /**
+	   * Checkbox is checked if true.
+	   */
+	  checked: _react.PropTypes.bool,
+	  /**
+	   * The SvgIcon to use for the checked state.
+	   * This is useful to create icon toggles.
+	   */
+	  checkedIcon: _react.PropTypes.element,
+	  /**
+	   * The default state of our checkbox component.
+	   * **Warning:** This cannot be used in conjunction with `checked`.
+	   * Decide between using a controlled or uncontrolled input element and remove one of these props.
+	   * More info: https://fb.me/react-controlled-components
+	   */
+	  defaultChecked: _react.PropTypes.bool,
+	  /**
+	   * Disabled if true.
+	   */
+	  disabled: _react.PropTypes.bool,
+	  /**
+	   * Overrides the inline-styles of the icon element.
+	   */
+	  iconStyle: _react.PropTypes.object,
+	  /**
+	   * Overrides the inline-styles of the input element.
+	   */
+	  inputStyle: _react.PropTypes.object,
+	  /**
+	   * Where the label will be placed next to the checkbox.
+	   */
+	  labelPosition: _react.PropTypes.oneOf(['left', 'right']),
+	  /**
+	   * Overrides the inline-styles of the Checkbox element label.
+	   */
+	  labelStyle: _react.PropTypes.object,
+	  /**
+	   * Callback function that is fired when the checkbox is checked.
+	   *
+	   * @param {object} event `change` event targeting the underlying checkbox `input`.
+	   * @param {boolean} isInputChecked The `checked` value of the underlying checkbox `input`.
+	   */
+	  onCheck: _react.PropTypes.func,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * The SvgIcon to use for the unchecked state.
+	   * This is useful to create icon toggles.
+	   */
+	  uncheckedIcon: _react.PropTypes.element,
+	  /**
+	   * ValueLink for when using controlled checkbox.
+	   */
+	  valueLink: _react.PropTypes.object
+	} : void 0;
+	exports.default = Checkbox;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 551 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(213);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(251);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(252);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(257);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(258);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(262);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(297);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(305);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactEventListener = __webpack_require__(453);
+
+	var _reactEventListener2 = _interopRequireDefault(_reactEventListener);
+
+	var _keycode = __webpack_require__(489);
+
+	var _keycode2 = _interopRequireDefault(_keycode);
+
+	var _transitions = __webpack_require__(307);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _FocusRipple = __webpack_require__(509);
+
+	var _FocusRipple2 = _interopRequireDefault(_FocusRipple);
+
+	var _TouchRipple = __webpack_require__(516);
+
+	var _TouchRipple2 = _interopRequireDefault(_TouchRipple);
+
+	var _Paper = __webpack_require__(211);
+
+	var _Paper2 = _interopRequireDefault(_Paper);
+
+	var _warning = __webpack_require__(456);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context) {
+	  var baseTheme = context.muiTheme.baseTheme;
+
+
+	  return {
+	    root: {
+	      position: 'relative',
+	      cursor: props.disabled ? 'default' : 'pointer',
+	      overflow: 'visible',
+	      display: 'table',
+	      height: 'auto',
+	      width: '100%'
+	    },
+	    input: {
+	      position: 'absolute',
+	      cursor: props.disabled ? 'default' : 'pointer',
+	      pointerEvents: 'all',
+	      opacity: 0,
+	      width: '100%',
+	      height: '100%',
+	      zIndex: 2,
+	      left: 0,
+	      boxSizing: 'border-box',
+	      padding: 0,
+	      margin: 0
+	    },
+	    controls: {
+	      display: 'flex',
+	      width: '100%',
+	      height: '100%'
+	    },
+	    label: {
+	      float: 'left',
+	      position: 'relative',
+	      display: 'block',
+	      width: 'calc(100% - 60px)',
+	      lineHeight: '24px',
+	      color: baseTheme.palette.textColor,
+	      fontFamily: baseTheme.fontFamily
+	    },
+	    wrap: {
+	      transition: _transitions2.default.easeOut(),
+	      float: 'left',
+	      position: 'relative',
+	      display: 'block',
+	      flexShrink: 0,
+	      width: 60 - baseTheme.spacing.desktopGutterLess,
+	      marginRight: props.labelPosition === 'right' ? baseTheme.spacing.desktopGutterLess : 0,
+	      marginLeft: props.labelPosition === 'left' ? baseTheme.spacing.desktopGutterLess : 0
+	    },
+	    ripple: {
+	      color: props.rippleColor || baseTheme.palette.primary1Color,
+	      height: '200%',
+	      width: '200%',
+	      top: -12,
+	      left: -12
+	    }
+	  };
+	}
+
+	var EnhancedSwitch = function (_Component) {
+	  (0, _inherits3.default)(EnhancedSwitch, _Component);
+
+	  function EnhancedSwitch() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, EnhancedSwitch);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = EnhancedSwitch.__proto__ || (0, _getPrototypeOf2.default)(EnhancedSwitch)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      isKeyboardFocused: false
+	    }, _this.handleChange = function (event) {
+	      _this.tabPressed = false;
+	      _this.setState({
+	        isKeyboardFocused: false
+	      });
+
+	      var isInputChecked = _this.refs.checkbox.checked;
+
+	      if (!_this.props.hasOwnProperty('checked') && _this.props.onParentShouldUpdate) {
+	        _this.props.onParentShouldUpdate(isInputChecked);
+	      }
+
+	      if (_this.props.onSwitch) {
+	        _this.props.onSwitch(event, isInputChecked);
+	      }
+	    }, _this.handleKeyDown = function (event) {
+	      var code = (0, _keycode2.default)(event);
+
+	      if (code === 'tab') {
+	        _this.tabPressed = true;
+	      }
+	      if (_this.state.isKeyboardFocused && code === 'space') {
+	        _this.handleChange(event);
+	      }
+	    }, _this.handleKeyUp = function (event) {
+	      if (_this.state.isKeyboardFocused && (0, _keycode2.default)(event) === 'space') {
+	        _this.handleChange(event);
+	      }
+	    }, _this.handleMouseDown = function (event) {
+	      // only listen to left clicks
+	      if (event.button === 0) {
+	        _this.refs.touchRipple.start(event);
+	      }
+	    }, _this.handleMouseUp = function () {
+	      _this.refs.touchRipple.end();
+	    }, _this.handleMouseLeave = function () {
+	      _this.refs.touchRipple.end();
+	    }, _this.handleTouchStart = function (event) {
+	      _this.refs.touchRipple.start(event);
+	    }, _this.handleTouchEnd = function () {
+	      _this.refs.touchRipple.end();
+	    }, _this.handleBlur = function (event) {
+	      _this.setState({
+	        isKeyboardFocused: false
+	      });
+
+	      if (_this.props.onBlur) {
+	        _this.props.onBlur(event);
+	      }
+	    }, _this.handleFocus = function (event) {
+	      // setTimeout is needed becuase the focus event fires first
+	      // Wait so that we can capture if this was a keyboard focus
+	      // or touch focus
+	      setTimeout(function () {
+	        if (_this.tabPressed) {
+	          _this.setState({
+	            isKeyboardFocused: true
+	          });
+	        }
+	      }, 150);
+
+	      if (_this.props.onFocus) {
+	        _this.props.onFocus(event);
+	      }
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(EnhancedSwitch, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var inputNode = this.refs.checkbox;
+	      if ((!this.props.switched || inputNode.checked !== this.props.switched) && this.props.onParentShouldUpdate) {
+	        this.props.onParentShouldUpdate(inputNode.checked);
+	      }
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var hasCheckedProp = nextProps.hasOwnProperty('checked');
+	      var hasToggledProp = nextProps.hasOwnProperty('toggled');
+	      var hasNewDefaultProp = nextProps.hasOwnProperty('defaultChecked') && nextProps.defaultChecked !== this.props.defaultChecked;
+
+	      if (hasCheckedProp || hasToggledProp || hasNewDefaultProp) {
+	        var switched = nextProps.checked || nextProps.toggled || nextProps.defaultChecked || false;
+
+	        this.setState({
+	          switched: switched
+	        });
+
+	        if (this.props.onParentShouldUpdate && switched !== this.props.switched) {
+	          this.props.onParentShouldUpdate(switched);
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'isSwitched',
+	    value: function isSwitched() {
+	      return this.refs.checkbox.checked;
+	    }
+
+	    // no callback here because there is no event
+
+	  }, {
+	    key: 'setSwitched',
+	    value: function setSwitched(newSwitchedValue) {
+	      if (!this.props.hasOwnProperty('checked') || this.props.checked === false) {
+	        if (this.props.onParentShouldUpdate) {
+	          this.props.onParentShouldUpdate(newSwitchedValue);
+	        }
+	        this.refs.checkbox.checked = newSwitchedValue;
+	      } else {
+	        process.env.NODE_ENV !== "production" ? (0, _warning2.default)(false, 'Cannot call set method while checked is defined as a property.') : void 0;
+	      }
+	    }
+	  }, {
+	    key: 'getValue',
+	    value: function getValue() {
+	      return this.refs.checkbox.value;
+	    }
+
+	    // Checkbox inputs only use SPACE to change their state. Using ENTER will
+	    // update the ui but not the input.
+
+
+	    /**
+	     * Because both the ripples and the checkbox input cannot share pointer
+	     * events, the checkbox input takes control of pointer events and calls
+	     * ripple animations manually.
+	     */
+
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var name = _props.name;
+	      var value = _props.value;
+	      var iconStyle = _props.iconStyle;
+	      var inputStyle = _props.inputStyle;
+	      var inputType = _props.inputType;
+	      var label = _props.label;
+	      var labelStyle = _props.labelStyle;
+	      var labelPosition = _props.labelPosition;
+	      var onSwitch = _props.onSwitch;
+	      var onBlur = _props.onBlur;
+	      var onFocus = _props.onFocus;
+	      var onMouseUp = _props.onMouseUp;
+	      var onMouseDown = _props.onMouseDown;
+	      var onMouseLeave = _props.onMouseLeave;
+	      var onTouchStart = _props.onTouchStart;
+	      var onTouchEnd = _props.onTouchEnd;
+	      var onParentShouldUpdate = _props.onParentShouldUpdate;
+	      var disabled = _props.disabled;
+	      var disableTouchRipple = _props.disableTouchRipple;
+	      var disableFocusRipple = _props.disableFocusRipple;
+	      var className = _props.className;
+	      var rippleColor = _props.rippleColor;
+	      var rippleStyle = _props.rippleStyle;
+	      var style = _props.style;
+	      var switched = _props.switched;
+	      var switchElement = _props.switchElement;
+	      var thumbStyle = _props.thumbStyle;
+	      var trackStyle = _props.trackStyle;
+	      var other = (0, _objectWithoutProperties3.default)(_props, ['name', 'value', 'iconStyle', 'inputStyle', 'inputType', 'label', 'labelStyle', 'labelPosition', 'onSwitch', 'onBlur', 'onFocus', 'onMouseUp', 'onMouseDown', 'onMouseLeave', 'onTouchStart', 'onTouchEnd', 'onParentShouldUpdate', 'disabled', 'disableTouchRipple', 'disableFocusRipple', 'className', 'rippleColor', 'rippleStyle', 'style', 'switched', 'switchElement', 'thumbStyle', 'trackStyle']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context);
+	      var wrapStyles = (0, _simpleAssign2.default)(styles.wrap, iconStyle);
+	      var mergedRippleStyle = (0, _simpleAssign2.default)(styles.ripple, rippleStyle);
+
+	      if (thumbStyle) {
+	        wrapStyles.marginLeft /= 2;
+	        wrapStyles.marginRight /= 2;
+	      }
+
+	      var labelElement = label && _react2.default.createElement(
+	        'label',
+	        { style: prepareStyles((0, _simpleAssign2.default)(styles.label, labelStyle)) },
+	        label
+	      );
+
+	      var showTouchRipple = !disabled && !disableTouchRipple;
+	      var showFocusRipple = !disabled && !disableFocusRipple;
+
+	      var touchRipple = _react2.default.createElement(_TouchRipple2.default, {
+	        ref: 'touchRipple',
+	        key: 'touchRipple',
+	        style: mergedRippleStyle,
+	        color: mergedRippleStyle.color,
+	        muiTheme: this.context.muiTheme,
+	        centerRipple: true
+	      });
+
+	      var focusRipple = _react2.default.createElement(_FocusRipple2.default, {
+	        key: 'focusRipple',
+	        innerStyle: mergedRippleStyle,
+	        color: mergedRippleStyle.color,
+	        muiTheme: this.context.muiTheme,
+	        show: this.state.isKeyboardFocused
+	      });
+
+	      var ripples = [showTouchRipple ? touchRipple : null, showFocusRipple ? focusRipple : null];
+
+	      var inputElement = _react2.default.createElement('input', (0, _extends3.default)({}, other, {
+	        ref: 'checkbox',
+	        type: inputType,
+	        style: prepareStyles((0, _simpleAssign2.default)(styles.input, inputStyle)),
+	        name: name,
+	        value: value,
+	        disabled: disabled,
+	        onBlur: this.handleBlur,
+	        onFocus: this.handleFocus,
+	        onChange: this.handleChange,
+	        onMouseUp: showTouchRipple && this.handleMouseUp,
+	        onMouseDown: showTouchRipple && this.handleMouseDown,
+	        onMouseLeave: showTouchRipple && this.handleMouseLeave,
+	        onTouchStart: showTouchRipple && this.handleTouchStart,
+	        onTouchEnd: showTouchRipple && this.handleTouchEnd
+	      }));
+
+	      // If toggle component (indicated by whether the style includes thumb) manually lay out
+	      // elements in order to nest ripple elements
+	      var switchOrThumbElement = !thumbStyle ? _react2.default.createElement(
+	        'div',
+	        { style: prepareStyles(wrapStyles) },
+	        switchElement,
+	        ripples
+	      ) : _react2.default.createElement(
+	        'div',
+	        { style: prepareStyles(wrapStyles) },
+	        _react2.default.createElement('div', { style: prepareStyles((0, _simpleAssign2.default)({}, trackStyle)) }),
+	        _react2.default.createElement(
+	          _Paper2.default,
+	          { style: thumbStyle, zDepth: 1, circle: true },
+	          ' ',
+	          ripples,
+	          ' '
+	        )
+	      );
+
+	      var elementsInOrder = labelPosition === 'right' ? _react2.default.createElement(
+	        'div',
+	        { style: styles.controls },
+	        switchOrThumbElement,
+	        labelElement
+	      ) : _react2.default.createElement(
+	        'div',
+	        { style: styles.controls },
+	        labelElement,
+	        switchOrThumbElement
+	      );
+
+	      return _react2.default.createElement(
+	        'div',
+	        { ref: 'root', className: className, style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) },
+	        _react2.default.createElement(_reactEventListener2.default, {
+	          target: 'window',
+	          onKeyDown: this.handleKeyDown,
+	          onKeyUp: this.handleKeyUp
+	        }),
+	        inputElement,
+	        elementsInOrder
+	      );
+	    }
+	  }]);
+	  return EnhancedSwitch;
+	}(_react.Component);
+
+	EnhancedSwitch.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? EnhancedSwitch.propTypes = {
+	  checked: _react.PropTypes.bool,
+	  className: _react.PropTypes.string,
+	  defaultChecked: _react.PropTypes.bool,
+	  disableFocusRipple: _react.PropTypes.bool,
+	  disableTouchRipple: _react.PropTypes.bool,
+	  disabled: _react.PropTypes.bool,
+	  iconStyle: _react.PropTypes.object,
+	  inputStyle: _react.PropTypes.object,
+	  inputType: _react.PropTypes.string.isRequired,
+	  label: _react.PropTypes.node,
+	  labelPosition: _react.PropTypes.oneOf(['left', 'right']),
+	  labelStyle: _react.PropTypes.object,
+	  name: _react.PropTypes.string,
+	  onBlur: _react.PropTypes.func,
+	  onFocus: _react.PropTypes.func,
+	  onMouseDown: _react.PropTypes.func,
+	  onMouseLeave: _react.PropTypes.func,
+	  onMouseUp: _react.PropTypes.func,
+	  onParentShouldUpdate: _react.PropTypes.func,
+	  onSwitch: _react.PropTypes.func,
+	  onTouchEnd: _react.PropTypes.func,
+	  onTouchStart: _react.PropTypes.func,
+	  rippleColor: _react.PropTypes.string,
+	  rippleStyle: _react.PropTypes.object,
+	  style: _react.PropTypes.object,
+	  switchElement: _react.PropTypes.element.isRequired,
+	  switched: _react.PropTypes.bool.isRequired,
+	  thumbStyle: _react.PropTypes.object,
+	  trackStyle: _react.PropTypes.object,
+	  value: _react.PropTypes.any
+	} : void 0;
+	exports.default = EnhancedSwitch;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 552 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pure = __webpack_require__(465);
+
+	var _pure2 = _interopRequireDefault(_pure);
+
+	var _SvgIcon = __webpack_require__(474);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ToggleCheckBoxOutlineBlank = function ToggleCheckBoxOutlineBlank(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z' })
+	  );
+	};
+	ToggleCheckBoxOutlineBlank = (0, _pure2.default)(ToggleCheckBoxOutlineBlank);
+	ToggleCheckBoxOutlineBlank.displayName = 'ToggleCheckBoxOutlineBlank';
+	ToggleCheckBoxOutlineBlank.muiName = 'SvgIcon';
+
+	exports.default = ToggleCheckBoxOutlineBlank;
+
+/***/ },
+/* 553 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pure = __webpack_require__(465);
+
+	var _pure2 = _interopRequireDefault(_pure);
+
+	var _SvgIcon = __webpack_require__(474);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ToggleCheckBox = function ToggleCheckBox(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' })
+	  );
+	};
+	ToggleCheckBox = (0, _pure2.default)(ToggleCheckBox);
+	ToggleCheckBox.displayName = 'ToggleCheckBox';
+	ToggleCheckBox.muiName = 'SvgIcon';
+
+	exports.default = ToggleCheckBox;
+
+/***/ },
+/* 554 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _FlatButton = __webpack_require__(555);
 
 	var _FlatButton2 = _interopRequireDefault(_FlatButton);
 
@@ -53933,7 +54033,7 @@
 	exports.default = _FlatButton2.default;
 
 /***/ },
-/* 549 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -53990,7 +54090,7 @@
 
 	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
 
-	var _FlatButtonLabel = __webpack_require__(550);
+	var _FlatButtonLabel = __webpack_require__(556);
 
 	var _FlatButtonLabel2 = _interopRequireDefault(_FlatButtonLabel);
 
@@ -54264,7 +54364,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 550 */
+/* 556 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -54356,19 +54456,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 551 */
-/***/ function(module, exports) {
-
-	"use strict";
-	function If(props) {
-	    return props.condition ? props.then : null;
-	}
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = If;
-
-
-/***/ },
-/* 552 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -54385,7 +54473,7 @@
 
 
 /***/ },
-/* 553 */
+/* 558 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -54680,11 +54768,11 @@
 	var lightWhite = exports.lightWhite = 'rgba(255, 255, 255, 0.54)';
 
 /***/ },
-/* 554 */
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(555);
-	var defaultClickRejectionStrategy = __webpack_require__(556);
+	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(560);
+	var defaultClickRejectionStrategy = __webpack_require__(561);
 
 	var alreadyInjected = false;
 
@@ -54706,14 +54794,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(321).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(557)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(562)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 555 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -54768,7 +54856,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 556 */
+/* 561 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -54779,7 +54867,7 @@
 
 
 /***/ },
-/* 557 */
+/* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -54807,10 +54895,10 @@
 	var EventPluginUtils = __webpack_require__(323);
 	var EventPropagators = __webpack_require__(320);
 	var SyntheticUIEvent = __webpack_require__(354);
-	var TouchEventUtils = __webpack_require__(558);
+	var TouchEventUtils = __webpack_require__(563);
 	var ViewportMetrics = __webpack_require__(355);
 
-	var keyOf = __webpack_require__(559);
+	var keyOf = __webpack_require__(564);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -54955,7 +55043,7 @@
 
 
 /***/ },
-/* 558 */
+/* 563 */
 /***/ function(module, exports) {
 
 	/**
@@ -55003,7 +55091,7 @@
 
 
 /***/ },
-/* 559 */
+/* 564 */
 /***/ function(module, exports) {
 
 	/**
@@ -55043,7 +55131,7 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 560 */
+/* 565 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -55074,7 +55162,7 @@
 
 	var _react = __webpack_require__(1);
 
-	var _getMuiTheme = __webpack_require__(561);
+	var _getMuiTheme = __webpack_require__(566);
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
@@ -55115,7 +55203,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 561 */
+/* 566 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55130,41 +55218,41 @@
 
 	exports.default = getMuiTheme;
 
-	var _lodash = __webpack_require__(562);
+	var _lodash = __webpack_require__(567);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
 	var _colorManipulator = __webpack_require__(451);
 
-	var _lightBaseTheme = __webpack_require__(564);
+	var _lightBaseTheme = __webpack_require__(569);
 
 	var _lightBaseTheme2 = _interopRequireDefault(_lightBaseTheme);
 
-	var _zIndex = __webpack_require__(566);
+	var _zIndex = __webpack_require__(571);
 
 	var _zIndex2 = _interopRequireDefault(_zIndex);
 
-	var _autoprefixer = __webpack_require__(567);
+	var _autoprefixer = __webpack_require__(572);
 
 	var _autoprefixer2 = _interopRequireDefault(_autoprefixer);
 
-	var _callOnce = __webpack_require__(599);
+	var _callOnce = __webpack_require__(604);
 
 	var _callOnce2 = _interopRequireDefault(_callOnce);
 
-	var _rtl = __webpack_require__(600);
+	var _rtl = __webpack_require__(605);
 
 	var _rtl2 = _interopRequireDefault(_rtl);
 
-	var _compose = __webpack_require__(604);
+	var _compose = __webpack_require__(609);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
-	var _typography = __webpack_require__(605);
+	var _typography = __webpack_require__(610);
 
 	var _typography2 = _interopRequireDefault(_typography);
 
-	var _colors = __webpack_require__(553);
+	var _colors = __webpack_require__(558);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55498,7 +55586,7 @@
 	}
 
 /***/ },
-/* 562 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -57709,10 +57797,10 @@
 
 	module.exports = merge;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(563)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(568)(module)))
 
 /***/ },
-/* 563 */
+/* 568 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -57728,7 +57816,7 @@
 
 
 /***/ },
-/* 564 */
+/* 569 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57737,11 +57825,11 @@
 	  value: true
 	});
 
-	var _colors = __webpack_require__(553);
+	var _colors = __webpack_require__(558);
 
 	var _colorManipulator = __webpack_require__(451);
 
-	var _spacing = __webpack_require__(565);
+	var _spacing = __webpack_require__(570);
 
 	var _spacing2 = _interopRequireDefault(_spacing);
 
@@ -57777,7 +57865,7 @@
 	    */
 
 /***/ },
-/* 565 */
+/* 570 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57801,7 +57889,7 @@
 	};
 
 /***/ },
-/* 566 */
+/* 571 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57823,7 +57911,7 @@
 	};
 
 /***/ },
-/* 567 */
+/* 572 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -57874,7 +57962,7 @@
 	  }
 	};
 
-	var _inlineStylePrefixer = __webpack_require__(568);
+	var _inlineStylePrefixer = __webpack_require__(573);
 
 	var _inlineStylePrefixer2 = _interopRequireDefault(_inlineStylePrefixer);
 
@@ -57888,7 +57976,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 568 */
+/* 573 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57901,59 +57989,59 @@
 	// special flexbox specifications
 
 
-	var _prefixAll2 = __webpack_require__(569);
+	var _prefixAll2 = __webpack_require__(574);
 
 	var _prefixAll3 = _interopRequireDefault(_prefixAll2);
 
-	var _getBrowserInformation = __webpack_require__(583);
+	var _getBrowserInformation = __webpack_require__(588);
 
 	var _getBrowserInformation2 = _interopRequireDefault(_getBrowserInformation);
 
-	var _getPrefixedKeyframes = __webpack_require__(586);
+	var _getPrefixedKeyframes = __webpack_require__(591);
 
 	var _getPrefixedKeyframes2 = _interopRequireDefault(_getPrefixedKeyframes);
 
-	var _capitalizeString = __webpack_require__(571);
+	var _capitalizeString = __webpack_require__(576);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _prefixProps = __webpack_require__(587);
+	var _prefixProps = __webpack_require__(592);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
-	var _calc = __webpack_require__(588);
+	var _calc = __webpack_require__(593);
 
 	var _calc2 = _interopRequireDefault(_calc);
 
-	var _zoomCursor = __webpack_require__(590);
+	var _zoomCursor = __webpack_require__(595);
 
 	var _zoomCursor2 = _interopRequireDefault(_zoomCursor);
 
-	var _grabCursor = __webpack_require__(591);
+	var _grabCursor = __webpack_require__(596);
 
 	var _grabCursor2 = _interopRequireDefault(_grabCursor);
 
-	var _flex = __webpack_require__(592);
+	var _flex = __webpack_require__(597);
 
 	var _flex2 = _interopRequireDefault(_flex);
 
-	var _sizing = __webpack_require__(593);
+	var _sizing = __webpack_require__(598);
 
 	var _sizing2 = _interopRequireDefault(_sizing);
 
-	var _gradient = __webpack_require__(594);
+	var _gradient = __webpack_require__(599);
 
 	var _gradient2 = _interopRequireDefault(_gradient);
 
-	var _transition = __webpack_require__(595);
+	var _transition = __webpack_require__(600);
 
 	var _transition2 = _interopRequireDefault(_transition);
 
-	var _flexboxIE = __webpack_require__(597);
+	var _flexboxIE = __webpack_require__(602);
 
 	var _flexboxIE2 = _interopRequireDefault(_flexboxIE);
 
-	var _flexboxOld = __webpack_require__(598);
+	var _flexboxOld = __webpack_require__(603);
 
 	var _flexboxOld2 = _interopRequireDefault(_flexboxOld);
 
@@ -58114,7 +58202,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 569 */
+/* 574 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58124,43 +58212,43 @@
 	});
 	exports.default = prefixAll;
 
-	var _prefixProps = __webpack_require__(570);
+	var _prefixProps = __webpack_require__(575);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
-	var _capitalizeString = __webpack_require__(571);
+	var _capitalizeString = __webpack_require__(576);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _calc = __webpack_require__(572);
+	var _calc = __webpack_require__(577);
 
 	var _calc2 = _interopRequireDefault(_calc);
 
-	var _cursor = __webpack_require__(575);
+	var _cursor = __webpack_require__(580);
 
 	var _cursor2 = _interopRequireDefault(_cursor);
 
-	var _flex = __webpack_require__(576);
+	var _flex = __webpack_require__(581);
 
 	var _flex2 = _interopRequireDefault(_flex);
 
-	var _sizing = __webpack_require__(577);
+	var _sizing = __webpack_require__(582);
 
 	var _sizing2 = _interopRequireDefault(_sizing);
 
-	var _gradient = __webpack_require__(578);
+	var _gradient = __webpack_require__(583);
 
 	var _gradient2 = _interopRequireDefault(_gradient);
 
-	var _transition = __webpack_require__(579);
+	var _transition = __webpack_require__(584);
 
 	var _transition2 = _interopRequireDefault(_transition);
 
-	var _flexboxIE = __webpack_require__(581);
+	var _flexboxIE = __webpack_require__(586);
 
 	var _flexboxIE2 = _interopRequireDefault(_flexboxIE);
 
-	var _flexboxOld = __webpack_require__(582);
+	var _flexboxOld = __webpack_require__(587);
 
 	var _flexboxOld2 = _interopRequireDefault(_flexboxOld);
 
@@ -58226,7 +58314,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 570 */
+/* 575 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -58238,7 +58326,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 571 */
+/* 576 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -58255,7 +58343,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 572 */
+/* 577 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58265,11 +58353,11 @@
 	});
 	exports.default = calc;
 
-	var _joinPrefixedValue = __webpack_require__(573);
+	var _joinPrefixedValue = __webpack_require__(578);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
-	var _isPrefixedValue = __webpack_require__(574);
+	var _isPrefixedValue = __webpack_require__(579);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
@@ -58285,7 +58373,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 573 */
+/* 578 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58310,7 +58398,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 574 */
+/* 579 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58328,7 +58416,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 575 */
+/* 580 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58338,7 +58426,7 @@
 	});
 	exports.default = cursor;
 
-	var _joinPrefixedValue = __webpack_require__(573);
+	var _joinPrefixedValue = __webpack_require__(578);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
@@ -58359,7 +58447,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 576 */
+/* 581 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58380,7 +58468,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 577 */
+/* 582 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58390,7 +58478,7 @@
 	});
 	exports.default = sizing;
 
-	var _joinPrefixedValue = __webpack_require__(573);
+	var _joinPrefixedValue = __webpack_require__(578);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
@@ -58421,7 +58509,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 578 */
+/* 583 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58431,11 +58519,11 @@
 	});
 	exports.default = gradient;
 
-	var _joinPrefixedValue = __webpack_require__(573);
+	var _joinPrefixedValue = __webpack_require__(578);
 
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 
-	var _isPrefixedValue = __webpack_require__(574);
+	var _isPrefixedValue = __webpack_require__(579);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
@@ -58451,7 +58539,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 579 */
+/* 584 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58461,19 +58549,19 @@
 	});
 	exports.default = transition;
 
-	var _hyphenateStyleName = __webpack_require__(580);
+	var _hyphenateStyleName = __webpack_require__(585);
 
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
-	var _capitalizeString = __webpack_require__(571);
+	var _capitalizeString = __webpack_require__(576);
 
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 
-	var _isPrefixedValue = __webpack_require__(574);
+	var _isPrefixedValue = __webpack_require__(579);
 
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 
-	var _prefixProps = __webpack_require__(570);
+	var _prefixProps = __webpack_require__(575);
 
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 
@@ -58538,7 +58626,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 580 */
+/* 585 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58557,7 +58645,7 @@
 
 
 /***/ },
-/* 581 */
+/* 586 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58594,7 +58682,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 582 */
+/* 587 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58635,7 +58723,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 583 */
+/* 588 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58644,7 +58732,7 @@
 	  value: true
 	});
 
-	var _bowser = __webpack_require__(584);
+	var _bowser = __webpack_require__(589);
 
 	var _bowser2 = _interopRequireDefault(_bowser);
 
@@ -58748,7 +58836,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 584 */
+/* 589 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -58759,7 +58847,7 @@
 
 	!function (name, definition) {
 	  if (typeof module != 'undefined' && module.exports) module.exports = definition()
-	  else if (true) __webpack_require__(585)(name, definition)
+	  else if (true) __webpack_require__(590)(name, definition)
 	  else this[name] = definition()
 	}('bowser', function () {
 	  /**
@@ -59330,14 +59418,14 @@
 
 
 /***/ },
-/* 585 */
+/* 590 */
 /***/ function(module, exports) {
 
 	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 586 */
+/* 591 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -59362,7 +59450,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 587 */
+/* 592 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -59374,7 +59462,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 588 */
+/* 593 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59384,7 +59472,7 @@
 	});
 	exports.default = calc;
 
-	var _getPrefixedValue = __webpack_require__(589);
+	var _getPrefixedValue = __webpack_require__(594);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59408,7 +59496,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 589 */
+/* 594 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -59424,7 +59512,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 590 */
+/* 595 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59434,7 +59522,7 @@
 	});
 	exports.default = zoomCursor;
 
-	var _getPrefixedValue = __webpack_require__(589);
+	var _getPrefixedValue = __webpack_require__(594);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59460,7 +59548,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 591 */
+/* 596 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59470,7 +59558,7 @@
 	});
 	exports.default = grabCursor;
 
-	var _getPrefixedValue = __webpack_require__(589);
+	var _getPrefixedValue = __webpack_require__(594);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59495,7 +59583,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 592 */
+/* 597 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59505,7 +59593,7 @@
 	});
 	exports.default = flex;
 
-	var _getPrefixedValue = __webpack_require__(589);
+	var _getPrefixedValue = __webpack_require__(594);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59531,7 +59619,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 593 */
+/* 598 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59541,7 +59629,7 @@
 	});
 	exports.default = sizing;
 
-	var _getPrefixedValue = __webpack_require__(589);
+	var _getPrefixedValue = __webpack_require__(594);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59581,7 +59669,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 594 */
+/* 599 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59591,7 +59679,7 @@
 	});
 	exports.default = gradient;
 
-	var _getPrefixedValue = __webpack_require__(589);
+	var _getPrefixedValue = __webpack_require__(594);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59617,7 +59705,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 595 */
+/* 600 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59630,11 +59718,11 @@
 
 	exports.default = transition;
 
-	var _hyphenateStyleName = __webpack_require__(580);
+	var _hyphenateStyleName = __webpack_require__(585);
 
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 
-	var _unprefixProperty = __webpack_require__(596);
+	var _unprefixProperty = __webpack_require__(601);
 
 	var _unprefixProperty2 = _interopRequireDefault(_unprefixProperty);
 
@@ -59683,7 +59771,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 596 */
+/* 601 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -59700,7 +59788,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 597 */
+/* 602 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59710,7 +59798,7 @@
 	});
 	exports.default = flexboxIE;
 
-	var _getPrefixedValue = __webpack_require__(589);
+	var _getPrefixedValue = __webpack_require__(594);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59764,7 +59852,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 598 */
+/* 603 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59774,7 +59862,7 @@
 	});
 	exports.default = flexboxOld;
 
-	var _getPrefixedValue = __webpack_require__(589);
+	var _getPrefixedValue = __webpack_require__(594);
 
 	var _getPrefixedValue2 = _interopRequireDefault(_getPrefixedValue);
 
@@ -59835,7 +59923,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 599 */
+/* 604 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -59867,7 +59955,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 600 */
+/* 605 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -59876,7 +59964,7 @@
 	  value: true
 	});
 
-	var _keys = __webpack_require__(601);
+	var _keys = __webpack_require__(606);
 
 	var _keys2 = _interopRequireDefault(_keys);
 
@@ -59969,20 +60057,20 @@
 	}
 
 /***/ },
-/* 601 */
+/* 606 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(602), __esModule: true };
+	module.exports = { "default": __webpack_require__(607), __esModule: true };
 
 /***/ },
-/* 602 */
+/* 607 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(603);
+	__webpack_require__(608);
 	module.exports = __webpack_require__(219).Object.keys;
 
 /***/ },
-/* 603 */
+/* 608 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.14 Object.keys(O)
@@ -59996,7 +60084,7 @@
 	});
 
 /***/ },
-/* 604 */
+/* 609 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -60030,7 +60118,7 @@
 	}
 
 /***/ },
-/* 605 */
+/* 610 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -60043,7 +60131,7 @@
 
 	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-	var _colors = __webpack_require__(553);
+	var _colors = __webpack_require__(558);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { SourceCode, javascript, typescript } from './SourceCode';
 import { StrategySelectField, Strategy, allow } from './StrategySelectField';
+import { CalledHandlersStack, CalledHandlers, handlers } from './CalledHandlers/CalledHandlers';
 import LimitInput from './LimitInput';
 import RequiredCheckbox from './RequiredCheckbox';
-import ColoredButton from './ColoredButton';
 import FlatButton from 'material-ui/FlatButton';
-import If from './If';
 import H2 from './H2';
 import { orange500, red500 } from 'material-ui/styles/colors';
 import { NumberInput, NumberInputError } from 'material-ui-number-input';
@@ -91,13 +90,6 @@ ${reactiveProps(props)}                />
 }`;
 }
 
-interface HandlerCalled {
-    onChange: boolean;
-    onError: boolean;
-    onValid: boolean;
-    onRequestValue: boolean;
-}
-
 interface ReactiveExampleState {
     value?: string;
     error?: NumberInputError;
@@ -105,36 +97,36 @@ interface ReactiveExampleState {
     language?: string;
     strategy?: Strategy;
     props?: any;
-    handlerCalled?: HandlerCalled;
+    calledHandlersStack?: CalledHandlersStack;
 }
 
 export default class ReactiveExample extends React.Component<void, ReactiveExampleState> {
     @bind
     private onChange(event: React.FormEvent<{}>, value: string): void {
-        const { handlerCalled } = this.state;
-        handlerCalled!.onChange = true;
-        this.setState({ value: value, handlerCalled: handlerCalled });
+        const { calledHandlersStack } = this.state;
+        calledHandlersStack!.push({ handler: handlers.onChange, argument: value });
+        this.setState({ value: value, calledHandlersStack: calledHandlersStack });
     }
 
     @bind
     private onValid(valid: number): void {
-        const { handlerCalled } = this.state;
-        handlerCalled!.onValid = true;
-        this.setState({ valid: valid, handlerCalled: handlerCalled });
+        const { calledHandlersStack } = this.state;
+        calledHandlersStack!.push({ handler: handlers.onValid, argument: String(valid) });;
+        this.setState({ valid: valid, calledHandlersStack: calledHandlersStack });
     }
 
     @bind
     private onRequestValue(value: string): void {
-        const { handlerCalled } = this.state;
-        handlerCalled!.onRequestValue = true;
-        this.setState({ value: value, handlerCalled: handlerCalled });
+        const { calledHandlersStack } = this.state;
+        calledHandlersStack!.push({ handler: handlers.onRequestValue, argument: value });
+        this.setState({ value: value, calledHandlersStack: calledHandlersStack });
     }
 
     @bind
     private onError(error: NumberInputError): void {
-        const { handlerCalled } = this.state;
-        handlerCalled!.onError = true;
-        this.setState({ error: error, handlerCalled: handlerCalled });
+        const { calledHandlersStack } = this.state;
+        calledHandlersStack!.push({ handler: handlers.onError, argument: error });
+        this.setState({ error: error, calledHandlersStack: calledHandlersStack });
     }
 
     @bind
@@ -153,7 +145,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         props.onError = isStrategyIgnore ? null : 'this.onError';
         props.onRequestValue = isStrategyAllow ? null : 'this.onRequestValue';
         props.errorStyle = isStrategyWarn ? '{ color: orange500 }' : null;
-        this.setState({ strategy: strategy, props: props });
+        this.setState({ strategy: strategy, props: props, calledHandlersStack: [] });
     }
 
     @bind
@@ -197,14 +189,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
 
     @bind
     private onClear(): void {
-        this.setState({
-            handlerCalled: {
-                onChange: false,
-                onError: false,
-                onValid: false,
-                onRequestValue: false
-            }
-        });
+        this.setState({ calledHandlersStack: [] });
     }
 
     public constructor(props: void) {
@@ -228,17 +213,12 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                 strategy: '"' + allow,
                 required: true,
             },
-            handlerCalled: {
-                onChange: false,
-                onError: false,
-                onValid: false,
-                onRequestValue: false
-            }
+            calledHandlersStack: []
         };
     }
 
     public render(): JSX.Element {
-        const { value, error, valid, language, strategy, props, handlerCalled } = this.state;
+        const { value, error, valid, language, strategy, props, calledHandlersStack } = this.state;
         const isStrategyAllow: boolean = strategy === 'allow';
         const isStrategyWarn: boolean = strategy === 'warn';
         const isStrategyNotIngore: boolean = isStrategyAllow || isStrategyWarn;
@@ -277,14 +257,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                 </div>
                 <H2 id="called-handlers" label="Called Handlers" />
                 <div>
-                    <ColoredButton label="onChange" color="#9b59b6" colored={handlerCalled!.onChange} />
-                    <If
-                        condition={isStrategyNotIngore}
-                        then={<ColoredButton label="onError" color="#ff5733" colored={handlerCalled!.onError} />} />
-                    <ColoredButton label="onValid" color="#2ecc71" colored={handlerCalled!.onValid} />
-                    <If
-                        condition={!isStrategyAllow}
-                        then={<ColoredButton label="onRequestValue" color="#f39c12" colored={handlerCalled!.onRequestValue} />} />
+                    <CalledHandlers calledHandlers={calledHandlersStack!} />
                     <FlatButton label="Clear" primary onClick={this.onClear} />
                 </div>
                 <H2 id="source-code" label="Source code" />
