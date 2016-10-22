@@ -236,12 +236,16 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         }
     }
 
-    private overrideError(error: string): string {
+    private overrideError(error: NumberInputErrorExtended): NumberInputError {
         switch(error) {
             case errorNames.allow: return errorNames.none;
             case errorNames.limit: return this.props.required ? errorNames.required : errorNames.clean;
             default: return error;
         }
+    }
+
+    private revertAllowToMin(error: NumberInputErrorExtended): NumberInputErrorExtended {
+        return error === errorNames.allow ? errorNames.min : error;
     }
 
     private emitValid(error: string, overridenError: string): boolean {
@@ -252,10 +256,10 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         const { strategy, onRequestValue, value: propsValue } = this.props;
         const error: NumberInputErrorExtended = this.validateValue(value);
         const valid: string = this.overrideRequestedValue(error, NumberInput.getValidValue(value));
-        const overridenError: string = this.overrideError(error);
-        const emitError: boolean = (this.requestedValue !== value) && (strategy != strategies.ignore);
+        const overridenError: NumberInputError = this.overrideError(error);
+        const emitError: boolean = (this.requestedValue !== value) && (strategy !== strategies.ignore);
         const emitValid: boolean = this.emitValid(error, overridenError);
-        this.emitEvents(overridenError as NumberInputErrorExtended, valid, emitError, emitValid);
+        this.emitEvents(overridenError, valid, emitError, emitValid);
         if((strategy != strategies.allow) && (valid !== value)) {
             this.requestedValue = valid;
             if(typeof propsValue !== typeofs.stringType) {
@@ -289,9 +293,8 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         const eventValue: EventValue = event;
         const { strategy, onBlur } = this.props;
         const { value } = eventValue.target;
-        if(strategy === strategies.warn) {
-            this.emitEvents(this.validateValue(value!), value!, constants.boolTrue, constants.boolFalse);
-        }
+        const error: NumberInputError = this.overrideError(this.revertAllowToMin(this.validateValue(value!)));
+        this.emitEvents(error, value!, strategy !== strategies.ignore, constants.boolFalse);
         if(onBlur) {
             onBlur(event);
         }

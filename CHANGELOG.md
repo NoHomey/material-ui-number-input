@@ -166,3 +166,10 @@
 ### Bug fixes
 
 - Fixing when `'singleZero'` is emitted. `'singleZero'` is emited accordingly to [Errors](https://github.com/NoHomey/material-ui-number-input#singlezero) now. In all other cases when `'singleZero'` was emitted now `'invalidSymbol'` is emitted instead.
+
+## [v5.0.11](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.11)
+
+### Bug fixes
+
+- Fixing `'allow'` to properly be masked as `'min'` when error is emitted `onBlur`.
+- If there is error `onBlur` it will be emitted no matter dose the strategy is `'warn'` or `'allow'`.
