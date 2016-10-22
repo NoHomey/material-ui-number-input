@@ -160,3 +160,9 @@
 
 - NPM dependencies update
 - Moving to TypeScript v2 and replacing typings with @types
+
+## [v5.0.10](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.10)
+
+### Bug fixes
+
+- Fixing when `'singleZero'` is emitted. `'singleZero'` is emited accordingly to [Errors](https://github.com/NoHomey/material-ui-number-input#singlezero) now. In all other cases when `'singleZero'` was emitted now `'invalidSymbol'` is emitted instead.

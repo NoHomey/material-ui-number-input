@@ -90,6 +90,7 @@ namespace constants {
     export const zero: number = 0;
     export const one: number = 1;
     export const text: string = 'text';
+    export const zeroString: string = '0';
     export const minusOne: number = -1;
     export const boolTrue: boolean = true;
     export const boolFalse: boolean = false;
@@ -216,7 +217,8 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
                     switch(value[value.length - constants.one]) {
                         case constants.dash: return errorNames.singleMinus;
                         case constants.dot: return errorNames.singleFloatingPoint;
-                        default : return errorNames.singleZero;
+                        case constants.zeroString: return errorNames.singleZero;
+                        default : return errorNames.invalidSymbol;
                     }
                 }
             } else {
