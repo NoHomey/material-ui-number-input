@@ -4,16 +4,59 @@ import { StrategySelectField, Strategy, allow } from './StrategySelectField';
 import { CalledHandlersStack, CalledHandlers, handlers } from './CalledHandlers/CalledHandlers';
 import LimitInput from './LimitInput';
 import RequiredCheckbox from './RequiredCheckbox';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import H2 from './H2';
 import { orange500, red500 } from 'material-ui/styles/colors';
 import { NumberInput, NumberInputError } from 'material-ui-number-input';
 import bind from 'bind-decorator';
 
+namespace propsDefaults {
+    export const errorText: string = 'errorText';
+    export const onError: string = 'this.onError';
+    export const onRequestValue: string = 'this.onRequestValue';
+    export const errorStyle: string = '{ color: orange500 }';
+}
+
+namespace strategies {
+    export const ignore: 'ignore' = 'ignore';
+    export const warn: 'warn' = 'warn';
+    export const allow: 'allow' = 'allow';
+}
+
+namespace errorTexts {
+    export const warn: string = 'Warning: ';
+    export const allow: string = 'Error: ';
+}
+
+namespace constProps {
+    export const reactiveProps: string = 'react-ive-props';
+    export const ReactIveProps: string = 'React-ive Props';
+    export const min: string = 'min';
+    export const max: string = 'max';
+    export const numberInputDemo: string = 'number-input-demo';
+    export const NumberInputDemo: string = 'NumberInput Demo';
+    export const reactIveNumberInput: string = 'reactive-number-input';
+    export const NumberInput: string = 'NumberInput';
+    export const validNumberInput: string = 'valid-number-input';
+    export const ValidNumber: string = 'Valid number';
+    export const calledHandlers: string = 'called-handlers';
+    export const CalledHandlers: string = 'Called Handlers';
+    export const Clear: string = 'Clear';
+    export const sourceCode: string = 'source-code';
+    export const SourceCode: string = 'Source code';
+}
+
+namespace constants {
+    export const none: 'none' = 'none';
+    export const zero: number = 0;
+    export const quote: string = '"';
+}
+
 const allProps: Array<string> = ['floatingLabelText' ,'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required']; 
 
 function serializeProp(prop: string, value: any): string {
-    return value === true ? prop : `${prop}=${value[0] !== '"' ? `{${value}}` : value + '"'}`;
+    return value === true ? prop : `${prop}=${value[constants.zero] !== constants.quote ? `{${value}}` : value + constants.quote}`;
 }
 
 function reactiveProps(props: Object): string {
@@ -30,8 +73,8 @@ function reactiveProps(props: Object): string {
 
 function code(language: string, props: any, strategy: Strategy): string {
 const types: boolean = language === typescript;
-const isStrategyAllow: boolean = strategy === 'allow';
-const isStrategyWarn: boolean = strategy === 'warn';
+const isStrategyAllow: boolean = strategy === strategies.allow;
+const isStrategyWarn: boolean = strategy === strategies.warn;
 const isStrategyNotIngore: boolean = isStrategyAllow || isStrategyWarn;
 const importOrangeColorIfWarn: string = isStrategyWarn ? '\nimport { orange500 } from \'material-ui/styles/colors\';' : '';
 return `import * as React from 'react';
@@ -137,15 +180,15 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
     @bind
     private onStrategyChange(strategy: Strategy): void {
         const { props } = this.state;
-        const isStrategyIgnore: boolean = strategy === 'ignore';
-        const isStrategyWarn: boolean = strategy === 'warn';
-        const isStrategyAllow: boolean = strategy === 'allow';
-        props.strategy = '"' + strategy;
-        props.errorText = isStrategyIgnore ? null : 'errorText';
-        props.onError = isStrategyIgnore ? null : 'this.onError';
-        props.onRequestValue = isStrategyAllow ? null : 'this.onRequestValue';
-        props.errorStyle = isStrategyWarn ? '{ color: orange500 }' : null;
-        this.setState({ strategy: strategy, props: props, calledHandlersStack: [], valid: 0 });
+        const isStrategyIgnore: boolean = strategy === strategies.ignore;
+        const isStrategyWarn: boolean = strategy === strategies.warn;
+        const isStrategyAllow: boolean = strategy === strategies.allow;
+        props.strategy = constants.quote + strategy;
+        props.errorText = isStrategyIgnore ? null : propsDefaults.errorText;
+        props.onError = isStrategyIgnore ? null : propsDefaults.onError;
+        props.onRequestValue = isStrategyAllow ? null : propsDefaults.onRequestValue;
+        props.errorStyle = isStrategyWarn ? propsDefaults.errorStyle : null;
+        this.setState({ strategy: strategy, props: props, calledHandlersStack: [], valid: constants.zero });
     }
 
     @bind
@@ -196,76 +239,82 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         super(props);
         this.state = {
             value: '',
-            valid: 0,
+            valid: constants.zero,
             language: javascript,
             strategy: allow,
             props: {
-                floatingLabelText: '"NumberInput',
-                min: 0,
-                max: 30,
+                floatingLabelText: constants.quote + constProps.NumberInput,
+                min: -Infinity,
+                max: Infinity,
                 value: 'value',
                 onChange: 'this.onChange',
                 onValid: 'this.onValid',
                 onRequestValue: null,
-                errorText: 'errorText',
+                errorText: propsDefaults.errorText,
                 errorStyle: null,
                 onError: 'this.onError',
-                strategy: '"' + allow,
+                strategy: constants.quote + allow,
                 required: true,
             },
             calledHandlersStack: []
         };
     }
 
+    public shouldCompoenetUpdate(props: void, state: ReactiveExampleState): boolean {
+        return JSON.stringify(this.state) !== JSON.stringify(state);
+    }
+
     public render(): JSX.Element {
         const { value, error, valid, language, strategy, props, calledHandlersStack } = this.state;
-        const isStrategyAllow: boolean = strategy === 'allow';
-        const isStrategyWarn: boolean = strategy === 'warn';
+        const isStrategyAllow: boolean = strategy === strategies.allow;
+        const isStrategyWarn: boolean = strategy === strategies.warn;
         const isStrategyNotIngore: boolean = isStrategyAllow || isStrategyWarn;
-        const isError: boolean = isStrategyNotIngore && (error !== 'none');
-        const errorText: string = isError ? (isStrategyWarn ? 'Warning: ' : 'Error: ') + error : '';
+        const isError: boolean = isStrategyNotIngore && (error !== constants.none);
+        const errorText: string = isError ? (isStrategyWarn ? errorTexts.warn : errorTexts.allow) + error : '';
         const errorStyle: React.CSSProperties = { color: isStrategyWarn ? orange500 : red500 };
         return (
-            <div>
-                <H2 id="react-ive-props" label="React-ive Props" />
+            <MuiThemeProvider>
                 <div>
-                    <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
-                    <br />
-                    <LimitInput limit="min" onValidLimit={this.onValidMin} onInvalidLimit={this.onInValidMin} />
-                    <br />
-                    <LimitInput limit="max" onValidLimit={this.onValidMax} onInvalidLimit={this.onInValidMax} />
-                    <br />
-                    <RequiredCheckbox required={Boolean(props.required)} onRequiredCheck={this.onRequiredCheck} />
+                    <H2 id={constProps.reactiveProps} label={constProps.ReactIveProps} />
+                    <div>
+                        <StrategySelectField strategy={strategy!} onStrategyChange={this.onStrategyChange} />
+                        <br />
+                        <LimitInput limit={constProps.min} onValidLimit={this.onValidMin} onInvalidLimit={this.onInValidMin} />
+                        <br />
+                        <LimitInput limit={constProps.max} onValidLimit={this.onValidMax} onInvalidLimit={this.onInValidMax} />
+                        <br />
+                        <RequiredCheckbox required={Boolean(props.required)} onRequiredCheck={this.onRequiredCheck} />
+                    </div>
+                    <H2 id={constProps.numberInputDemo} label={constProps.NumberInputDemo} />
+                    <div>
+                        <NumberInput
+                            id={constProps.reactIveNumberInput}
+                            floatingLabelText={constProps.NumberInput}
+                            value={value}
+                            strategy={strategy}
+                            required={props.required}
+                            min={props.min}
+                            max={props.max}
+                            onChange={this.onChange}
+                            onValid={this.onValid}
+                            onRequestValue={this.onRequestValue}
+                            errorText={errorText}
+                            onError={this.onError}
+                            errorStyle={errorStyle} />
+                        <NumberInput id={constProps.validNumberInput} floatingLabelText={constProps.ValidNumber} value={String(valid)} />
+                    </div>
+                    <H2 id={constProps.calledHandlers} label={constProps.CalledHandlers} />
+                    <div>
+                        <CalledHandlers calledHandlers={calledHandlersStack!} />
+                        <FlatButton label={constProps.Clear} primary onClick={this.onClear} disabled={calledHandlersStack!.length === 0} />
+                    </div>
+                    <H2 id={constProps.sourceCode} label={constProps.SourceCode} />
+                    <SourceCode
+                        language={language!}
+                        code={code(language!, props!, strategy!)}
+                        onLanguageChange={this.onLangaugeChange} />
                 </div>
-                <H2 id="number-input-demo" label="NumberInput Demo" />
-                <div>
-                    <NumberInput
-                        id="reactive-number-input"
-                        floatingLabelText="NumberInput"
-                        value={value}
-                        strategy={strategy}
-                        required={props.required}
-                        min={props.min}
-                        max={props.max}
-                        onChange={this.onChange}
-                        onValid={this.onValid}
-                        onRequestValue={this.onRequestValue}
-                        errorText={errorText}
-                        onError={this.onError}
-                        errorStyle={errorStyle} />
-                    <NumberInput id="valid-number-input" floatingLabelText="Valid number" value={String(valid)} />
-                </div>
-                <H2 id="called-handlers" label="Called Handlers" />
-                <div>
-                    <CalledHandlers calledHandlers={calledHandlersStack!} />
-                    <FlatButton label="Clear" primary onClick={this.onClear} />
-                </div>
-                <H2 id="source-code" label="Source code" />
-                <SourceCode
-                    language={language!}
-                    code={code(language!, props!, strategy!)}
-                    onLanguageChange={this.onLangaugeChange} />
-            </div>
+            </MuiThemeProvider>
         );
     }
 }

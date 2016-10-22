@@ -5,6 +5,12 @@ import { HandlerProps } from './CalledHandler';
 const handler: string = 'onError ';
 const color: string = '#ff5733';
 
-export default function OnError(props: HandlerProps): JSX.Element {
-    return <ColoredButton label={handler + props.argument} color={color} />;
+export default class OnError extends React.PureComponent<HandlerProps, void> {
+    public constructor(props: HandlerProps) {
+        super(props);
+    }
+
+    public render(): JSX.Element {
+        return <ColoredButton label={handler + this.props.argument} color={color} />;
+    }
 }

@@ -5,6 +5,12 @@ import { HandlerProps } from './CalledHandler';
 const handler: string = 'onRequestValue ';
 const color: string = '#f39c12';
 
-export default function OnRequestValue(props: HandlerProps): JSX.Element {
-    return <ColoredButton label={handler + props.argument} color={color} />;
+export default class OnRequestValue extends React.PureComponent<HandlerProps, void> {
+    public constructor(props: HandlerProps) {
+        super(props);
+    }
+
+    public render(): JSX.Element {
+        return <ColoredButton label={handler + this.props.argument} color={color} />;
+    }
 }

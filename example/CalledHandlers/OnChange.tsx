@@ -5,6 +5,12 @@ import { HandlerProps } from './CalledHandler';
 const handler: string = 'onChange ';
 const color: string = '#9b59b6';
 
-export default function OnChange(props: HandlerProps): JSX.Element {
-    return <ColoredButton label={handler + props.argument} color={color} />;
+export default class OnChange extends React.PureComponent<HandlerProps, void> {
+    public constructor(props: HandlerProps) {
+        super(props);
+    }
+
+    public render(): JSX.Element {
+        return <ColoredButton label={handler + this.props.argument} color={color} />;
+    }
 }

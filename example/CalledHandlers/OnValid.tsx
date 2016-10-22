@@ -5,6 +5,12 @@ import { HandlerProps } from './CalledHandler';
 const handler: string = 'onValid ';
 const color: string = '#2ecc71';
 
-export default function OnValid(props: HandlerProps): JSX.Element {
-    return <ColoredButton label={handler + props.argument} color={color} />;
+export default class OnValid extends React.PureComponent<HandlerProps, void> {
+    public constructor(props: HandlerProps) {
+        super(props);
+    }
+
+    public render(): JSX.Element {
+        return <ColoredButton label={handler + this.props.argument} color={color} />;
+    }
 }

@@ -15,7 +15,7 @@ interface StrategySelectFieldProps {
     onStrategyChange: (strategy: Strategy) => void
 }
 
-export class StrategySelectField extends React.Component<StrategySelectFieldProps, void> {
+export class StrategySelectField extends React.PureComponent<StrategySelectFieldProps, void> {
     @bind
     private changeStrategy(event: TouchTapEvent, index: number, value: string): void {
         this.props.onStrategyChange(value as Strategy);

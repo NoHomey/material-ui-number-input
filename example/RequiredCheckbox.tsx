@@ -7,7 +7,7 @@ interface RequiredCheckboxProps {
     onRequiredCheck: (Checkboxd: boolean) => void;
 }
 
-export class RequiredCheckbox extends React.Component<RequiredCheckboxProps, void> {
+export class RequiredCheckbox extends React.PureComponent<RequiredCheckboxProps, void> {
     @bind
     private requiredCheckbox(event: React.MouseEvent<{}>, Checkboxd: boolean): void {
         this.props.onRequiredCheck(Checkboxd);

@@ -13,7 +13,24 @@ interface LimitInputState {
     errorText?: string;
 }
 
-export class LimitInput extends React.Component<LimitInputProps, LimitInputState> {
+namespace errors {
+    export const invalidSymbol: 'invalidSymbol' = 'invalidSymbol';
+    export const incompleteNumber: 'incompleteNumber' = 'incompleteNumber';
+    export const singleMinus: 'singleMinus' = 'singleMinus';
+    export const singleZero: 'singleZero' = 'singleZero';
+    export const singleFloatingPoint: 'singleFloatingPoint' = 'singleFloatingPoint';
+    export const none: 'none' = 'none';
+}
+
+namespace errorTexts {
+    export const invalidSymbol: string = ' must be a valid number';
+    export const incompleteNumber: string = 'Number is incomplete';
+    export const singleMinus: string = 'Minus can be use only for negativity';
+    export const singleZero: string = 'There is already a floating point';
+    export const singleFloatingPoint: string = 'Floating point is expected';
+}
+
+export class LimitInput extends React.PureComponent<LimitInputProps, LimitInputState> {
     private lastValid: number;
 
     @bind
@@ -32,27 +49,28 @@ export class LimitInput extends React.Component<LimitInputProps, LimitInputState
 
     @bind
     private onError(error: NumberInputError): void {
+        const { limit, onInvalidLimit } = this.props;
         let errorText: string = '';
         switch(error) {
-            case 'invalidSymbol':
-                errorText = `${this.props.limit} must be a valid number`;
+            case errors.invalidSymbol:
+                errorText = limit + errorTexts.invalidSymbol;
                 break;
-            case 'incompleteNumber':
-                errorText = 'Number is incomplete';
+            case errors.incompleteNumber:
+                errorText = errorTexts.incompleteNumber;
                 break;
-            case 'singleMinus':
-                errorText = 'Minus can be use only for negativity';
+            case errors.singleMinus:
+                errorText = errorTexts.singleMinus;
                 break;
-            case 'singleFloatingPoint':
-                errorText = 'There is already a floating point';
+            case errors.singleFloatingPoint:
+                errorText = errorTexts.singleFloatingPoint;
                 break;
-            case 'singleZero':
-                errorText = 'Floating point is expected';
+            case errors.singleZero:
+                errorText = errorTexts.singleZero;
                 break;
         }
         this.setState({ errorText: errorText });
-        if(error !== 'none') {
-            this.props.onInvalidLimit();
+        if(error !== errors.none) {
+             onInvalidLimit();
         }
     }
 

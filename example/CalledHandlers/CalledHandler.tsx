@@ -21,13 +21,19 @@ export namespace handlers {
     export const onRequestValue: 'onRequestValue' = 'onRequestValue';
 }
 
-export function CalledHandler(props: CalledHandlerProps): JSX.Element {
-    const { handler, argument } = props;
-    switch(handler) {
-        case handlers.onError: return <OnError argument={argument} />;
-        case handlers.onChange: return <OnChange argument={argument} />;
-        case handlers.onValid: return <OnValid argument={argument} />;
-        case handlers.onRequestValue: return <OnRequestValue argument={argument} />;
+export class CalledHandler extends React.PureComponent<CalledHandlerProps, void> {
+    public constructor(props: CalledHandlerProps) {
+        super(props);
+    }
+
+    public render(): JSX.Element {
+        const { handler, argument } = this.props;
+        switch(handler) {
+            case handlers.onError: return <OnError argument={argument} />;
+            case handlers.onChange: return <OnChange argument={argument} />;
+            case handlers.onValid: return <OnValid argument={argument} />;
+            case handlers.onRequestValue: return <OnRequestValue argument={argument} />;
+        }
     }
 }
 

@@ -34,7 +34,7 @@ const CodeStyle: React.CSSProperties = { width: CodeSize, height: CodeSize, colo
 registerLanguage(typescript, ts);
 registerLanguage(javascript, js);
 
-export class SourceCode extends React.Component<SourceCodeProps, void> {
+export class SourceCode extends React.PureComponent<SourceCodeProps, void> {
     @bind
     private changeLanguage(event: TouchTapEvent, index: number, value: string): void {
         this.props.onLanguageChange(value);

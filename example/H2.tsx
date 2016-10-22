@@ -5,13 +5,20 @@ interface H2Props {
     label: string;
 }
 
-export default function H2(props: H2Props): JSX.Element {
-    return (
-        <h2>
-            <a id={props.id} className="anchor" href={`#${props.id}`} aria-hidden="true">
-                <span aria-hidden="true" className="octicon octicon-link" />
-            </a>
-            {props.label}
-        </h2>
-    );
+export default class H2 extends React.PureComponent<H2Props, void> {
+    public constructor(props: H2Props) {
+        super(props);
+    }
+
+    public render(): JSX.Element {
+        const { id, label } = this.props;
+        return (
+            <h2>
+                <a id={id} className="anchor" href={`#${id}`} aria-hidden="true">
+                    <span aria-hidden="true" className="octicon octicon-link" />
+                </a>
+                {label}
+            </h2>
+        );
+    }
 }
