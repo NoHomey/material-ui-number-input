@@ -173,3 +173,9 @@
 
 - Fixing `'allow'` to properly be masked as `'min'` when error is emitted `onBlur`.
 - If there is error `onBlur` it will be emitted no matter dose the strategy is `'warn'` or `'allow'`.
+
+## [v5.0.12](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.12)
+
+### Bug fixes
+
+- Fixing, in addition of `value` the following `props` are checked for changes: `min`, `max`,`required` and `strategy` before take decision to call `onError`, `onValid` and `onRequestValue` accordingly when `componentWillReceiveProps`.

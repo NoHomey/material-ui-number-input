@@ -252,6 +252,11 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         return (error === errorNames.none) && (overridenError !== errorNames.allow);
     }
 
+    private shouldTakeActionForValue(props: NumberInputProps): boolean {
+        const { min, max, required, strategy } = this.props;
+        return (min !== props.min) || (max !== props.max) || (required !== props.required) || (strategy !== props.strategy);
+    }
+
     private takeActionForValue(value: string): void {
         const { strategy, onRequestValue, value: propsValue } = this.props;
         const error: NumberInputErrorExtended = this.validateValue(value);
@@ -324,8 +329,8 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     }
 
     public componentWillReceiveProps(props: NumberInputProps): void {
-        const { value } = props;
-        if(value !== this.props.value) {
+        const { value } = this.props;
+        if((value !== props.value) || this.shouldTakeActionForValue(props)) {
             this.takeActionForValue(value!);
         }
     }
