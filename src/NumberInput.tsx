@@ -322,7 +322,9 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     public componentDidMount(): void {
         const { props } = this;
         const { value } = props;
-        this.takeActionForValue(typeof value === typeofs.stringType ? value! : this.getInputNode().value, props);
+        if(typeof value === typeofs.stringType) {
+            this.takeActionForValue(value!, props);
+        }
     }
 
     public componentWillReceiveProps(props: NumberInputProps): void {
