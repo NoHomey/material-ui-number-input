@@ -6,7 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/material-ui": "^0.15.37",
-    "@types/react": "^0.14.41",
+    "@types/react": "^0.14.42",
     "@types/react-dom": "^0.14.18",
     "@types/react-tap-event-plugin": "0.0.30",
     "bind-decorator": "^1.0.10",
@@ -17,8 +17,8 @@
     "react-syntax-highlighter": "^2.10.0",
     "react-tap-event-plugin": "^1.0.0",
     "ts-loader": "^0.9.5",
-    "typescript": "^2.0.3",
-    "webpack": "^1.13.2"
+    "typescript": "^2.0.6",
+    "webpack": "^1.13.3"
   },
   "scripts": {
     "build": "webpack"
