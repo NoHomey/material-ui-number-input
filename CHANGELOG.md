@@ -198,3 +198,9 @@
 ### Bug fixes
 
 - Fixing `Cannot resolve module 'material-ui-number-input'` due to `$ npm run npm` command has not been ran before releasing previos version.
+
+## [v5.0.16](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.16)
+
+### Properties
+
+- Displayed by the browser keyboard is now configurable (adding support for the `input` `inputMode` prop)

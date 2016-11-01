@@ -25,6 +25,7 @@ export interface NumberInputProps {
     disabled?: boolean;
     floatingLabelFixed?: boolean;
     id?: string;
+    inputMode?: string;
     name?: string;
     fullWidth?: boolean;
     underlineShow?: boolean;
@@ -201,6 +202,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         hintStyle: React.PropTypes.object,
         hintText: React.PropTypes.node,
         id: React.PropTypes.string,
+        inputMode: React.PropTypes.string,
         inputStyle: React.PropTypes.object,
         name: React.PropTypes.string,
         onBlur: React.PropTypes.func,
@@ -322,9 +324,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     public componentDidMount(): void {
         const { props } = this;
         const { value } = props;
-        if(typeof value === typeofs.stringType) {
-            this.takeActionForValue(value!, props);
-        }
+        this.takeActionForValue(typeof value === typeofs.stringType ? value! : this.getInputNode().value, props);
     }
 
     public componentWillReceiveProps(props: NumberInputProps): void {
