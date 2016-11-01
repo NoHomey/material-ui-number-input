@@ -4250,7 +4250,7 @@
 	var StrategySelectField_1 = __webpack_require__(535);
 	var CalledHandlers_1 = __webpack_require__(536);
 	var LimitInput_1 = __webpack_require__(545);
-	var RequiredCheckbox_1 = __webpack_require__(548);
+	var SimpleCheckbox_1 = __webpack_require__(548);
 	var MuiThemeProvider_1 = __webpack_require__(554);
 	var FlatButton_1 = __webpack_require__(601);
 	var H2_1 = __webpack_require__(604);
@@ -4263,6 +4263,7 @@
 	    propsDefaults.onError = 'this.onError';
 	    propsDefaults.onRequestValue = 'this.onRequestValue';
 	    propsDefaults.errorStyle = '{ color: orange500 }';
+	    propsDefaults.inputMode = '"numeric';
 	})(propsDefaults || (propsDefaults = {}));
 	var strategies;
 	(function (strategies) {
@@ -4281,6 +4282,8 @@
 	    constProps.ReactIveProps = 'React-ive Props';
 	    constProps.min = 'min';
 	    constProps.max = 'max';
+	    constProps.required = 'required';
+	    constProps.numberPad = 'number pad';
 	    constProps.numberInputDemo = 'number-input-demo';
 	    constProps.NumberInputDemo = 'NumberInput Demo';
 	    constProps.reactIveNumberInput = 'reactive-number-input';
@@ -4296,10 +4299,11 @@
 	var constants;
 	(function (constants) {
 	    constants.none = 'none';
+	    constants.numeric = 'numeric';
 	    constants.zero = 0;
 	    constants.quote = '"';
 	})(constants || (constants = {}));
-	var allProps = ['floatingLabelText', 'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required'];
+	var allProps = ['inputMode', 'floatingLabelText', 'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required'];
 	function serializeProp(prop, value) {
 	    return value === true ? prop : prop + "=" + (value[constants.zero] !== constants.quote ? "{" + value + "}" : value + constants.quote);
 	}
@@ -4346,6 +4350,7 @@
 	                onError: 'this.onError',
 	                strategy: constants.quote + StrategySelectField_1.allow,
 	                required: true,
+	                inputMode: null
 	            },
 	            calledHandlersStack: []
 	        };
@@ -4396,6 +4401,16 @@
 	        }
 	        this.setState({ props: props });
 	    };
+	    ReactiveExample.prototype.onNumberPadCheck = function (numberPad) {
+	        var props = this.state.props;
+	        if (numberPad) {
+	            props.inputMode = propsDefaults.inputMode;
+	        }
+	        else {
+	            props.inputMode = null;
+	        }
+	        this.setState({ props: props });
+	    };
 	    ReactiveExample.prototype.onValidMin = function (min) {
 	        var props = this.state.props;
 	        props.min = min;
@@ -4428,6 +4443,7 @@
 	        var isStrategyWarn = strategy === strategies.warn;
 	        var isStrategyNotIngore = isStrategyAllow || isStrategyWarn;
 	        var isError = isStrategyNotIngore && (error !== constants.none);
+	        var isNumberPad = props.inputMode === null ? false : true;
 	        var errorText = isError ? (isStrategyWarn ? errorTexts.warn : errorTexts.allow) + error : '';
 	        var errorStyle = { color: isStrategyWarn ? colors_1.orange500 : colors_1.red500 };
 	        return (React.createElement(MuiThemeProvider_1.default, null, 
@@ -4440,10 +4456,11 @@
 	                    React.createElement("br", null), 
 	                    React.createElement(LimitInput_1.default, {limit: constProps.max, onValidLimit: this.onValidMax, onInvalidLimit: this.onInValidMax}), 
 	                    React.createElement("br", null), 
-	                    React.createElement(RequiredCheckbox_1.default, {required: Boolean(props.required), onRequiredCheck: this.onRequiredCheck})), 
+	                    React.createElement(SimpleCheckbox_1.default, {label: constProps.required, checked: Boolean(props.required), onCheck: this.onRequiredCheck}), 
+	                    React.createElement(SimpleCheckbox_1.default, {label: constProps.numberPad, checked: isNumberPad, onCheck: this.onNumberPadCheck})), 
 	                React.createElement(H2_1.default, {id: constProps.numberInputDemo, label: constProps.NumberInputDemo}), 
 	                React.createElement("div", null, 
-	                    React.createElement(material_ui_number_input_1.NumberInput, {id: constProps.reactIveNumberInput, floatingLabelText: constProps.NumberInput, value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, onValid: this.onValid, onRequestValue: this.onRequestValue, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
+	                    React.createElement(material_ui_number_input_1.NumberInput, {inputMode: isNumberPad ? constants.numeric : undefined, id: constProps.reactIveNumberInput, floatingLabelText: constProps.NumberInput, value: value, strategy: strategy, required: props.required, min: props.min, max: props.max, onChange: this.onChange, onValid: this.onValid, onRequestValue: this.onRequestValue, errorText: errorText, onError: this.onError, errorStyle: errorStyle}), 
 	                    React.createElement(material_ui_number_input_1.NumberInput, {id: constProps.validNumberInput, floatingLabelText: constProps.ValidNumber, value: String(valid)})), 
 	                React.createElement(H2_1.default, {id: constProps.calledHandlers, label: constProps.CalledHandlers}), 
 	                React.createElement("div", null, 
@@ -4474,6 +4491,9 @@
 	    __decorate([
 	        bind_decorator_1.default
 	    ], ReactiveExample.prototype, "onRequiredCheck", null);
+	    __decorate([
+	        bind_decorator_1.default
+	    ], ReactiveExample.prototype, "onNumberPadCheck", null);
 	    __decorate([
 	        bind_decorator_1.default
 	    ], ReactiveExample.prototype, "onValidMin", null);
@@ -53243,6 +53263,7 @@
 	        hintStyle: React.PropTypes.object,
 	        hintText: React.PropTypes.node,
 	        id: React.PropTypes.string,
+	        inputMode: React.PropTypes.string,
 	        inputStyle: React.PropTypes.object,
 	        name: React.PropTypes.string,
 	        onBlur: React.PropTypes.func,
@@ -53307,25 +53328,26 @@
 	var React = __webpack_require__(1);
 	var Checkbox_1 = __webpack_require__(549);
 	var bind_decorator_1 = __webpack_require__(534);
-	var RequiredCheckbox = (function (_super) {
-	    __extends(RequiredCheckbox, _super);
-	    function RequiredCheckbox(props, state) {
+	var SimpleCheckbox = (function (_super) {
+	    __extends(SimpleCheckbox, _super);
+	    function SimpleCheckbox(props, state) {
 	        _super.call(this, props);
 	    }
-	    RequiredCheckbox.prototype.requiredCheckbox = function (event, Checkboxd) {
-	        this.props.onRequiredCheck(Checkboxd);
+	    SimpleCheckbox.prototype.onCheck = function (event, checked) {
+	        this.props.onCheck(checked);
 	    };
-	    RequiredCheckbox.prototype.render = function () {
-	        return React.createElement(Checkbox_1.default, {label: "required", checked: this.props.required, onCheck: this.requiredCheckbox});
+	    SimpleCheckbox.prototype.render = function () {
+	        var _a = this.props, label = _a.label, checked = _a.checked;
+	        return React.createElement(Checkbox_1.default, {label: label, checked: checked, onCheck: this.onCheck});
 	    };
 	    __decorate([
 	        bind_decorator_1.default
-	    ], RequiredCheckbox.prototype, "requiredCheckbox", null);
-	    return RequiredCheckbox;
+	    ], SimpleCheckbox.prototype, "onCheck", null);
+	    return SimpleCheckbox;
 	}(React.PureComponent));
-	exports.RequiredCheckbox = RequiredCheckbox;
+	exports.SimpleCheckbox = SimpleCheckbox;
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = RequiredCheckbox;
+	exports.default = SimpleCheckbox;
 
 
 /***/ },

@@ -3,7 +3,7 @@ import { SourceCode, javascript, typescript } from './SourceCode';
 import { StrategySelectField, Strategy, allow } from './StrategySelectField';
 import { CalledHandlersStack, CalledHandlers, handlers } from './CalledHandlers/CalledHandlers';
 import LimitInput from './LimitInput';
-import RequiredCheckbox from './RequiredCheckbox';
+import SimpleCheckbox from './SimpleCheckbox';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import H2 from './H2';
@@ -16,6 +16,7 @@ namespace propsDefaults {
     export const onError: string = 'this.onError';
     export const onRequestValue: string = 'this.onRequestValue';
     export const errorStyle: string = '{ color: orange500 }';
+    export const inputMode: string = '"numeric';
 }
 
 namespace strategies {
@@ -34,6 +35,8 @@ namespace constProps {
     export const ReactIveProps: string = 'React-ive Props';
     export const min: string = 'min';
     export const max: string = 'max';
+    export const required: string = 'required';
+    export const numberPad: string = 'number pad';
     export const numberInputDemo: string = 'number-input-demo';
     export const NumberInputDemo: string = 'NumberInput Demo';
     export const reactIveNumberInput: string = 'reactive-number-input';
@@ -49,11 +52,12 @@ namespace constProps {
 
 namespace constants {
     export const none: 'none' = 'none';
+    export const numeric: string = 'numeric';
     export const zero: number = 0;
     export const quote: string = '"';
 }
 
-const allProps: Array<string> = ['floatingLabelText' ,'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required']; 
+const allProps: Array<string> = ['inputMode', 'floatingLabelText' ,'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required']; 
 
 function serializeProp(prop: string, value: any): string {
     return value === true ? prop : `${prop}=${value[constants.zero] !== constants.quote ? `{${value}}` : value + constants.quote}`;
@@ -195,9 +199,20 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
     private onRequiredCheck(required: boolean): void {
         const { props } = this.state;
         if(required) {
-            props.required = required
+            props.required = required;
         } else {
             props.required = null;
+        }
+        this.setState({ props: props });
+    }
+
+    @bind
+    private onNumberPadCheck(numberPad: boolean): void {
+        const { props } = this.state;
+        if(numberPad) {
+            props.inputMode = propsDefaults.inputMode;
+        } else {
+            props.inputMode = null;
         }
         this.setState({ props: props });
     }
@@ -255,6 +270,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                 onError: 'this.onError',
                 strategy: constants.quote + allow,
                 required: true,
+                inputMode: null
             },
             calledHandlersStack: []
         };
@@ -270,6 +286,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         const isStrategyWarn: boolean = strategy === strategies.warn;
         const isStrategyNotIngore: boolean = isStrategyAllow || isStrategyWarn;
         const isError: boolean = isStrategyNotIngore && (error !== constants.none);
+        const isNumberPad: boolean = props.inputMode === null ? false : true;
         const errorText: string = isError ? (isStrategyWarn ? errorTexts.warn : errorTexts.allow) + error : '';
         const errorStyle: React.CSSProperties = { color: isStrategyWarn ? orange500 : red500 };
         return (
@@ -283,11 +300,13 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                         <br />
                         <LimitInput limit={constProps.max} onValidLimit={this.onValidMax} onInvalidLimit={this.onInValidMax} />
                         <br />
-                        <RequiredCheckbox required={Boolean(props.required)} onRequiredCheck={this.onRequiredCheck} />
+                        <SimpleCheckbox label={constProps.required} checked={Boolean(props.required)} onCheck={this.onRequiredCheck} />
+                        <SimpleCheckbox label={constProps.numberPad} checked={isNumberPad} onCheck={this.onNumberPadCheck} />
                     </div>
                     <H2 id={constProps.numberInputDemo} label={constProps.NumberInputDemo} />
                     <div>
                         <NumberInput
+                            inputMode={isNumberPad ? constants.numeric : undefined}
                             id={constProps.reactIveNumberInput}
                             floatingLabelText={constProps.NumberInput}
                             value={value}
