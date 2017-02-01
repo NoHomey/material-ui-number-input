@@ -26,7 +26,7 @@ The better TextField for number inputs.
 | strategy                | *'ignore' \| 'warn' \| 'allow'* | *'allow'* | ❌       | Strategy to use when user presses key and when value prop change it's value. |
 | min                     | *number*   |           | ❌         | The number used as minimum value limit. Must be less than max. |
 | max                     | *number*   |           | ❌         | The number used as maximum value limit. Must be greater than min. |
-| reqired                 | *bool*     | *false*   | ❌         | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
+| required                 | *bool*     | *false*   | ❌         | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
 | value                   | *string*   |           | ✓        | The value of the input field. |
 | onChange                | *function* |           | ✓        | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
 | onError                 | *function* |         | ❌         | Callback function that is fired when input error status changes and strategy is not 'ignore'.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') => void`. |
