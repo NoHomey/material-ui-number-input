@@ -23,7 +23,7 @@ const emptyMessage: string = 'No Handler has been called.';
 export class CalledHandlers extends React.Component<CalledHandlersProps, void> {
     private length: number;
 
-    public constructor(props: CalledHandlerProps) {
+    public constructor(props: CalledHandlersProps) {
         super(props);
         this.length = 0;
     }
