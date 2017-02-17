@@ -2,15 +2,12 @@ import * as React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler, NumberInputValidHandler, NumberInputReqestValueHandller } from './../src/index';
 
-const { div, link, input } = React.DOM;
-
 interface DemoState {
     value?: string;
     errorText?: string;
 }
 
 export default class Demo extends React.Component<void, DemoState> {
-    private onKeyDown: React.KeyboardEventHandler;
     private onChange: NumberInputChangeHandler;
     private onError: NumberInputErrorHandler;
     private onValid: NumberInputValidHandler;
@@ -19,16 +16,13 @@ export default class Demo extends React.Component<void, DemoState> {
     public constructor(props: void) {
         super(props);
         this.state = { value: '30' };
-        this.onKeyDown = (event: React.KeyboardEvent): void => {
-            console.log(`onKeyDown ${event.key}`);
-        }
-        this.onChange = (event: React.FormEvent, value: string): void => {
+        this.onChange = (event: React.FormEvent<string>, value: string): void => {
             const e: EventValue = event;
             console.log(`onChange ${e.target.value}, ${value}`);
             this.setState({ value: value });
         };
         this.onError = (error: NumberInputError): void => {
-            let errorText: string;
+            let errorText: string = '';
             switch(error) {
                 case 'required':
                     errorText = 'This field is required';
@@ -67,7 +61,7 @@ export default class Demo extends React.Component<void, DemoState> {
     }
 
     public render(): JSX.Element {
-        const { state, onChange, onError, onValid, onKeyDown, onRequestValue } = this;
+        const { state, onChange, onError, onValid, onRequestValue } = this;
         const { value, errorText } = state;
         return (
             <MuiThemeProvider>
@@ -84,8 +78,7 @@ export default class Demo extends React.Component<void, DemoState> {
                         onError={onError}
                         onValid={onValid}
                         onRequestValue={onRequestValue}
-                        onChange={onChange}
-                        onKeyDown={onKeyDown} />
+                        onChange={onChange} />
                 </div>
             </MuiThemeProvider>
         );

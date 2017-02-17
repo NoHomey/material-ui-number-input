@@ -27,16 +27,16 @@
     "url": "git+https://github.com/NoHomey/material-ui-number-input.git"
   },
   "peerDependencies": {
-    "material-ui": "^0.16.1",
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "react-tap-event-plugin": "^1.0.0"
+    "material-ui": "^0.17.0",
+    "react": "^15.4.0",
+    "react-dom": "^15.4.0",
+    "react-tap-event-plugin": "^2.0.1"
   },
   "devDependencies": {
-    "material-ui": "^0.16.1",
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "react-tap-event-plugin": "^1.0.0",
+    "material-ui": "^0.17.0",
+    "react": "^15.4.0",
+    "react-dom": "^15.4.0",
+    "react-tap-event-plugin": "^2.0.1",
     "express": "^4.14.0",
     "html-webpack-plugin": "^2.24.0",
     "react-hot-loader": "^1.3.0",
@@ -45,15 +45,15 @@
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-hot-middleware": "^2.13.0",
-    "@types/node": "^6.0.45",
-    "@types/react": "^0.14.41",
-    "@types/react-dom": "^0.14.18",
+    "@types/node": "^7.0.5",
+    "@types/react": "^15.0.10",
+    "@types/react-dom": "^0.14.23",
     "@types/react-tap-event-plugin": "^0.0.30",
-    "@types/material-ui": "^0.15.37",
-    "@types/object-assign": "^4.0.29"
+    "@types/material-ui": "^0.16.51",
+    "@types/object-assign": "^4.0.30"
   },
   "dependencies": {
     "bind-decorator": "^1.0.10",
-    "object-assign": "^4.1.0"
+    "object-assign": "^4.1.1"
   }
 }
