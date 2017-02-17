@@ -15,7 +15,7 @@ export default class Demo extends React.Component<void, DemoState> {
 
     public constructor(props: void) {
         super(props);
-        this.state = { value: '30' };
+        this.state = { value: '10' };
         this.onChange = (event: React.FormEvent<string>, value: string): void => {
             const e: EventValue = event;
             console.log(`onChange ${e.target.value}, ${value}`);
@@ -71,8 +71,8 @@ export default class Demo extends React.Component<void, DemoState> {
                         id="num"
                         required
                         value={value}
-                        min={11}
-                        max={150}
+                        min={-20}
+                        max={20}
                         strategy="ignore"
                         errorText={errorText}
                         onError={onError}

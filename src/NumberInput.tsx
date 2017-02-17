@@ -142,7 +142,8 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
                             default: return errorNames.none;
                         }
                     } else {
-                        return (strategy !== strategies.allow) && (value === constants.dash) && (min >= constants.zero) ? errorNames.limit : errorNames.incompleteNumber;
+                        return (strategy !== strategies.allow) && (value === constants.dash) && (min >= constants.zero)
+                            ? errorNames.limit : (min < 0 ? errorNames.allow : errorNames.incompleteNumber);
                     }
                 } else {
                     switch(value[value.length - constants.one]) {
@@ -162,7 +163,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         switch(error) {
             case errorNames.min: return String(props.min);
             case errorNames.max: return String(props.max);
-            default: return props.strategy !== strategies.allow && value === constants.dash ? constants.emptyString : value; 
+            default: return props.strategy !== strategies.allow && value === constants.dash && props.min >= 0 ? constants.emptyString : value; 
         }
     }
 
