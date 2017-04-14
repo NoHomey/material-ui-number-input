@@ -204,3 +204,9 @@
 ### Properties
 
 - Displayed by the browser keyboard is now configurable (adding support for the `input` `inputMode` prop)
+
+## [v5.0.17](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.17)
+
+### Bug fixes
+
+- Allowing negative min values, closes #7
