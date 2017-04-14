@@ -115,10 +115,10 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
 
     private static validateNumberValue(value: number, props: NumberInputProps): number {
         const { max, min } = props;
-        if((typeof max === typeofs.numberType) && (value > max)) {
+        if((typeof max === typeofs.numberType) && (value > max!)) {
             return constants.one;
         }
-        if((typeof min === typeofs.numberType) && (value < min)) {
+        if((typeof min === typeofs.numberType) && (value < min!)) {
             return constants.minusOne;
         }
         return constants.zero;
@@ -138,12 +138,12 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
                         const whole: number = decimal ? Number(value.substring(constants.zero, floatingPoint)) : min!;
                         switch(NumberInput.validateNumberValue(numberValue, props)) {
                             case constants.one: return errorNames.max;
-                            case constants.minusOne: return ((strategy !== strategies.allow) && (min > constants.zero) && (numberValue > constants.zero) && (!decimal || (decimal && (whole > min)))) ? errorNames.allow : errorNames.min;
+                            case constants.minusOne: return ((strategy !== strategies.allow) && (min! > constants.zero) && (numberValue > constants.zero) && (!decimal || (decimal && (whole > min!)))) ? errorNames.allow : errorNames.min;
                             default: return errorNames.none;
                         }
                     } else {
-                        return (strategy !== strategies.allow) && (value === constants.dash) && (min >= constants.zero)
-                            ? errorNames.limit : (min < 0 ? errorNames.allow : errorNames.incompleteNumber);
+                        return (strategy !== strategies.allow) && (value === constants.dash) && (min! >= constants.zero)
+                            ? errorNames.limit : (min! < 0 ? errorNames.allow : errorNames.incompleteNumber);
                     }
                 } else {
                     switch(value[value.length - constants.one]) {
@@ -163,7 +163,7 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
         switch(error) {
             case errorNames.min: return String(props.min);
             case errorNames.max: return String(props.max);
-            default: return props.strategy !== strategies.allow && value === constants.dash && props.min >= 0 ? constants.emptyString : value; 
+            default: return props.strategy !== strategies.allow && value === constants.dash && props.min! >= 0 ? constants.emptyString : value; 
         }
     }
 
@@ -190,7 +190,6 @@ export class NumberInput extends React.Component<NumberInputProps, void> {
     private static deleteProps: Array<string> = ['strategy', 'onError', 'onValid', 'onRequestValue'];
 
     public static propTypes: React.ValidationMap<NumberInputProps> = {
-        children: React.PropTypes.node,
         className: React.PropTypes.string,
         disabled: React.PropTypes.bool,
         errorStyle: React.PropTypes.object,
