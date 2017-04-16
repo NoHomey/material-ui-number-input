@@ -210,3 +210,13 @@
 ### Bug fixes
 
 - Allowing negative min values, closes #7
+
+## [v5.0.18](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.18)
+
+- Syncing npm and github versions.
+
+## [v5.0.19](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.19)
+
+### Bug fixes
+
+- Fixing empty npm package, closes #9
