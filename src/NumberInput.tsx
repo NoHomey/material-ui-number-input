@@ -97,7 +97,7 @@ namespace constants {
     export const boolFalse: boolean = false;
 }
 
-export class NumberInput extends React.Component<NumberInputProps, {}> {
+export class NumberInput extends React.Component<NumberInputProps, Object> {
     private static getValidValue(value: string): string {
         const match: RegExpMatchArray | null = value.match(NumberInput.allowed);
         return match !== null ? (match.index === constants.zero ? match[constants.zero] : match.join(constants.emptyString)) : constants.emptyString;

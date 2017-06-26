@@ -7,13 +7,13 @@ interface DemoState {
     errorText?: string;
 }
 
-export default class Demo extends React.Component<{}, DemoState> {
+export default class Demo extends React.Component<Object, DemoState> {
     private onChange: NumberInputChangeHandler;
     private onError: NumberInputErrorHandler;
     private onValid: NumberInputValidHandler;
     private onRequestValue: NumberInputReqestValueHandller;
 
-    public constructor(props: {}) {
+    public constructor(props: Object) {
         super(props);
         this.state = { value: '10' };
         this.onChange = (event: React.FormEvent<string>, value: string): void => {
@@ -23,7 +23,7 @@ export default class Demo extends React.Component<{}, DemoState> {
         };
         this.onError = (error: NumberInputError): void => {
             let errorText: string = '';
-            switch(error) {
+            switch (error) {
                 case 'required':
                     errorText = 'This field is required';
                     break;
@@ -66,7 +66,7 @@ export default class Demo extends React.Component<{}, DemoState> {
         return (
             <MuiThemeProvider>
                 <div>
-                    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css"/>
+                    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css" />
                     <NumberInput
                         id="num"
                         required
