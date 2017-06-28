@@ -23,7 +23,7 @@ export default class Demo extends React.Component<Object, DemoState> {
         };
         this.onError = (error: NumberInputError): void => {
             let errorText: string = '';
-            switch (error) {
+            switch(error) {
                 case 'required':
                     errorText = 'This field is required';
                     break;
@@ -66,7 +66,7 @@ export default class Demo extends React.Component<Object, DemoState> {
         return (
             <MuiThemeProvider>
                 <div>
-                    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css" />
+                    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css"/>
                     <NumberInput
                         id="num"
                         required
