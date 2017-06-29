@@ -7,13 +7,13 @@ interface DemoState {
     errorText?: string;
 }
 
-export default class Demo extends React.Component<void, DemoState> {
+export default class Demo extends React.Component<Object, DemoState> {
     private onChange: NumberInputChangeHandler;
     private onError: NumberInputErrorHandler;
     private onValid: NumberInputValidHandler;
     private onRequestValue: NumberInputReqestValueHandller;
 
-    public constructor(props: void) {
+    public constructor(props: Object) {
         super(props);
         this.state = { value: '10' };
         this.onChange = (event: React.FormEvent<string>, value: string): void => {
