@@ -220,3 +220,13 @@
 ### Bug fixes
 
 - Fixing empty npm package, closes #9
+
+## [v5.0.20](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.20)
+
+- Dummy version
+
+## [v5.0.21](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.21)
+
+- Shipping #13 (Fixes #12)
+
+
