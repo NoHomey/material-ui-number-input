@@ -1,6 +1,6 @@
 import * as React from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { NumberInput, NumberInputChangeHandler, NumberInputError, EventValue, NumberInputErrorHandler, NumberInputValidHandler, NumberInputReqestValueHandller } from './../src/index';
+import { NumberInput, NumberInputChangeHandler, NumberInputError, NumberInputErrorHandler, NumberInputValidHandler, NumberInputReqestValueHandller } from './../src/index';
 
 interface DemoState {
     value?: string;
@@ -16,9 +16,8 @@ export default class Demo extends React.Component<Object, DemoState> {
     public constructor(props: Object) {
         super(props);
         this.state = { value: '10' };
-        this.onChange = (event: React.FormEvent<string>, value: string): void => {
-            const e: EventValue = event;
-            console.log(`onChange ${e.target.value}, ${value}`);
+        this.onChange = (event: React.FormEvent<HTMLInputElement>, value: string): void => {
+            console.log(`onChange ${event.currentTarget.value}, ${value} type: ${typeof value}`);
             this.setState({ value: value });
         };
         this.onError = (error: NumberInputError): void => {

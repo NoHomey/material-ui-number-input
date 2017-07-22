@@ -14,12 +14,6 @@ export type NumberInputErrorHandler = (error: NumberInputError) => void;
 
 export type NumberInputReqestValueHandller = (value: string) => void;
 
-export interface EventValue {
-    target: {
-        value?: string
-    }
-}
-
 export interface NumberInputProps {
     className?: string;
     disabled?: boolean;
@@ -47,13 +41,13 @@ export interface NumberInputProps {
     underlineDisabledStyle?: React.CSSProperties;
     underlineFocusStyle?: React.CSSProperties;
     underlineStyle?: React.CSSProperties;
-    onBlur?: React.FocusEventHandler<{}>;
+    onBlur?: React.FocusEventHandler<HTMLInputElement>;
     onChange?: NumberInputChangeHandler;
     onError?: NumberInputErrorHandler;
     onValid?: NumberInputValidHandler;
     onRequestValue?: NumberInputReqestValueHandller;
-    onFocus?: React.FocusEventHandler<{}>;
-    onKeyDown?: React.KeyboardEventHandler<{}>;
+    onFocus?: React.FocusEventHandler<HTMLInputElement>;
+    onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
 export type NumberInputErrorExtended = NumberInputError | 'limit' | 'allow';
@@ -278,9 +272,8 @@ export class NumberInput extends React.Component<NumberInputProps, Object> {
     } 
 
     @bind
-    private onChange(event: React.FormEvent<{}>): void {
-        const eventValue: EventValue = event;
-        const { value } = eventValue.target;
+    private onChange(event: React.FormEvent<HTMLInputElement>): void {
+        const { value } = event.currentTarget;
         const { onChange } = this.props;
         if(onChange) {
             onChange(event, value!);
@@ -291,11 +284,10 @@ export class NumberInput extends React.Component<NumberInputProps, Object> {
     }
 
     @bind
-    private onBlur(event: React.FocusEvent<{}>): void {
-        const eventValue: EventValue = event;
+    private onBlur(event: React.FocusEvent<HTMLInputElement>): void {
+        const { value } = event.currentTarget;
         const { props } = this;
         const { onBlur } = props;
-        const { value } = eventValue.target;
         const error: NumberInputError = NumberInput.overrideError(NumberInput.revertAllowToMin(NumberInput.validateValue(value!, props)), props);
         this.emitEvents(error, value!, constants.boolFalse, props);
         if(onBlur) {
