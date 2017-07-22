@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as PropTypes from "prop-types";
 import TextField from 'material-ui/TextField';
 import ObjectAssign = require('object-assign');
 import bind from 'bind-decorator';
@@ -6,7 +7,7 @@ import bind from 'bind-decorator';
 export type NumberInputError = 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus'
     | 'singleFloatingPoint' | 'singleZero'| 'min' | 'max' | 'required' | 'clean';
 
-export type NumberInputChangeHandler = (event: React.FormEvent<{}>, value: string) => void;
+export type NumberInputChangeHandler = (event: React.FormEvent<HTMLInputElement>, value: string) => void;
 
 export type NumberInputValidHandler = (valid: number) => void;
 
@@ -184,43 +185,43 @@ export class NumberInput extends React.Component<NumberInputProps, Object> {
     private static deleteProps: Array<string> = ['strategy', 'onError', 'onValid', 'onRequestValue'];
 
     public static propTypes: React.ValidationMap<NumberInputProps> = {
-        className: React.PropTypes.string,
-        disabled: React.PropTypes.bool,
-        errorStyle: React.PropTypes.object,
-        errorText: React.PropTypes.node,
-        floatingLabelFixed: React.PropTypes.bool,
-        floatingLabelFocusStyle: React.PropTypes.object,
-        floatingLabelStyle: React.PropTypes.object,
-        floatingLabelText: React.PropTypes.node,
-        fullWidth: React.PropTypes.bool,
-        hintStyle: React.PropTypes.object,
-        hintText: React.PropTypes.node,
-        id: React.PropTypes.string,
-        inputMode: React.PropTypes.string,
-        inputStyle: React.PropTypes.object,
-        name: React.PropTypes.string,
-        onBlur: React.PropTypes.func,
-        onChange: React.PropTypes.func,
-        onFocus: React.PropTypes.func,
-        onValid: React.PropTypes.func,
-        onError: React.PropTypes.func,
-        onRequestValue: React.PropTypes.func,
-        onKeyDown: React.PropTypes.func,
-        style: React.PropTypes.object,
-        underlineDisabledStyle: React.PropTypes.object,
-        underlineFocusStyle: React.PropTypes.object,
-        underlineShow: React.PropTypes.bool,
-        underlineStyle: React.PropTypes.object,
-        defaultValue: React.PropTypes.number,
-        min: React.PropTypes.number,
-        max: React.PropTypes.number,
-        required: React.PropTypes.bool,
-        strategy: React.PropTypes.oneOf([
+        className: PropTypes.string,
+        disabled: PropTypes.bool,
+        errorStyle: PropTypes.object,
+        errorText: PropTypes.node,
+        floatingLabelFixed: PropTypes.bool,
+        floatingLabelFocusStyle: PropTypes.object,
+        floatingLabelStyle: PropTypes.object,
+        floatingLabelText: PropTypes.node,
+        fullWidth: PropTypes.bool,
+        hintStyle: PropTypes.object,
+        hintText: PropTypes.node,
+        id: PropTypes.string,
+        inputMode: PropTypes.string,
+        inputStyle: PropTypes.object,
+        name: PropTypes.string,
+        onBlur: PropTypes.func,
+        onChange: PropTypes.func,
+        onFocus: PropTypes.func,
+        onValid: PropTypes.func,
+        onError: PropTypes.func,
+        onRequestValue: PropTypes.func,
+        onKeyDown: PropTypes.func,
+        style: PropTypes.object,
+        underlineDisabledStyle: PropTypes.object,
+        underlineFocusStyle: PropTypes.object,
+        underlineShow: PropTypes.bool,
+        underlineStyle: PropTypes.object,
+        defaultValue: PropTypes.number,
+        min: PropTypes.number,
+        max: PropTypes.number,
+        required: PropTypes.bool,
+        strategy: PropTypes.oneOf([
             strategies.ignore,
             strategies.warn,
             strategies.allow
         ]),
-        value: React.PropTypes.string
+        value: PropTypes.string
     };
     public static defaultProps: NumberInputProps = {
         required: constants.boolFalse,
