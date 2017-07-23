@@ -229,4 +229,17 @@
 
 - Shipping #13 (Fixes #12)
 
+## [v5.0.22](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.22)
+
+### Bug fixes
+
+- Fixed:
+
+```
+Uncaught TypeError: value.match is not a function
+    at Function.NumberInput.validateValue (NumberInput.js:103)
+```
+
+(closed #14)
+
 
