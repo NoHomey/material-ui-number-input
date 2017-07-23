@@ -242,4 +242,10 @@ Uncaught TypeError: value.match is not a function
 
 (closed #14)
 
+## [v5.0.23](https://github.com/NoHomey/material-ui-number-input/releases/tag/5.0.23)
+
+- Updating package dependencies
+
+- Switching from `React.PropTypes` to `prop-types` package
+
 
