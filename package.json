@@ -3,22 +3,23 @@
   "version": "1.0.0",
   "description": "The <TextField type=\"number\" /> that user really expects.io",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "bind-decorator": "^1.0.11",
+    "material-ui": "^0.18.6",
+    "material-ui-number-input": "^5.0.24",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-syntax-highlighter": "^5.6.2",
+    "react-tap-event-plugin": "^2.0.1"
+  },
   "devDependencies": {
-    "@types/material-ui": "^0.16.51",
-    "@types/react": "^15.0.10",
-    "@types/react-dom": "^0.14.23",
+    "@types/material-ui": "^0.17.17",
+    "@types/react": "^15.0.38",
+    "@types/react-dom": "^15.5.1",
     "@types/react-tap-event-plugin": "0.0.30",
-    "bind-decorator": "^1.0.10",
-    "material-ui": "^0.17.0",
-    "material-ui-number-input": "^5.0.17",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-syntax-highlighter": "^5.0.0",
-    "react-tap-event-plugin": "^2.0.1",
-    "ts-loader": "^0.9.5",
-    "typescript": "^2.0.6",
-    "webpack": "^1.13.3"
+    "ts-loader": "^2.3.1",
+    "typescript": "^2.4.2",
+    "webpack": "^2.2.2"
   },
   "scripts": {
     "build": "webpack"

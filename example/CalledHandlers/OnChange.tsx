@@ -5,7 +5,7 @@ import { HandlerProps } from './CalledHandler';
 const handler: string = 'onChange ';
 const color: string = '#9b59b6';
 
-export default class OnChange extends React.PureComponent<HandlerProps, void> {
+export default class OnChange extends React.PureComponent<HandlerProps> {
     public constructor(props: HandlerProps) {
         super(props);
     }

@@ -16,7 +16,6 @@ namespace propsDefaults {
     export const onError: string = 'this.onError';
     export const onRequestValue: string = 'this.onRequestValue';
     export const errorStyle: string = '{ color: orange500 }';
-    export const inputMode: string = '"numeric';
 }
 
 namespace strategies {
@@ -57,7 +56,7 @@ namespace constants {
     export const quote: string = '"';
 }
 
-const allProps: Array<string> = ['inputMode', 'floatingLabelText' ,'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required']; 
+const allProps: Array<string> = ['floatingLabelText' ,'value', 'onChange', 'onValid', 'onRequestValue', 'errorText', 'errorStyle', 'onError', 'strategy', 'min', 'max', 'required']; 
 
 function serializeProp(prop: string, value: any): string {
     return value === true ? prop : `${prop}=${value[constants.zero] !== constants.quote ? `{${value}}` : value + constants.quote}`;
@@ -147,7 +146,7 @@ interface ReactiveExampleState {
     calledHandlersStack?: CalledHandlersStack;
 }
 
-export default class ReactiveExample extends React.Component<void, ReactiveExampleState> {
+export default class ReactiveExample extends React.Component<{}, ReactiveExampleState> {
     @bind
     private onChange(event: React.FormEvent<{}>, value: string): void {
         const { calledHandlersStack } = this.state;
@@ -207,17 +206,6 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
     }
 
     @bind
-    private onNumberPadCheck(numberPad: boolean): void {
-        const { props } = this.state;
-        if(numberPad) {
-            props.inputMode = propsDefaults.inputMode;
-        } else {
-            props.inputMode = null;
-        }
-        this.setState({ props: props });
-    }
-
-    @bind
     private onValidMin(min: number): void {
         const { props } = this.state;
         props.min = min;
@@ -250,8 +238,8 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         this.setState({ calledHandlersStack: [] });
     }
 
-    public constructor(props: void) {
-        super(props);
+    public constructor() {
+        super();
         this.state = {
             value: '',
             valid: constants.zero,
@@ -269,8 +257,7 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                 errorStyle: null,
                 onError: 'this.onError',
                 strategy: constants.quote + allow,
-                required: true,
-                inputMode: null
+                required: true
             },
             calledHandlersStack: []
         };
@@ -286,7 +273,6 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
         const isStrategyWarn: boolean = strategy === strategies.warn;
         const isStrategyNotIngore: boolean = isStrategyAllow || isStrategyWarn;
         const isError: boolean = isStrategyNotIngore && (error !== constants.none);
-        const isNumberPad: boolean = props.inputMode === null ? false : true;
         const errorText: string = isError ? (isStrategyWarn ? errorTexts.warn : errorTexts.allow) + error : '';
         const errorStyle: React.CSSProperties = { color: isStrategyWarn ? orange500 : red500 };
         return (
@@ -301,12 +287,10 @@ export default class ReactiveExample extends React.Component<void, ReactiveExamp
                         <LimitInput limit={constProps.max} onValidLimit={this.onValidMax} onInvalidLimit={this.onInValidMax} />
                         <br />
                         <SimpleCheckbox label={constProps.required} checked={Boolean(props.required)} onCheck={this.onRequiredCheck} />
-                        <SimpleCheckbox label={constProps.numberPad} checked={isNumberPad} onCheck={this.onNumberPadCheck} />
                     </div>
                     <H2 id={constProps.numberInputDemo} label={constProps.NumberInputDemo} />
                     <div>
                         <NumberInput
-                            inputMode={isNumberPad ? constants.numeric : undefined}
                             id={constProps.reactIveNumberInput}
                             floatingLabelText={constProps.NumberInput}
                             value={value}

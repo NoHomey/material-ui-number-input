@@ -5,7 +5,7 @@ import { HandlerProps } from './CalledHandler';
 const handler: string = 'onError ';
 const color: string = '#ff5733';
 
-export default class OnError extends React.PureComponent<HandlerProps, void> {
+export default class OnError extends React.PureComponent<HandlerProps> {
     public constructor(props: HandlerProps) {
         super(props);
     }

@@ -6,7 +6,7 @@ interface ColoredButtonProps {
     color: string;
 }
 
-export class ColoredButton extends React.PureComponent<ColoredButtonProps, void> {
+export class ColoredButton extends React.PureComponent<ColoredButtonProps> {
     public constructor(props: ColoredButtonProps) {
         super(props);
     }

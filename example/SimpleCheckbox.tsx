@@ -8,7 +8,7 @@ interface SimpleCheckboxProps {
     onCheck: (Checkboxd: boolean) => void;
 }
 
-export class SimpleCheckbox extends React.PureComponent<SimpleCheckboxProps, void> {
+export class SimpleCheckbox extends React.PureComponent<SimpleCheckboxProps> {
     @bind
     private onCheck(event: React.MouseEvent<{}>, checked: boolean): void {
         this.props.onCheck(checked);

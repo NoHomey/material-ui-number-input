@@ -5,7 +5,7 @@ import { HandlerProps } from './CalledHandler';
 const handler: string = 'onRequestValue ';
 const color: string = '#f39c12';
 
-export default class OnRequestValue extends React.PureComponent<HandlerProps, void> {
+export default class OnRequestValue extends React.PureComponent<HandlerProps> {
     public constructor(props: HandlerProps) {
         super(props);
     }

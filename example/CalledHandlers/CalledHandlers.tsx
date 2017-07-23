@@ -20,7 +20,7 @@ function renderCalledHandler(props: CalledHandlerProps, index: number): JSX.Elem
 
 const emptyMessage: string = 'No Handler has been called.';
 
-export class CalledHandlers extends React.Component<CalledHandlersProps, void> {
+export class CalledHandlers extends React.Component<CalledHandlersProps> {
     private length: number;
 
     public constructor(props: CalledHandlersProps) {

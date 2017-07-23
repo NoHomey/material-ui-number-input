@@ -5,7 +5,7 @@ interface H2Props {
     label: string;
 }
 
-export default class H2 extends React.PureComponent<H2Props, void> {
+export default class H2 extends React.PureComponent<H2Props> {
     public constructor(props: H2Props) {
         super(props);
     }

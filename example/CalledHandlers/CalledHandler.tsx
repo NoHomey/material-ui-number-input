@@ -21,7 +21,7 @@ export namespace handlers {
     export const onRequestValue: 'onRequestValue' = 'onRequestValue';
 }
 
-export class CalledHandler extends React.PureComponent<CalledHandlerProps, void> {
+export class CalledHandler extends React.PureComponent<CalledHandlerProps> {
     public constructor(props: CalledHandlerProps) {
         super(props);
     }
