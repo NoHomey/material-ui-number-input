@@ -28,7 +28,7 @@ The better TextField for number inputs.
 | max                     | *number*   |           | ❌         | The number used as maximum value limit. Must be greater than min. |
 | required                 | *bool*     | *false*   | ❌         | If true and if input is left empty than instead of 'clean', 'required' error will be emited throughout onError handler if useStrategy is not 'ignore'. |
 | value                   | *string*   |           | ✓        | The value of the input field. |
-| onChange                | *function* |           | ✓        | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent, value: string) => void`. |
+| onChange                | *function* |           | ✓        | Callback function that is fired when input filed must change it's value. **Signature:** `function(event: React.FormEvent<HTMLInputElement>, value: string) => void`. |
 | onError                 | *function* |         | ❌         | Callback function that is fired when input error status changes and strategy is not 'ignore'.  **Signature:** `function(error: 'none' | 'invalidSymbol' | 'incompleteNumber' | 'singleMinus' | 'singleFloatingPoint' | 'singleZero' | 'min' | 'max' | 'required' | 'clean') => void`. |
 | onValid                 | *function*|            | ❌         | Callback function that is fired when input's value is a valid number.  **Signature:** `function(value: number) => void` |
 | onRequestValue\*        | *function* |           | ❌         | Callback function that is fired when strategy is 'warn' or 'ignore', input is controlled and an invalid number value is passed. It provides valid number value which needs to be setted. **Signature:** `function(value: string) => void` |
