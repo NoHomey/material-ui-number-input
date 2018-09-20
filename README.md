@@ -1,5 +1,7 @@
 # material-ui-number-input
 
+# This project is no longer maintained. It is considered DEPRECATED!
+
 The better TextField for number inputs.
 
 # Install
